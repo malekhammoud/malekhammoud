@@ -1,42 +1,44 @@
-# Spotlight
+# 👋 Hey, I'm Malek Hammoud
 
-Spotlight is a [Tailwind UI](https://tailwindui.com) site template built using [Tailwind CSS](https://tailwindcss.com) and [Next.js](https://nextjs.org).
+**Software engineer | AI + Robotics Builder | Bronze Medalist @ Canada-Wide Science Fair**  
+📍 Based in London, Ontario | [malekhammoud.com](https://malekhammoud.com)
 
-## Getting started
+---
 
-To get started with this template, first install the npm dependencies:
+## 💡 About Me
 
-```bash
-npm install
-```
+I'm a passionate builder with experience in full-stack web development, autonomous robotics, and applied AI.  
+I’ve worked on consulting projects for Microsoft and IKEA, built scalable web apps, and developed award-winning robotics systems that blend hardware and software.
 
-Next, create a `.env.local` file in the root of your project and set the `NEXT_PUBLIC_SITE_URL` variable to your site's public URL:
+Whether it’s solving real-world problems with AI or launching clean, fast web apps — I’m always excited to build.
 
-```
-NEXT_PUBLIC_SITE_URL=https://example.com
-```
+---
 
-Next, run the development server:
+## 🔧 Skills & Technologies
 
-```bash
-npm run dev
-```
+- **Languages:** Python, C++, Java, JavaScript, HTML/CSS, SQL, PHP  
+- **Web:** React, Node.js, WASP, Prisma  
+- **AI/ML:** CNNs, Reinforcement Learning  
+- **Other:** Git, Linux, Agile workflows, Hardware prototyping, Raspberry Pi, Arduino
 
-Finally, open [http://localhost:3000](http://localhost:3000) in your browser to view the website.
 
-## Customizing
+## 🏆 Highlights
 
-You can start editing this template by modifying the files in the `/src` folder. The site will auto-update as you edit these files.
+- 🥉 **Bronze Medalist**, Canada-Wide Science Fair 2024  
+- 💼 **Consulted for Microsoft & IKEA** on AI and sustainability solutions  
+- 🛠️ Interned at startups building scalable, user-focused software  
+- 🏁 Currently building and experimenting with AI, robotics, and impactful tools
 
-## License
+---
 
-This site template is a commercial product and is licensed under the [Tailwind UI license](https://tailwindui.com/license).
+## 📫 Let’s Connect
 
-## Learn more
+- 🌐 Website: [malekhammoud.com](https://malekhammoud.com)  
+- 💼 LinkedIn: [linkedin.com/in/malekhammoud](https://linkedin.com/in/malekhammoud)  
+- ✉️ Email: [malek@malekhammoud.com](mailto:malek@malekhammoud.com)
 
-To learn more about the technologies used in this site template, see the following resources:
+Always happy to collaborate, connect, or just talk about cool ideas.
 
-- [Tailwind CSS](https://tailwindcss.com/docs) - the official Tailwind CSS documentation
-- [Next.js](https://nextjs.org/docs) - the official Next.js documentation
-- [Headless UI](https://headlessui.dev) - the official Headless UI documentation
-- [MDX](https://mdxjs.com) - the MDX documentation
+---
+
+> “Aim high, then get halfway there.”
