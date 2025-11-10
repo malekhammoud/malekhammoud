@@ -63,15 +63,18 @@ export function Chatbot() {
       const data = await response.json()
 
       if (!response.ok) {
+        // Use the specific error message from the API
         throw new Error(data.error || 'Failed to get response')
       }
 
       setMessages(prev => [...prev, { role: 'assistant', content: data.message }])
     } catch (error) {
       console.error('Error:', error)
+      // Display the specific error message to the user
+      const errorMessage = error.message || 'Sorry, I encountered an error. Please try again.'
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.'
+        content: errorMessage
       }])
     } finally {
       setIsLoading(false)

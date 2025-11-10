@@ -221,10 +221,21 @@ export async function POST(request) {
     )
 
     if (!response.ok) {
-      const errorData = await response.json()
-      console.error('Gemini API error:', errorData)
+      const errorData = await response.json().catch(() => ({}))
+      console.error('Gemini API error:', response.status, errorData)
+
+      // Provide specific error messages based on status code
+      let errorMessage = 'Failed to get response from Gemini'
+      if (response.status === 429) {
+        errorMessage = 'Rate limit exceeded. Please wait a moment before trying again.'
+      } else if (response.status === 403) {
+        errorMessage = 'API key issue. Please check your Gemini API configuration.'
+      } else if (response.status >= 500) {
+        errorMessage = 'Gemini service is temporarily unavailable. Please try again later.'
+      }
+
       return NextResponse.json(
-        { error: 'Failed to get response from Gemini' },
+        { error: errorMessage, statusCode: response.status },
         { status: response.status }
       )
     }
