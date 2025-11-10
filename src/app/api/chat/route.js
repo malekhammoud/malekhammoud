@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
 const SYSTEM_PROMPT = `You are an AI assistant representing Malek Hammoud, a passionate programmer and robotics enthusiast. You have comprehensive knowledge about Malek's background, experience, projects, and skills. Always respond in a friendly, professional, and enthusiastic manner that reflects Malek's passion for technology and innovation.
 
@@ -165,102 +166,73 @@ export async function POST(request) {
       )
     }
 
-    // Format messages for Gemini API - skip the initial greeting message
-    const formattedMessages = messages
-      .filter(msg => msg.content !== "Hi! I'm Malek's AI assistant. Ask me anything about his experience, projects, or skills!")
-      .map(msg => ({
-        role: msg.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: msg.content }]
-      }))
+    // Initialize the Google Generative AI client
+    const genAI = new GoogleGenerativeAI(apiKey)
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      systemInstruction: SYSTEM_PROMPT
+    })
 
-    // Only add system prompt for the first user message to save tokens
-    if (formattedMessages.length === 1 && formattedMessages[0].role === 'user') {
-      formattedMessages.unshift({
-        role: 'user',
-        parts: [{ text: SYSTEM_PROMPT }]
-      })
-      formattedMessages.splice(1, 0, {
-        role: 'model',
-        parts: [{ text: 'I understand. I will act as Malek Hammoud\'s AI assistant.' }]
-      })
-    }
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: formattedMessages,
-          generationConfig: {
-            temperature: 0.7,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 1024,
-          },
-          safetySettings: [
-            {
-              category: 'HARM_CATEGORY_HARASSMENT',
-              threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-            },
-            {
-              category: 'HARM_CATEGORY_HATE_SPEECH',
-              threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-            },
-            {
-              category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-              threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-            },
-            {
-              category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-              threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-            }
-          ]
-        }),
-      }
+    // Filter out the initial greeting message
+    const conversationHistory = messages.filter(
+      msg => msg.content !== "Hi! I'm Malek's AI assistant. Ask me anything about his experience, projects, or skills!"
     )
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      console.error('Gemini API error:', response.status, errorData)
+    // Format messages for the SDK
+    const chatHistory = conversationHistory.slice(0, -1).map(msg => ({
+      role: msg.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: msg.content }]
+    }))
 
-      // Provide specific error messages based on status code
-      let errorMessage = 'Failed to get response from Gemini'
-      if (response.status === 429) {
-        errorMessage = 'Rate limit exceeded. Please wait a moment before trying again.'
-      } else if (response.status === 403) {
-        errorMessage = 'API key issue. Please check your Gemini API configuration.'
-      } else if (response.status >= 500) {
-        errorMessage = 'Gemini service is temporarily unavailable. Please try again later.'
-      }
+    // Get the last user message
+    const lastMessage = conversationHistory[conversationHistory.length - 1]?.content
 
+    if (!lastMessage) {
       return NextResponse.json(
-        { error: errorMessage, statusCode: response.status },
-        { status: response.status }
+        { error: 'No message provided' },
+        { status: 400 }
       )
     }
 
-    const data = await response.json()
+    // Start chat with history
+    const chat = model.startChat({
+      history: chatHistory,
+      generationConfig: {
+        temperature: 0.7,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 1024,
+      },
+    })
 
-    if (!data.candidates || !data.candidates[0]?.content?.parts?.[0]?.text) {
-      console.error('Unexpected Gemini response format:', data)
-      return NextResponse.json(
-        { error: 'Invalid response from Gemini' },
-        { status: 500 }
-      )
-    }
+    // Send the message and get response
+    const result = await chat.sendMessage(lastMessage)
+    const response = result.response
+    const text = response.text()
 
-    const botMessage = data.candidates[0].content.parts[0].text
-
-    return NextResponse.json({ message: botMessage })
+    return NextResponse.json({ message: text })
 
   } catch (error) {
     console.error('Chat API error:', error)
+
+    // Handle specific error types
+    let errorMessage = 'Internal server error'
+    let statusCode = 500
+
+    if (error.message?.includes('API key')) {
+      errorMessage = 'API key issue. Please check your Gemini API configuration.'
+      statusCode = 403
+    } else if (error.message?.includes('quota') || error.message?.includes('rate limit')) {
+      errorMessage = 'Rate limit exceeded. Please wait a moment before trying again.'
+      statusCode = 429
+    } else if (error.message?.includes('model')) {
+      errorMessage = 'Model configuration error. Please contact support.'
+      statusCode = 500
+    }
+
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: errorMessage },
+      { status: statusCode }
     )
   }
 }
