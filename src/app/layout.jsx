@@ -1,6 +1,7 @@
 import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
 import { Particles } from '@/components/particles/page'
+import { Chatbot } from '@/components/Chatbot'
 
 import '@/styles/tailwind.css'
 import '@/styles/animations.css'
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
           <div className="flex w-full">
               <Layout>{children}</Layout>
           </div>
+          <Chatbot />
       </Providers>
       </body>
       </html>
