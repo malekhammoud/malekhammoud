@@ -685,10 +685,10 @@ Navigation:
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm"
-      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999 }}
+      className="fixed bottom-0 left-0 right-0 z-[9999] animate-slide-up"
+      style={{ position: 'fixed', zIndex: 9999 }}
     >
-      <div className="relative w-[900px] h-[600px] overflow-hidden rounded-none bg-black shadow-2xl border border-zinc-600">
+      <div className="relative w-full h-[350px] sm:h-[400px] overflow-hidden bg-black shadow-2xl border-t border-zinc-600">
         {/* Terminal header - more authentic Linux style */}
         <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-600 bg-zinc-800">
           <div className="flex items-center gap-3">
@@ -704,7 +704,7 @@ Navigation:
         </div>
 
         {/* Terminal content */}
-        <div className="p-4 font-mono text-sm bg-black h-[calc(600px-45px)] flex flex-col">
+        <div className="p-4 font-mono text-sm bg-black h-[calc(350px-45px)] sm:h-[calc(400px-45px)] flex flex-col">
           <div
             ref={terminalRef}
             className="flex-1 space-y-1 overflow-y-auto mb-2 cursor-text text-left"
