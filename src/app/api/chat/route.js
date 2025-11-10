@@ -173,8 +173,20 @@ export async function POST(request) {
         parts: [{ text: msg.content }]
       }))
 
+    // Only add system prompt for the first user message to save tokens
+    if (formattedMessages.length === 1 && formattedMessages[0].role === 'user') {
+      formattedMessages.unshift({
+        role: 'user',
+        parts: [{ text: SYSTEM_PROMPT }]
+      })
+      formattedMessages.splice(1, 0, {
+        role: 'model',
+        parts: [{ text: 'I understand. I will act as Malek Hammoud\'s AI assistant.' }]
+      })
+    }
+
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: {
@@ -182,9 +194,6 @@ export async function POST(request) {
         },
         body: JSON.stringify({
           contents: formattedMessages,
-          systemInstruction: {
-            parts: [{ text: SYSTEM_PROMPT }]
-          },
           generationConfig: {
             temperature: 0.7,
             topK: 40,
