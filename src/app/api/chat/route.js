@@ -239,8 +239,7 @@ export async function POST(request) {
 
     // Send the message and get response
     const result = await chat.sendMessage(lastMessage)
-    const response = result.response
-    const text = response.text()
+    const text = result.response.text()
 
     return NextResponse.json({ message: text })
 
