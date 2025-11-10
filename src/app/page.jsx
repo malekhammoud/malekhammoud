@@ -7,7 +7,6 @@ import { NewsletterForm } from '@/components/NewsletterForm'
 import { Button } from '@/components/Button'
 import { Card } from '@/components/Card'
 import { Container } from '@/components/Container'
-import { TerminalButton } from '@/components/TerminalButton'
 import { TypewriterText } from '@/components/TypewriterText'
 import {
   GitHubIcon,
@@ -228,14 +227,6 @@ function Photos() {
           </div>
         ))}
       </div>
-    </div>
-  )
-}
-
-function TerminalIntro() {
-  return (
-    <div className="text-center mb-8">
-      <TerminalButton />
     </div>
   )
 }
@@ -554,13 +545,6 @@ export default async function Home() {
 
   return (
     <>
-      {/* Terminal intro first */}
-      <Container className="mt-9 relative">
-        <div className="relative">
-          <TerminalIntro />
-        </div>
-      </Container>
-
       {/* Enhanced animated carousel */}
       <EnhancedCarousel />
 

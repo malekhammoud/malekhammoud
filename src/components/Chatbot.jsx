@@ -3,8 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { XMarkIcon, ChatBubbleLeftRightIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline'
 
-export function Chatbot() {
-  const [isOpen, setIsOpen] = useState(false)
+export function Chatbot({ isOpen, onClose }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
@@ -28,7 +27,7 @@ export function Chatbot() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (chatWindowRef.current && !chatWindowRef.current.contains(event.target)) {
-        setIsOpen(false)
+        onClose()
       }
     }
 
@@ -38,7 +37,7 @@ export function Chatbot() {
         document.removeEventListener('mousedown', handleClickOutside)
       }
     }
-  }, [isOpen])
+  }, [isOpen, onClose])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -81,22 +80,10 @@ export function Chatbot() {
     }
   }
 
+  if (!isOpen) return null
+
   return (
     <>
-      {/* Floating Button */}
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-4 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-teal-500 text-white shadow-lg transition-all hover:bg-teal-600 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2
-                     sm:bottom-6 sm:right-6"
-          aria-label="Open chat"
-        >
-          <ChatBubbleLeftRightIcon className="h-6 w-6" />
-        </button>
-      )}
-
-      {/* Chat Window */}
-      {isOpen && (
         <div
           ref={chatWindowRef}
           className="fixed bottom-4 right-4 z-50 flex flex-col rounded-2xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-700 dark:bg-zinc-900
@@ -110,7 +97,7 @@ export function Chatbot() {
               <h3 className="font-semibold">Chat with Malek's Bot</h3>
             </div>
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={onClose}
               className="rounded-lg p-1 transition-colors hover:bg-teal-600 focus:outline-none"
               aria-label="Close chat"
             >
@@ -172,7 +159,6 @@ export function Chatbot() {
             </div>
           </form>
         </div>
-      )}
     </>
   )
 }

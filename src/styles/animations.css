@@ -173,13 +173,30 @@
 
 /* Removed hover effects for cleaner experience */
 
+/* Terminal slide-up animation */
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .typing-animation,
   .animate-scroll,
   .animate-scroll-reverse,
   .animate-gradient-x,
   .glitch-text,
-  .floating-element {
+  .floating-element,
+  .animate-slide-up {
     animation: none;
   }
 
