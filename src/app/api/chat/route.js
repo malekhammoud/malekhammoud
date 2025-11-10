@@ -165,26 +165,16 @@ export async function POST(request) {
       )
     }
 
-    // Format messages for Gemini API
-    const formattedMessages = messages.map(msg => ({
-      role: msg.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: msg.content }]
-    }))
-
-    // Add system prompt as the first user message
-    formattedMessages.unshift({
-      role: 'user',
-      parts: [{ text: SYSTEM_PROMPT }]
-    })
-
-    // Add a model acknowledgment
-    formattedMessages.splice(1, 0, {
-      role: 'model',
-      parts: [{ text: 'I understand. I will act as Malek Hammoud\'s AI assistant and provide helpful, accurate information about his background, experience, and projects.' }]
-    })
+    // Format messages for Gemini API - skip the initial greeting message
+    const formattedMessages = messages
+      .filter(msg => msg.content !== "Hi! I'm Malek's AI assistant. Ask me anything about his experience, projects, or skills!")
+      .map(msg => ({
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: msg.content }]
+      }))
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: {
@@ -192,6 +182,9 @@ export async function POST(request) {
         },
         body: JSON.stringify({
           contents: formattedMessages,
+          systemInstruction: {
+            parts: [{ text: SYSTEM_PROMPT }]
+          },
           generationConfig: {
             temperature: 0.7,
             topK: 40,
