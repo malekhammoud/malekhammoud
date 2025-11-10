@@ -173,11 +173,23 @@ export async function POST(request) {
       systemInstruction: SYSTEM_PROMPT
     })
 
-    // Format messages for the SDK
-    const chatHistory = messages.slice(0, -1).map(msg => ({
+    // Format messages for the SDK (exclude the last message which will be sent separately)
+    let chatHistory = messages.slice(0, -1).map(msg => ({
       role: msg.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: msg.content }]
     }))
+
+    // Google AI SDK requires chat history to start with 'user' role
+    // Find the first user message and start history from there
+    if (chatHistory.length > 0 && chatHistory[0].role !== 'user') {
+      const firstUserIndex = chatHistory.findIndex(msg => msg.role === 'user')
+      if (firstUserIndex > 0) {
+        chatHistory = chatHistory.slice(firstUserIndex)
+      } else {
+        // No user message in history, start with empty history
+        chatHistory = []
+      }
+    }
 
     // Get the last user message
     const lastMessage = messages[messages.length - 1]?.content
