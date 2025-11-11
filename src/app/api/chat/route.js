@@ -169,7 +169,7 @@ export async function POST(request) {
     // Initialize the Google Generative AI client
     const genAI = new GoogleGenerativeAI(apiKey)
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-1.5-flash-latest',
       systemInstruction: SYSTEM_PROMPT
     })
 
