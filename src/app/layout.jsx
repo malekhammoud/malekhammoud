@@ -3,6 +3,7 @@ import { Layout } from '@/components/Layout'
 import { Particles } from '@/components/particles/page'
 import { FloatingUI } from '@/components/FloatingUI'
 import { Analytics } from '@vercel/analytics/next'
+import Script from 'next/script'
 
 import '@/styles/tailwind.css'
 import '@/styles/animations.css'
@@ -26,6 +27,19 @@ export default function RootLayout({ children }) {
 
       <html lang="en" className="h-full w-full antialiased" suppressHydrationWarning>
       <body className="relative w-full flex-col h-full bg-zinc-50 dark:bg-black">
+      <Script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-JE1S48W2PK"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-JE1S48W2PK');
+        `}
+      </Script>
       <div className="absolute inset-0 ">
           <Particles/>
       </div>
