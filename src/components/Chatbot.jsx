@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { XMarkIcon, ChatBubbleLeftRightIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 export function Chatbot({ isOpen, onClose }) {
   const [messages, setMessages] = useState([
@@ -119,7 +121,51 @@ export function Chatbot({ isOpen, onClose }) {
                       : 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  {message.role === 'user' ? (
+                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  ) : (
+                    <div className="prose prose-sm prose-zinc dark:prose-invert max-w-none
+                                    prose-p:my-2 prose-p:leading-relaxed
+                                    prose-pre:my-2 prose-pre:bg-zinc-800 prose-pre:text-zinc-100
+                                    prose-code:text-teal-600 dark:prose-code:text-teal-400
+                                    prose-a:text-teal-600 dark:prose-a:text-teal-400
+                                    prose-strong:text-zinc-900 dark:prose-strong:text-zinc-100
+                                    prose-ul:my-2 prose-ol:my-2
+                                    prose-li:my-0.5">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          code({ node, inline, className, children, ...props }) {
+                            return inline ? (
+                              <code className="px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-zinc-700 text-xs font-mono" {...props}>
+                                {children}
+                              </code>
+                            ) : (
+                              <code className="block text-xs" {...props}>
+                                {children}
+                              </code>
+                            )
+                          },
+                          pre({ children, ...props }) {
+                            return (
+                              <pre className="rounded-lg p-3 overflow-x-auto" {...props}>
+                                {children}
+                              </pre>
+                            )
+                          },
+                          a({ children, href, ...props }) {
+                            return (
+                              <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+                                {children}
+                              </a>
+                            )
+                          }
+                        }}
+                      >
+                        {message.content}
+                      </ReactMarkdown>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

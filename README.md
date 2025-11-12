@@ -41,4 +41,25 @@ Always happy to collaborate, connect, or just talk about cool ideas.
 
 ---
 
+## AI Chat configuration
+
+Create `.env.local` in the project root (this file is git-ignored) and add:
+
+```
+GEMINI_API_KEY=your_ai_studio_api_key
+# Optional, override default model (defaults to gemini-pro)
+GEMINI_MODEL=gemini-pro
+```
+
+Note: Do not prefix with quotes. Ensure there are no trailing spaces.
+
+Run the health check to verify envs are loaded:
+
+- GET `/api/chat/health` returns `{ ok: true, model, keyPreview }` if the key is present.
+- GET `/api/chat/models` lists supported model names for your key.
+
+If you see `API_KEY_INVALID` errors, rotate your key in Google AI Studio and update `.env.local`. On Vercel or other hosting, set the same env vars in the dashboard.
+
+---
+
 > “Aim high, then get halfway there.”
