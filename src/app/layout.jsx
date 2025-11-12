@@ -2,6 +2,7 @@ import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
 import { Particles } from '@/components/particles/page'
 import { FloatingUI } from '@/components/FloatingUI'
+import { Analytics } from '@vercel/analytics/next'
 
 import '@/styles/tailwind.css'
 import '@/styles/animations.css'
@@ -34,6 +35,7 @@ export default function RootLayout({ children }) {
           </div>
           <FloatingUI />
       </Providers>
+      <Analytics />
       </body>
       </html>
   )
