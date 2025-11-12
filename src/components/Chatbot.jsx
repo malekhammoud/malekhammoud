@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { XMarkIcon, ChatBubbleLeftRightIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { trackChatbotEvent } from '@/lib/analytics'
 
 export function Chatbot({ isOpen, onClose }) {
   const [messages, setMessages] = useState([
@@ -16,6 +17,7 @@ export function Chatbot({ isOpen, onClose }) {
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef(null)
   const chatWindowRef = useRef(null)
+  const requestStartTime = useRef(null)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -25,10 +27,18 @@ export function Chatbot({ isOpen, onClose }) {
     scrollToBottom()
   }, [messages])
 
+  // Track when chatbot opens
+  useEffect(() => {
+    if (isOpen) {
+      trackChatbotEvent.opened()
+    }
+  }, [isOpen])
+
   // Click outside to close
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (chatWindowRef.current && !chatWindowRef.current.contains(event.target)) {
+        trackChatbotEvent.closed()
         onClose()
       }
     }
@@ -50,6 +60,10 @@ export function Chatbot({ isOpen, onClose }) {
     setMessages(prev => [...prev, { role: 'user', content: userMessage }])
     setIsLoading(true)
 
+    // Track message sent with content
+    trackChatbotEvent.messageSent(userMessage.length, userMessage)
+    requestStartTime.current = Date.now()
+
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -68,9 +82,16 @@ export function Chatbot({ isOpen, onClose }) {
         throw new Error(data.error || 'Failed to get response')
       }
 
+      // Track response received with response time and content
+      const responseTime = Date.now() - requestStartTime.current
+      trackChatbotEvent.responseReceived(responseTime, data.message)
+
       setMessages(prev => [...prev, { role: 'assistant', content: data.message }])
     } catch (error) {
       console.error('Error:', error)
+      // Track error
+      trackChatbotEvent.error(error.message || 'Unknown error')
+
       // Display the specific error message to the user
       const errorMessage = error.message || 'Sorry, I encountered an error. Please try again.'
       setMessages(prev => [...prev, {
@@ -99,7 +120,10 @@ export function Chatbot({ isOpen, onClose }) {
               <h3 className="font-semibold">Chat with Malek's Bot</h3>
             </div>
             <button
-              onClick={onClose}
+              onClick={() => {
+                trackChatbotEvent.closed()
+                onClose()
+              }}
               className="rounded-lg p-1 transition-colors hover:bg-teal-600 focus:outline-none"
               aria-label="Close chat"
             >
