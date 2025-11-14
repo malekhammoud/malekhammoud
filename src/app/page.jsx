@@ -693,9 +693,6 @@ export default async function Home() {
       {/* Featured Projects */}
       <FeaturedProjects />
 
-      {/* Latest Articles */}
-      <LatestArticles articles={articles} />
-
       {/* Timeline Resume Section */}
       <Container className="mt-24 md:mt-28 relative">
         <div className="mx-auto max-w-4xl">

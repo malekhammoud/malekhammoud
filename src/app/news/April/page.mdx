@@ -11,6 +11,10 @@ export const metadata = {
     title: article.title,
     description: article.description,
 }
+// Force static generation
+export const dynamic = 'force-static'
+export const dynamicParams = false
+
 export default (props) => <ArticleLayout article={article} {...props} />
 
 <div style={{ padding: '20px', backgroundColor: '#e0f7fa', borderRadius: '8px', marginBottom: '20px' }}>

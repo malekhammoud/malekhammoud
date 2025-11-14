@@ -88,75 +88,10 @@ export default function About() {
         </div>
       </div>
 
-      {/* Questions */}
-      <section className="mt-20">
-        <Reveal as="h2" variant="slide-up" className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-          The Questions I'm Grappling With
-        </Reveal>
-        <div className="w-20 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-3 mb-6" />
-
-        <div className="space-y-6">
-          <Reveal variant="slide-up" delay={100}>
-            <div>
-              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-                Why do some communities struggle while others waste?
-              </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Water rationed in Lebanon. Power going out constantly. Moving to Canada
-                at 7 showed me the gap. Every project I build tries to address it. But
-                each raises questions about who benefits and what problems we create.
-              </p>
-            </div>
-          </Reveal>
-          <Reveal variant="slide-up" delay={200}>
-            <div>
-              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-                What makes technology useful vs. just impressive?
-              </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                The technical part is usually easy. The hard part is being honest about
-                whether something should exist at all.
-              </p>
-            </div>
-          </Reveal>
-          <Reveal variant="slide-up" delay={300}>
-            <div>
-              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-                How do you create spaces where "I can't" becomes "Let me try"?
-              </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                My CS teacher built my confidence in Grade 9. Leading clubs taught me
-                empowerment isn't fixing code. It's asking questions until they solve it
-                themselves.
-              </p>
-            </div>
-          </Reveal>
-          <Reveal variant="slide-up" delay={400}>
-            <div>
-              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-                Can you solve complex problems from within a single discipline?
-              </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Building a weed detection robot is engineering. Understanding whether it
-                helps small farmers or just benefits large agribusiness? That requires
-                economics, sociology, and ethics. The problems worth solving don't fit
-                neatly into one field.
-              </p>
-            </div>
-          </Reveal>
-        </div>
-
-        <Reveal delay={500} className="mt-6" variant="fade">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 italic">
-            These questions drive my work and why I'm drawn to interdisciplinary learning.
-          </p>
-        </Reveal>
-      </section>
-
       {/* Where Curiosity Meets Action */}
       <section className="mt-16">
         <Reveal as="h2" variant="slide-left" className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-          Where I'm Applying These Questions
+         My Focus Areas
         </Reveal>
         <div className="w-20 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-3 mb-6" />
 

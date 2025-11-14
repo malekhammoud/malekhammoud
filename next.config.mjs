@@ -27,6 +27,7 @@ const nextConfig = {
   optimizeFonts: true,
   // Enable SWC minification
   swcMinify: true,
+  output: undefined,
 }
 
 const withMDX = nextMDX({
