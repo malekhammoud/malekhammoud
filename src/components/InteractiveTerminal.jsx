@@ -2,6 +2,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { trackTerminalEvent } from '@/lib/analytics'
 
 const fileSystem = {
   '/': {
@@ -173,7 +174,7 @@ const fileSystem = {
     contents: {
       'work_history.txt': {
         type: 'file',
-        content: '💼 Professional Experience\n\n🎮 Playtoon - Software Engineer (Mar 2025 - Present)\n- Building a platform that reimagines how stories are created and experienced\n- Working with a cool startup building innovative solutions\n- Full-stack development for next-generation storytelling platform\n- Project Setup: Initialized the Playtoon codebase with Git version control and deployed placeholder landing page content\n\n🏢 SIMMAD - Software Engineer (Oct 2024 - Feb 2025)\n- Full-stack web development with React/Next.js\n- Backend API development with Node.js\n- Database design and optimization\n- Collaborated with cross-functional teams\n- Delivered high-quality software solutions\n\n🏗️ BRYCK - Software Engineer (Sep 2024 - Dec 2024)\n- Developed scalable web applications\n- Implemented responsive user interfaces\n- Optimized application performance\n- Code reviews and technical mentoring\n\n📚 London Public Library - Tech Tutor (Mar 2023 - Aug 2023)\n- Taught programming fundamentals to beginners\n- Created educational content and tutorials\n- Mentored students in web development\n- Organized coding workshops and events\n- Improved digital literacy in the community'
+        content: '💼 Professional Experience\n\n🎮 Playtoon - Software Engineer (Mar 2025 – Aug 2025)\n- Building a platform that reimagines how stories are created and experienced\n- Working with a cool startup building innovative solutions\n- Full-stack development for next-generation storytelling platform\n- Project Setup: Initialized the Playtoon codebase with Git version control and deployed placeholder landing page content\n\n🏢 SIMMAD - Software Engineer (Oct 2024 - Feb 2025)\n- Full-stack web development with React/Next.js\n- Backend API development with Node.js\n- Database design and optimization\n- Collaborated with cross-functional teams\n- Delivered high-quality software solutions\n\n🏗️ BRYCK - Software Engineer (Sep 2024 - Dec 2024)\n- Developed scalable web applications\n- Implemented responsive user interfaces\n- Optimized application performance\n- Code reviews and technical mentoring\n\n📚 London Public Library - Tech Tutor (Mar 2023 - Aug 2023)\n- Taught programming fundamentals to beginners\n- Created educational content and tutorials\n- Mentored students in web development\n- Organized coding workshops and events\n- Improved digital literacy in the community'
       },
       'education.txt': {
         type: 'file',
@@ -430,6 +431,11 @@ export function InteractiveTerminal({ isOpen, onClose }) {
     const args = command.trim().split(' ')
     const cmd = args[0].toLowerCase()
     
+    // Track command execution
+    if (command.trim()) {
+      trackTerminalEvent.commandExecuted(command.trim())
+    }
+
     // Add command to input history
     if (command.trim()) {
       setInputHistory(prev => {

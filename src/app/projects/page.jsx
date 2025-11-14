@@ -1,12 +1,15 @@
+'use client'
+
+import { useState } from 'react'
 import Image from 'next/image'
 
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
 /*LOGOS*/
-import ai from '@/images/projects/ai.png';
 import webdev from '@/images/projects/webdev.png';
 import game from '@/images/projects/gamedev.png';
 import robot from '@/images/projects/robot.png';
+import ai from '@/images/projects/ai.png';
 
 
 import p1 from '@/images/projects/green.png';
@@ -21,7 +24,6 @@ import p6 from '@/images/projects/ecosoute.png';
 import p7 from '@/images/projects/reminderapp.png';
 import p8 from '@/images/projects/offshape.gif';
 import p9 from '@/images/projects/posture.gif';
-import p10 from '@/images/portrait.jpg';
 /*Project images*/
 
 const projects = [
@@ -32,6 +34,7 @@ const projects = [
     link: { href: 'https://partner.projectboard.world/ysc/project/greenguardian-automated-weed-detection-and-elimination', label: '2024 CWSF Project Board' },
     logo: robot,
     image: p1,
+    category: ['robotics', 'ai'],
   },
   {
     name: 'Autonomous Litter Detection',
@@ -40,6 +43,7 @@ const projects = [
     link: { href: 'https://www.notion.so/tksworld/Autonomous-Litter-Detection-Mapping-System-1f60b470b010802ba60cd8a57ee73b0e', label: '2025 TKS Focus Project' },
     logo: robot,
     image: drone,
+    category: ['robotics', 'ai'],
   },
   {
     name: 'EcoSphere',
@@ -48,6 +52,7 @@ const projects = [
     link: { href: 'https://www.eco-sphere.co/', label: '2025 SolutionsHacks Project (team)' },
     logo: webdev,
     image: eco,
+    category: ['webdev'],
   },
   {
     name: 'Linux Exploration',
@@ -56,6 +61,7 @@ const projects = [
     link: { href: '#', label: '' },
     logo: webdev,
     image: p2,
+    category: ['webdev'],
   },
   {
     name: 'Reconnect',
@@ -64,6 +70,7 @@ const projects = [
     link: { href: 'https://github.com/malekhammoud/Reconnect', label: 'Github >' },
     logo: game,
     image: reconnect,
+    category: ['game'],
   },
   {
     name: '1v1 Platformer Game',
@@ -72,6 +79,7 @@ const projects = [
     link: { href: 'https://github.com/mhammoud-os/JavaProject', label: 'Github >' },
     logo: game,
     image: p3,
+    category: ['game'],
   },
   {
     name: 'Central Tech Tribe',
@@ -80,6 +88,7 @@ const projects = [
     link: { href: 'https://central-server-theta.vercel.app/', label: 'Currently In Development...' },
     logo: webdev,
     image: p4,
+    category: ['webdev'],
   },
   {
     name: 'Maze-Solving Robot Car',
@@ -88,6 +97,7 @@ const projects = [
     link: { href: 'https://github.com/mhammoud-os/Real-World-Graph-Theory-Simulation', label: '2023 TVSEF Project >' },
     logo: robot,
     image: p5,
+    category: ['robotics'],
   },
   {
     name: 'EcoScout',
@@ -96,6 +106,7 @@ const projects = [
     link: { href: 'https://github.com/mhammoud-os/EcoScout', label: 'View the code >' },
     logo: webdev,
     image: p6,
+    category: ['webdev'],
   },
   {
     name: 'Reminder App',
@@ -104,6 +115,7 @@ const projects = [
     link: { href: 'https://github.com/mhammoud-os/Project-Reminder', label: 'Download The App >' },
     logo: webdev,
     image: p7,
+    category: ['webdev'],
   },
   {
     name: 'OffShape Website',
@@ -112,6 +124,7 @@ const projects = [
     link: { href: 'https://offshape.vercel.app/', label: 'View The site >' },
     logo: webdev,
     image: p8,
+    category: ['webdev'],
   },
   {
     name: 'Posture Pall',
@@ -120,6 +133,7 @@ const projects = [
     link: { href: 'https://github.com/joaoP-santos/posturepal', label: 'See the video >' },
     logo: webdev,
     image: p9,
+    category: ['webdev', 'ai'],
   }
 ]
 /*
@@ -144,31 +158,84 @@ function LinkIcon(props) {
   )
 }
 
-export const metadata = {
-  title: 'Projects',
-  description: 'Things I’ve made trying to put my dent in the universe.',
-}
-
 export default function Projects() {
+  const [activeFilter, setActiveFilter] = useState('all')
+
+  const categories = [
+    { id: 'all', name: 'All Projects' },
+    { id: 'robotics', name: 'Robotics' },
+    { id: 'webdev', name: 'Web Development' },
+    { id: 'game', name: 'Game Development' },
+    { id: 'ai', name: 'AI' },
+  ]
+
+  const filteredProjects = activeFilter === 'all'
+    ? projects
+    : projects.filter(project => {
+        const categories = Array.isArray(project.category) ? project.category : [project.category]
+        return categories.includes(activeFilter)
+      })
+
   return (
       <SimpleLayout
           title="Projects That Fuel My Passion for Innovation"
           intro="From robotics to full-stack development, here are some of the projects I've poured my creativity into. Many are open-source, so feel free to explore, use, or improve them as you see fit!"
       >
+        {/* Filter Buttons */}
+        <div className="flex flex-wrap gap-3 mb-8">
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => setActiveFilter(category.id)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                activeFilter === category.id
+                  ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/50 dark:bg-teal-400 dark:text-zinc-900'
+                  : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700'
+              }`}
+            >
+              {category.name}
+              {category.id !== 'all' && (
+                <span className="ml-2 text-xs opacity-75">
+                  ({projects.filter(p => {
+                    const cats = Array.isArray(p.category) ? p.category : [p.category]
+                    return cats.includes(category.id)
+                  }).length})
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
         <ul
             role="list"
             className="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"
         >
-          {projects.map((project) => (
+          {filteredProjects.map((project) => {
+            // Get all logos for the project based on its categories
+            const categoryLogos = {
+              'robotics': robot,
+              'webdev': webdev,
+              'game': game,
+              'ai': ai
+            }
+
+            const projectCategories = Array.isArray(project.category) ? project.category : [project.category]
+            const logos = projectCategories.map(cat => categoryLogos[cat]).filter(Boolean)
+
+            return (
               <Card as="li" key={project.name}>
-                {/*mall logo */}
-                <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-gray-200 shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
-                  <Image
-                      src={project.logo}
-                      alt={`${project.name} logo`}
-                      className="h-8 w-8"
-                      unoptimized
-                  />
+                {/* Multiple logos */}
+                <div className="relative z-10 flex gap-2">
+                  {logos.map((logo, index) => (
+                    <div key={index} className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200 shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
+                      <Image
+                          src={logo}
+                          alt={`${project.name} logo ${index + 1}`}
+                          className="h-8 w-8"
+                          unoptimized
+                      />
+                    </div>
+                  ))}
                 </div>
                 <h2 className="mt-6 text-base font-semibold text-zinc-800 dark:text-zinc-100">
                   <Card.Link href={project.link.href}>{project.name}</Card.Link>
@@ -194,7 +261,8 @@ export default function Projects() {
                   <span className="ml-2">{project.link.label}</span>
                 </p>
               </Card>
-          ))}
+            )
+          })}
         </ul>
       </SimpleLayout>
   )

@@ -1,7 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import Image from 'next/image'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from 'next-themes'
@@ -12,8 +11,10 @@ import {
   PopoverPanel,
 } from '@headlessui/react'
 import clsx from 'clsx'
+import Image from 'next/image'
 
 import { Container } from '@/components/Container'
+import { trackResumeEvent } from '@/lib/analytics'
 import avatarImage from '@/images/avatar.jpg'
 
 function CloseIcon(props) {
@@ -113,6 +114,7 @@ function MobileNavigation(props) {
         </div>
         <nav className="mt-6">
           <ul className="-my-2 divide-y divide-zinc-100 text-base text-zinc-800 dark:divide-zinc-100/5 dark:text-zinc-300">
+            <MobileNavItem href="/">Home</MobileNavItem>
             <MobileNavItem href="/about">About</MobileNavItem>
             <MobileNavItem href="/articles">Articles</MobileNavItem>
             <MobileNavItem href="/news">Newsletter</MobileNavItem>
@@ -128,11 +130,18 @@ function MobileNavigation(props) {
 function NavItem({ href, target, children }) {
   let isActive = usePathname() === href
 
+  const handleClick = () => {
+    if (href && href.includes('resume.pdf')) {
+      trackResumeEvent.viewed('header_nav')
+    }
+  }
+
   return (
     <li>
       <Link
         href={href}
         target={target}
+        onClick={handleClick}
         className={clsx(
           'relative block px-3 py-2 transition',
           isActive
@@ -153,11 +162,12 @@ function DesktopNavigation(props) {
   return (
     <nav {...props}>
       <ul className="flex rounded-full bg-white/90 px-3 text-sm font-medium text-zinc-800 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10">
+        <NavItem href="/">Home</NavItem>
         <NavItem href="/about">About</NavItem>
         <NavItem href="/articles">Articles</NavItem>
         <NavItem href="/projects">Projects</NavItem>
         <NavItem href="/news">Newsletter</NavItem>
-        <NavItem href="/resume.pdf"   target="_blank">Resume</NavItem>
+        <NavItem href="/resume.pdf" target="_blank">Resume</NavItem>
       </ul>
     </nav>
   )
@@ -186,41 +196,32 @@ function ThemeToggle() {
 }
 
 export function Header() {
-  let isHomePage = usePathname() === '/'
-
   return (
     <header className="pointer-events-none relative z-50 flex flex-none flex-col">
       <div className="top-0 z-10 h-16 pt-6">
         <Container className="w-full">
-          <div className="relative flex gap-4">
-            <div className="flex flex-1">
-              <div className={clsx(
-                'rounded-full bg-white/90 p-0.5 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:ring-white/10',
-                isHomePage ? 'h-20 w-20 sm:h-32 sm:w-32' : 'h-10 w-10'
-              )}>
-                <Link
-                  href="/"
-                  aria-label="Home"
-                  className="pointer-events-auto"
-                >
+          <div className="relative flex items-center gap-4">
+            {/* Left: small avatar */}
+            <div className="flex flex-1 items-center">
+              <div className="pointer-events-auto rounded-full bg-white/90 p-0.5 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:ring-white/10 h-10 w-10 flex items-center justify-center">
+                <Link href="/" aria-label="Home">
                   <Image
                     src={avatarImage}
                     alt=""
-                    sizes={isHomePage ? '(max-width: 640px) 5rem, 8rem' : '2.25rem'}
-                    className={clsx(
-                      'rounded-full bg-zinc-100 object-cover dark:bg-zinc-800',
-                      isHomePage ? 'h-20 w-20 sm:h-32 sm:w-32' : 'h-9 w-9'
-                    )}
+                    sizes="2.25rem"
+                    className="h-9 w-9 rounded-full bg-zinc-100 object-cover dark:bg-zinc-800"
                     priority
                   />
                 </Link>
               </div>
             </div>
-            <div className="flex flex-1 justify-end md:justify-center">
+            {/* Nav wrapper: centered */}
+            <div className="flex flex-1 justify-start md:justify-center">
               <MobileNavigation className="pointer-events-auto md:hidden" />
               <DesktopNavigation className="pointer-events-auto hidden md:block" />
             </div>
-            <div className="flex justify-end md:flex-1">
+            {/* Right: theme toggle */}
+            <div className="flex flex-1 justify-end">
               <div className="pointer-events-auto">
                 <ThemeToggle />
               </div>

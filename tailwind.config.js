@@ -42,6 +42,7 @@ module.exports = {
         'gradient-x': 'gradient-x 3s ease infinite',
         'spin-slow': 'spin 8s linear infinite',
         'glitch': 'glitch 2s infinite',
+        'ping-slow': 'ping 3s cubic-bezier(0, 0, 0.2, 1) infinite',
       },
       keyframes: {
         scroll: {

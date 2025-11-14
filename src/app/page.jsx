@@ -196,7 +196,7 @@ function Resume() {
           <Role key={roleIndex} role={role} />
         ))}
       </ol>
-      <Button href="/resume.pdf" target={"_black"} variant="secondary" className="group mt-6 w-full">
+      <Button href="/resume.pdf" target={"_blank"} variant="secondary" className="group mt-6 w-full">
         View Resume
         <ArrowRightIcon className="h-4 w-4 stroke-zinc-400 transition group-active:stroke-zinc-600 dark:group-hover:stroke-zinc-50 dark:group-active:stroke-zinc-50" />
       </Button>
@@ -274,6 +274,13 @@ function EnhancedCarousel() {
               LinkedIn
             </MainSocialLink>
           </div>
+
+          {/* Primary CTAs */}
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Button href="/projects" variant="primary">Explore Projects</Button>
+            <Button href="/about" variant="secondary">About Me</Button>
+            <Button href="/resume.pdf" target="_blank" variant="secondary">Resume</Button>
+          </div>
         </div>
       </Container>
 
@@ -320,13 +327,88 @@ function EnhancedCarousel() {
   )
 }
 
-function GlitchText({ children, className = "" }) {
+// Highlight a small, curated set of projects for first-time visitors
+function FeaturedProjects() {
+  const featured = [
+    {
+      name: 'GreenGuardian',
+      description:
+        'Autonomous weed detection and precise spraying robot that reduces herbicide use with computer vision.',
+      href: 'https://partner.projectboard.world/ysc/project/greenguardian-automated-weed-detection-and-elimination',
+      image: greenImage,
+    },
+    {
+      name: 'Autonomous Litter Detection',
+      description:
+        'Low-cost drone-based system to detect and map litter for environmental monitoring and cleanup.',
+      href: 'https://www.notion.so/tksworld/Autonomous-Litter-Detection-Mapping-System-1f60b470b010802ba60cd8a57ee73b0e',
+      image: droneImage,
+    },
+    {
+      name: 'EcoSphere',
+      description:
+        'A mission-control platform for conservation teams: species ID, team chat, and seamless collaboration.',
+      href: 'https://www.eco-sphere.co/',
+      image: eco,
+    },
+  ]
+
   return (
-    <div className={`relative ${className}`}>
-      <span className="glitch-text relative inline-block" data-text={children}>
-        {children}
-      </span>
-    </div>
+    <Container className="mt-24">
+      <div className="mx-auto max-w-6xl">
+        <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+          Featured Projects
+        </h2>
+        <div className="w-24 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-4 mb-8" />
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {featured.map((p, idx) => (
+            <Card as="article" key={idx}>
+              <div className="relative mb-4 h-48 w-full overflow-hidden rounded-xl bg-zinc-50 shadow-sm dark:bg-zinc-800">
+                <Image src={p.image} alt={p.name} fill className="object-cover" sizes="(min-width: 1024px) 22rem, 100vw" />
+              </div>
+              <Card.Title href={p.href} target="_blank">{p.name}</Card.Title>
+              <Card.Description>{p.description}</Card.Description>
+              <Card.Cta>Learn more</Card.Cta>
+            </Card>
+          ))}
+        </div>
+        <div className="mt-8">
+          <Button href="/projects" variant="secondary">See all projects</Button>
+        </div>
+      </div>
+    </Container>
+  )
+}
+
+function LatestArticles({ articles }) {
+  if (!articles?.length) return null
+  return (
+    <Container className="mt-24">
+      <div className="mx-auto max-w-6xl">
+        <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+          Latest Articles
+        </h2>
+        <div className="w-24 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-4 mb-8" />
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+          {articles.map((article) => (
+            <Article key={article.slug} article={article} />
+          ))}
+        </div>
+        <div className="mt-8">
+          <Button href="/articles" variant="secondary">Browse all articles</Button>
+        </div>
+      </div>
+    </Container>
+  )
+}
+
+function NewsletterCta() {
+  return (
+    <Container className="mt-24">
+      <div className="mx-auto max-w-3xl rounded-2xl border border-zinc-100 p-8 shadow-sm dark:border-zinc-700/40">
+        <NewsletterForm />
+      </div>
+    </Container>
   )
 }
 
@@ -336,11 +418,8 @@ function TimelineResume() {
       company: 'Playtoon',
       title: 'Software Developer Intern',
       logo: logoPlaytoon,
-      start: 'Mar, 2025',
-      end: {
-        label: 'Present',
-        dateTime: new Date().toString(),
-      },
+      start: 'Mar 2025',
+      end: 'Aug 2025',
     },
     {
       company: 'SIMMAD',
@@ -547,6 +626,12 @@ export default async function Home() {
     <>
       {/* Enhanced animated carousel */}
       <EnhancedCarousel />
+
+      {/* Featured Projects */}
+      <FeaturedProjects />
+
+      {/* Latest Articles */}
+      <LatestArticles articles={articles} />
 
       {/* Timeline Resume Section */}
       <Container className="mt-24 md:mt-28 relative">

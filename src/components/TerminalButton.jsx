@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { InteractiveTerminal } from '@/components/InteractiveTerminal'
+import { trackTerminalEvent } from '@/lib/analytics'
 
 export function TerminalButton() {
   const [isTerminalOpen, setIsTerminalOpen] = useState(false)
@@ -16,11 +17,13 @@ export function TerminalButton() {
     e.preventDefault()
     e.stopPropagation()
     console.log('Terminal button clicked')
+    trackTerminalEvent.opened()
     setIsTerminalOpen(true)
   }
 
   const handleCloseTerminal = () => {
     console.log('Terminal closing')
+    trackTerminalEvent.closed()
     setIsTerminalOpen(false)
   }
 
