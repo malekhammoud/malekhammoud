@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { OptimizedVideo } from '@/components/OptimizedVideo'
 
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
@@ -13,17 +14,12 @@ import ai from '@/images/projects/ai.png';
 
 
 import p1 from '@/images/projects/green.png';
-import drone from '@/images/projects/drone.gif';
 import eco from '@/images/projects/ecosphere.png';
 import reconnect from '@/images/projects/reconnect.png';
 import p2 from '@/images/projects/linux.png';
-import p3 from '@/images/projects/javagame.gif';
 import p4 from '@/images/projects/centralweb.png';
-import p5 from '@/images/projects/maze.gif';
 import p6 from '@/images/projects/ecosoute.png';
 import p7 from '@/images/projects/reminderapp.png';
-import p8 from '@/images/projects/offshape.gif';
-import p9 from '@/images/projects/posture.gif';
 /*Project images*/
 
 const projects = [
@@ -35,6 +31,7 @@ const projects = [
     logo: robot,
     image: p1,
     category: ['robotics', 'ai'],
+    type: 'image',
   },
   {
     name: 'Autonomous Litter Detection',
@@ -42,8 +39,9 @@ const projects = [
       'Building a low-cost, proof-of-concept autonomous system for detecting and mapping litter using drones. This project aims to enhance environmental monitoring and community engagement.',
     link: { href: 'https://www.notion.so/tksworld/Autonomous-Litter-Detection-Mapping-System-1f60b470b010802ba60cd8a57ee73b0e', label: '2025 TKS Focus Project' },
     logo: robot,
-    image: drone,
+    video: { webm: '/videos/drone.webm', mp4: '/videos/drone.mp4' },
     category: ['robotics', 'ai'],
+    type: 'video',
   },
   {
     name: 'EcoSphere',
@@ -53,6 +51,7 @@ const projects = [
     logo: webdev,
     image: eco,
     category: ['webdev'],
+    type: 'image',
   },
   {
     name: 'Linux Exploration',
@@ -62,6 +61,7 @@ const projects = [
     logo: webdev,
     image: p2,
     category: ['webdev'],
+    type: 'image',
   },
   {
     name: 'Reconnect',
@@ -71,6 +71,7 @@ const projects = [
     logo: game,
     image: reconnect,
     category: ['game'],
+    type: 'image',
   },
   {
     name: '1v1 Platformer Game',
@@ -78,8 +79,9 @@ const projects = [
         'The 1v1 Platformer Game is a collaborative Grade 11 Java project where players compete by landing on each other. It features collision handling, keyboard input, and an integrated intro screen.',
     link: { href: 'https://github.com/mhammoud-os/JavaProject', label: 'Github >' },
     logo: game,
-    image: p3,
+    video: { webm: '/videos/javagame.webm', mp4: '/videos/javagame.mp4' },
     category: ['game'],
+    type: 'video',
   },
   {
     name: 'Central Tech Tribe',
@@ -89,6 +91,7 @@ const projects = [
     logo: webdev,
     image: p4,
     category: ['webdev'],
+    type: 'image',
   },
   {
     name: 'Maze-Solving Robot Car',
@@ -96,8 +99,9 @@ const projects = [
         'The Maze-Solving Robot Car is a 2023 award-winning TVSEF project that autonomously navigates a maze. It uses pathfinding and obstacle avoidance to reach its destination.',
     link: { href: 'https://github.com/mhammoud-os/Real-World-Graph-Theory-Simulation', label: '2023 TVSEF Project >' },
     logo: robot,
-    image: p5,
+    video: { webm: '/videos/maze.webm', mp4: '/videos/maze.mp4' },
     category: ['robotics'],
+    type: 'video',
   },
   {
     name: 'EcoScout',
@@ -107,6 +111,7 @@ const projects = [
     logo: webdev,
     image: p6,
     category: ['webdev'],
+    type: 'image',
   },
   {
     name: 'Reminder App',
@@ -116,6 +121,7 @@ const projects = [
     logo: webdev,
     image: p7,
     category: ['webdev'],
+    type: 'image',
   },
   {
     name: 'OffShape Website',
@@ -123,8 +129,9 @@ const projects = [
         'I created the website for my robotics team. It was a collaborative effort with two other people.',
     link: { href: 'https://offshape.vercel.app/', label: 'View The site >' },
     logo: webdev,
-    image: p8,
+    video: { webm: '/videos/offshape.webm', mp4: '/videos/offshape.mp4' },
     category: ['webdev'],
+    type: 'video',
   },
   {
     name: 'Posture Pall',
@@ -132,20 +139,11 @@ const projects = [
         'Posture Pall is a device that sprays you if you have bad posture. It is designed to help improve your posture by providing instant feedback.',
     link: { href: 'https://github.com/joaoP-santos/posturepal', label: 'See the video >' },
     logo: webdev,
-    image: p9,
+    video: { webm: '/videos/posture.webm', mp4: '/videos/posture.mp4' },
     category: ['webdev', 'ai'],
+    type: 'video',
   }
 ]
-/*
-{
-name: 'Libary Demo Site',
-description:
-    'Colaberated on a libary database, I helped find demo data and ',
-link: { href: 'https://github.com/mhammoud-os/Project-Reminder', label: 'View The site' },
-logo: webdev,
-image: p10,
-},
- */
 
 function LinkIcon(props) {
   return (
@@ -231,8 +229,11 @@ export default function Projects() {
                       <Image
                           src={logo}
                           alt={`${project.name} logo ${index + 1}`}
+                          width={32}
+                          height={32}
                           className="h-8 w-8"
-                          unoptimized
+                          loading="lazy"
+                          quality={90}
                       />
                     </div>
                   ))}
@@ -246,19 +247,31 @@ export default function Projects() {
                   </p>
                   <div className="mb-4">
                     <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
-                      <Image
+                      {project.type === 'video' ? (
+                        <OptimizedVideo
+                          webmSrc={project.video.webm}
+                          mp4Src={project.video.mp4}
+                          className="h-full w-full object-cover"
+                          priority={false}
+                        />
+                      ) : (
+                        <Image
                           src={project.image}
                           alt={`${project.name} project image`}
+                          loading="lazy"
+                          quality={80}
                           className="h-full w-full object-cover"
-                          unoptimized
-                      />
+                        />
+                      )}
                     </div>
                   </div>
                 </Card.PDescription>
 
                 <p className="relative z-10 mt-6 flex text-sm font-medium text-zinc-400 transition group-hover:text-teal-500 dark:text-zinc-200">
-                  <LinkIcon className="h-6 w-6 flex-none" />
-                  <span className="ml-2">{project.link.label}</span>
+                  <Card.Link href={project.link.href} className="flex items-center">
+                    <span>Visit {project.link.label}</span>
+                    <LinkIcon className="ml-2 h-4 w-4" />
+                  </Card.Link>
                 </p>
               </Card>
             )

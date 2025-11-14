@@ -12,6 +12,7 @@ import {
   GitHubIcon,
   LinkedInIcon,
 } from '@/components/SocialIcons'
+import { OptimizedVideo } from '@/components/OptimizedVideo'
 import logoSimmad from '@/images/logos/simmad.png'
 import logoBRYCK from '@/images/logos/bryck.png'
 import logoLPL from '@/images/logos/lpl.png'
@@ -23,17 +24,13 @@ import img0922 from '@/images/photos/IMG_0922.png'
 import img0926 from '@/images/photos/IMG_0926.png'
 import img1027 from '@/images/photos/IMG_1027.JPG'
 
-// Project images/gifs
+// Project images (static)
 import centralwebImage from '@/images/projects/centralweb.png'
 import ecosouteImage from '@/images/projects/ecosoute.png'
 import greenImage from '@/images/projects/green.png'
-import javagameGif from '@/images/projects/javagame.gif'
 import linuxImage from '@/images/projects/linux.png'
-import mazeGif from '@/images/projects/maze.gif'
-import postureGif from '@/images/projects/posture.gif'
 import reminderappImage from '@/images/projects/reminderapp.png'
 import reconnectImage from '@/images/projects/reconnect.png'
-import droneImage from '@/images/projects/drone.gif'
 import eco from '@/images/projects/ecosphere.png'
 // Import animations
 import '@/styles/animations.css'
@@ -236,12 +233,24 @@ function FloatingElements() {
 }
 
 function EnhancedCarousel() {
-  const allImages = [
-    // Mix photos and project images/gifs
-    img0254, img0547, img0920, img0922, img0926, img1027,
-    centralwebImage, ecosouteImage, greenImage,
-    javagameGif, linuxImage, mazeGif, postureGif,
-    reminderappImage, reconnectImage, droneImage, eco
+  const allItems = [
+    { type: 'image', src: img0254 },
+    { type: 'image', src: img0547 },
+    { type: 'image', src: img0920 },
+    { type: 'image', src: img0922 },
+    { type: 'image', src: img0926 },
+    { type: 'image', src: img1027 },
+    { type: 'image', src: centralwebImage },
+    { type: 'image', src: ecosouteImage },
+    { type: 'image', src: greenImage },
+    { type: 'video', webm: '/videos/javagame.webm', mp4: '/videos/javagame.mp4' },
+    { type: 'image', src: linuxImage },
+    { type: 'video', webm: '/videos/maze.webm', mp4: '/videos/maze.mp4' },
+    { type: 'video', webm: '/videos/posture.webm', mp4: '/videos/posture.mp4' },
+    { type: 'image', src: reminderappImage },
+    { type: 'image', src: reconnectImage },
+    { type: 'video', webm: '/videos/drone.webm', mp4: '/videos/drone.mp4' },
+    { type: 'image', src: eco },
   ]
 
   return (
@@ -287,18 +296,31 @@ function EnhancedCarousel() {
       {/* Simple carousel container */}
       <div className="carousel-container relative overflow-hidden">
         <div className="carousel-track flex gap-6 animate-scroll">
-          {[...allImages, ...allImages].map((image, index) => (
+          {[...allItems, ...allItems].map((item, index) => (
             <div
-              key={`${image.src || image}-${index}`}
+              key={`item-${index}`}
               className="carousel-item relative flex-none w-64 h-80 overflow-hidden rounded-xl shadow-lg bg-zinc-50 dark:bg-zinc-800"
             >
-              <Image
-                src={image}
-                alt={`Project ${index}`}
-                fill
-                className="object-cover"
-                sizes="16rem"
-              />
+              {item.type === 'video' ? (
+                <OptimizedVideo
+                  webmSrc={item.webm}
+                  mp4Src={item.mp4}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  priority={index === 0}
+                />
+              ) : (
+                <Image
+                  src={item.src}
+                  alt={`Project ${index}`}
+                  fill
+                  className="object-cover"
+                  sizes="16rem"
+                  priority={index === 0}
+                  loading={index === 0 ? undefined : 'lazy'}
+                  fetchPriority={index === 0 ? 'high' : undefined}
+                  quality={index < 4 ? 85 : 75}
+                />
+              )}
             </div>
           ))}
         </div>
@@ -307,18 +329,29 @@ function EnhancedCarousel() {
       {/* Second row with reverse animation */}
       <div className="carousel-container relative overflow-hidden mt-6">
         <div className="carousel-track flex gap-6 animate-scroll-reverse">
-          {[...allImages.slice().reverse(), ...allImages.slice().reverse()].map((image, index) => (
+          {[...allItems.slice().reverse(), ...allItems.slice().reverse()].map((item, index) => (
             <div
-              key={`reverse-${image.src || image}-${index}`}
+              key={`reverse-item-${index}`}
               className="carousel-item relative flex-none w-48 h-60 overflow-hidden rounded-lg shadow-md bg-zinc-50 dark:bg-zinc-800"
             >
-              <Image
-                src={image}
-                alt={`Project ${index}`}
-                fill
-                className="object-cover"
-                sizes="12rem"
-              />
+              {item.type === 'video' ? (
+                <OptimizedVideo
+                  webmSrc={item.webm}
+                  mp4Src={item.mp4}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  priority={false}
+                />
+              ) : (
+                <Image
+                  src={item.src}
+                  alt={`Project ${index}`}
+                  fill
+                  className="object-cover"
+                  sizes="12rem"
+                  loading="lazy"
+                  quality={75}
+                />
+              )}
             </div>
           ))}
         </div>
@@ -336,13 +369,16 @@ function FeaturedProjects() {
         'Autonomous weed detection and precise spraying robot that reduces herbicide use with computer vision.',
       href: 'https://partner.projectboard.world/ysc/project/greenguardian-automated-weed-detection-and-elimination',
       image: greenImage,
+      type: 'image',
     },
     {
       name: 'Autonomous Litter Detection',
       description:
         'Low-cost drone-based system to detect and map litter for environmental monitoring and cleanup.',
       href: 'https://www.notion.so/tksworld/Autonomous-Litter-Detection-Mapping-System-1f60b470b010802ba60cd8a57ee73b0e',
-      image: droneImage,
+      type: 'video',
+      webm: '/videos/drone.webm',
+      mp4: '/videos/drone.mp4',
     },
     {
       name: 'EcoSphere',
@@ -350,6 +386,7 @@ function FeaturedProjects() {
         'A mission-control platform for conservation teams: species ID, team chat, and seamless collaboration.',
       href: 'https://www.eco-sphere.co/',
       image: eco,
+      type: 'image',
     },
   ]
 
@@ -364,7 +401,24 @@ function FeaturedProjects() {
           {featured.map((p, idx) => (
             <Card as="article" key={idx}>
               <div className="relative mb-4 h-48 w-full overflow-hidden rounded-xl bg-zinc-50 shadow-sm dark:bg-zinc-800">
-                <Image src={p.image} alt={p.name} fill className="object-cover" sizes="(min-width: 1024px) 22rem, 100vw" />
+                {p.type === 'video' ? (
+                  <OptimizedVideo
+                    webmSrc={p.webm}
+                    mp4Src={p.mp4}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    priority={idx === 0}
+                  />
+                ) : (
+                  <Image
+                    src={p.image}
+                    alt={p.name}
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 1024px) 22rem, 100vw"
+                    loading="lazy"
+                    quality={80}
+                  />
+                )}
               </div>
               <Card.Title href={p.href} target="_blank">{p.name}</Card.Title>
               <Card.Description>{p.description}</Card.Description>
@@ -582,22 +636,31 @@ function SupportedBy() {
                       <Image
                         src={company.darkLogo}
                         alt={company.name}
+                        width={80}
+                        height={80}
                         className="h-16 w-16 md:h-20 md:w-20 object-contain dark:hidden"
-                        unoptimized
+                        loading="lazy"
+                        quality={90}
                       />
                       <Image
                         src={company.lightLogo}
                         alt={company.name}
+                        width={80}
+                        height={80}
                         className="h-16 w-16 md:h-20 md:w-20 object-contain hidden dark:block"
-                        unoptimized
+                        loading="lazy"
+                        quality={90}
                       />
                     </>
                   ) : (
                     <Image
                       src={company.logo}
                       alt={company.name}
+                      width={80}
+                      height={80}
                       className="h-16 w-16 md:h-20 md:w-20 object-contain"
-                      unoptimized
+                      loading="lazy"
+                      quality={90}
                     />
                   )}
                 </div>

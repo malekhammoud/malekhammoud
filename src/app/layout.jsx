@@ -26,9 +26,12 @@ export default function RootLayout({ children }) {
   return (
 
       <html lang="en" className="h-full w-full antialiased" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+      </head>
       <body className="relative w-full flex-col h-full bg-zinc-50 dark:bg-black">
       <Script
-        async
         src="https://www.googletagmanager.com/gtag/js?id=G-JE1S48W2PK"
         strategy="afterInteractive"
       />

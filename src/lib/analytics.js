@@ -1,7 +1,7 @@
 // Google Analytics event tracking utility
 
 // Enable debug mode - set to false in production if you want
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 
 export const trackEvent = (eventName, eventParams = {}) => {
   if (typeof window !== 'undefined') {
@@ -15,8 +15,8 @@ export const trackEvent = (eventName, eventParams = {}) => {
         });
       }
     } else {
-      console.error('❌ Google Analytics (gtag) not loaded. Make sure the GA script is loaded.');
-      console.log('Attempted to track:', eventName, eventParams);
+      // Silently no-op when GA is not available to avoid console noise in dev/build/tests
+      // console.debug('GA not loaded, skipping event:', eventName, eventParams)
     }
   }
 };
