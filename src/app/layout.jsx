@@ -7,6 +7,8 @@ import Script from 'next/script'
 
 import '@/styles/tailwind.css'
 import '@/styles/animations.css'
+import { SpeedInsights } from "@vercel/speed-insights/next"
+
 
 export const metadata = {
     title: {
@@ -53,6 +55,7 @@ export default function RootLayout({ children }) {
           <FloatingUI />
       </Providers>
       <Analytics />
+      <SpeedInsights />
       </body>
       </html>
   )
