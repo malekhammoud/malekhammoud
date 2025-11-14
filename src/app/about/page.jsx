@@ -166,10 +166,11 @@ export default function About() {
                 <span className="text-xs text-zinc-500 dark:text-zinc-400">Sep 2024 – Present</span>
               </div>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
+
                 Run weekly meetings where we dive into emerging tech, break down research
-                methods, and help students build independent projects. We've transformed
-                our school's science fair culture—this year we swept the top spots at
-                regionals and sent multiple students to nationals.
+                methods, and help students build independent projects.
+                We've completely transformed our school. We now dominate the
+                local science fair, sweeping top spots consistently and send multiple students to nationals every year.
               </p>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 font-medium italic">
                 Making STEM accessible isn't about dumbing things down. It's about removing
