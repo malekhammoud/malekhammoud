@@ -239,7 +239,7 @@ export default function Projects() {
                   ))}
                 </div>
                 <h2 className="mt-6 text-base font-semibold text-zinc-800 dark:text-zinc-100">
-                  <Card.Link href={project.link.href}>{project.name}</Card.Link>
+                  <Card.Link href={project.link.href} target="_blank" rel="noopener noreferrer">{project.name}</Card.Link>
                 </h2>
                 <Card.PDescription>
                   <p>
@@ -268,7 +268,7 @@ export default function Projects() {
                 </Card.PDescription>
 
                 <p className="relative z-10 mt-6 flex text-sm font-medium text-zinc-400 transition group-hover:text-teal-500 dark:text-zinc-200">
-                  <Card.Link href={project.link.href} className="flex items-center">
+                  <Card.Link href={project.link.href} className="flex items-center" target="_blank" rel="noopener noreferrer">
                     <span>Visit {project.link.label}</span>
                     <LinkIcon className="ml-2 h-4 w-4" />
                   </Card.Link>

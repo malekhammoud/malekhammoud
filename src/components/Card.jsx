@@ -26,11 +26,15 @@ export function Card({ as, className, children }) {
   )
 }
 
-Card.Link = function CardLink({ children, ...props }) {
+Card.Link = function CardLink({ children, href, target, rel, ...props }) {
+  const isExternal = typeof href === 'string' && !href.startsWith('/')
+  const finalTarget = target ?? (isExternal ? '_blank' : undefined)
+  const finalRel = rel ?? (isExternal ? 'noopener noreferrer' : undefined)
+
   return (
     <>
       <div className="absolute -inset-x-4 -inset-y-6 z-0 scale-95 bg-zinc-100 opacity-60 transition group-hover:scale-100 group-hover:opacity-100 sm:-inset-x-6 sm:rounded-2xl dark:bg-zinc-800/50" />
-      <Link {...props}>
+      <Link href={href} target={finalTarget} rel={finalRel} {...props}>
         <span className="absolute -inset-x-4 -inset-y-6 z-20 sm:-inset-x-6 sm:rounded-2xl" />
         <span className="relative z-10">{children}</span>
       </Link>
