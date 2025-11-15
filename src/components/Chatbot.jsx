@@ -128,7 +128,7 @@ export function Chatbot({ isOpen, onClose, onOpen, showInvitation, setShowInvita
       {/* Invitation Popup with Speech Bubble Tail */}
       {showInvitation && !isOpen && (
         <div className="fixed bottom-24 right-4 z-40 sm:bottom-28 sm:right-6 animate-in slide-in-from-bottom-5 fade-in duration-500">
-          <div className="relative w-[calc(100vw-2rem)] sm:w-[320px]">
+          <div className="relative w-[280px]">
             <div className="relative rounded-2xl bg-white shadow-2xl border border-zinc-200 dark:border-zinc-700 dark:bg-zinc-900">
               <button
                 onClick={handleInvitationClose}
@@ -138,8 +138,8 @@ export function Chatbot({ isOpen, onClose, onOpen, showInvitation, setShowInvita
                 <XMarkIcon className="h-4 w-4" />
               </button>
 
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-3">
+              <div className="p-5">
+                <div className="flex items-center gap-3 mb-2">
                   <div className="flex-shrink-0">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-500 text-white shadow-lg shadow-teal-500/50">
                       <ChatBubbleLeftRightIcon className="h-5 w-5" />
@@ -147,16 +147,16 @@ export function Chatbot({ isOpen, onClose, onOpen, showInvitation, setShowInvita
                   </div>
                   <div>
                     <h4 className="font-semibold text-zinc-900 dark:text-zinc-100">
-                      Greetings!
+                      Hi there! 👋
                     </h4>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400">
                       I&apos;m Malek&apos;s AI assistant
                     </p>
                   </div>
                 </div>
 
                 <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
-                  Have questions about Malek&apos;s experience, projects, or skills? I&apos;m here to help!
+                  Have questions about Malek&apos;s experience, projects, or skills?
                 </p>
 
                 <button
@@ -169,7 +169,7 @@ export function Chatbot({ isOpen, onClose, onOpen, showInvitation, setShowInvita
             </div>
 
             {/* Speech Bubble Tail - pointing down to button */}
-            <div className="absolute -bottom-3 right-8 sm:right-10">
+            <div className="absolute -bottom-3 right-4">
               <div className="relative">
                 {/* Border layer */}
                 <div className="w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[12px] border-t-zinc-200 dark:border-t-zinc-700"></div>

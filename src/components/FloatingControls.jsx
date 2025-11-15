@@ -36,9 +36,16 @@ export function FloatingControls({ onOpenChat, showInvitation }) {
                     </div>
                   </div>
 
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
                     Have questions about Malek&apos;s experience, projects, or skills?
                   </p>
+
+                  <button
+                    onClick={onOpenChat}
+                    className="w-full rounded-lg bg-teal-500 px-4 py-2.5 text-sm font-medium text-white transition-all hover:bg-teal-600 hover:shadow-lg hover:shadow-teal-500/50 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                  >
+                    Start chatting
+                  </button>
                 </div>
               </div>
 
