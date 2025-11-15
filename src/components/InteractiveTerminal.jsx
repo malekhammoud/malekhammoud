@@ -215,19 +215,33 @@ export function InteractiveTerminal({ isOpen, onClose }) {
 
   // Focus input when terminal is clicked
   useEffect(() => {
+    const el = terminalRef.current
+    if (!el) return
+
     const handleClick = () => {
       if (inputRef.current) {
         inputRef.current.focus()
       }
     }
-    
-    if (terminalRef.current) {
-      terminalRef.current.addEventListener('click', handleClick)
-      return () => {
-        terminalRef.current?.removeEventListener('click', handleClick)
-      }
+
+    el.addEventListener('click', handleClick)
+    return () => {
+      el.removeEventListener('click', handleClick)
     }
   }, [])
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') {
+        onClose()
+      }
+    }
+    if (isOpen) {
+      window.addEventListener('keydown', handleKey)
+      return () => window.removeEventListener('keydown', handleKey)
+    }
+  }, [isOpen, onClose])
 
   const getCurrentDirectory = () => {
     const parts = currentPath.split('/').filter(Boolean)
@@ -250,40 +264,6 @@ export function InteractiveTerminal({ isOpen, onClose }) {
     
     const resolved = currentPath === '/' ? `/${path}` : `${currentPath}/${path}`
     return resolved.replace(/\/+/g, '/')
-  }
-
-  // Get all files and directories recursively from a given path
-  const getAllFilesRecursively = (startPath = '/') => {
-    const allItems = []
-
-    const traverse = (path, relativePath = '') => {
-      const dir = getCurrentDirectoryFromPath(path)
-      if (!dir || dir.type !== 'directory') return
-
-      Object.entries(dir.contents).forEach(([name, item]) => {
-        const fullRelativePath = relativePath ? `${relativePath}/${name}` : name
-        const fullAbsolutePath = path === '/' ? `/${name}` : `${path}/${name}`
-
-        if (item.type === 'directory') {
-          allItems.push({
-            name: fullRelativePath + '/',
-            type: 'directory',
-            path: fullAbsolutePath
-          })
-          // Recursively traverse subdirectories
-          traverse(fullAbsolutePath, fullRelativePath)
-        } else {
-          allItems.push({
-            name: fullRelativePath,
-            type: item.type,
-            path: fullAbsolutePath
-          })
-        }
-      })
-    }
-
-    traverse(startPath)
-    return allItems
   }
 
   // Get available autocomplete options for current directory
@@ -330,7 +310,6 @@ export function InteractiveTerminal({ isOpen, onClose }) {
       const pathPrefix = pathParts.slice(0, -1).join('/')
 
       let targetDir = currentDir
-      let searchPath = currentPath
 
       // Navigate to the target directory if path contains directories
       if (pathParts.length > 1) {
@@ -339,7 +318,6 @@ export function InteractiveTerminal({ isOpen, onClose }) {
           : (currentPath === '/' ? '/' : currentPath) + '/' + pathParts.slice(0, -1).join('/')
 
         targetDir = getCurrentDirectoryFromPath(targetPath.replace(/\/+/g, '/'))
-        searchPath = targetPath.replace(/\/+/g, '/')
         if (!targetDir) return []
       }
 
@@ -691,64 +669,74 @@ Navigation:
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-[9999] animate-slide-up"
-      style={{ position: 'fixed', zIndex: 9999 }}
+      className="fixed inset-0 z-[9998]"
+      onClick={onClose}
     >
-      <div className="relative w-full h-[350px] sm:h-[400px] overflow-hidden bg-black shadow-2xl border-t border-zinc-600">
-        {/* Terminal header - more authentic Linux style */}
-        <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-600 bg-zinc-800">
-          <div className="flex items-center gap-3">
-            <span className="text-zinc-300 font-mono text-sm">malek@dev: ~</span>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-zinc-400 hover:text-white transition-colors px-2 py-1 hover:bg-zinc-700 rounded text-sm font-mono"
-            type="button"
-          >
-            ✕
-          </button>
-        </div>
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/40" />
 
-        {/* Terminal content */}
-        <div className="p-4 font-mono text-sm bg-black h-[calc(350px-45px)] sm:h-[calc(400px-45px)] flex flex-col">
-          <div
-            ref={terminalRef}
-            className="flex-1 space-y-1 overflow-y-auto mb-2 cursor-text text-left"
-            style={{
-              scrollbarWidth: 'thin',
-              scrollbarColor: '#4a5568 #000000',
-              minHeight: '0'
-            }}
-          >
-            {commandHistory.map((entry, index) => (
-              <div key={index} className={`text-left ${
-                entry.type === 'command' ? 'text-green-400' : ''
-              } ${
-                entry.type === 'error' ? 'text-red-400' : ''
-              } ${
-                entry.type === 'output' ? 'text-zinc-300' : ''
-              }`}>
-                <pre className="whitespace-pre-wrap font-mono leading-relaxed text-left">{entry.content}</pre>
-              </div>
-            ))}
+      {/* Terminal container */}
+      <div
+        className="fixed bottom-0 left-0 right-0 z-[9999] animate-slide-up"
+        style={{ position: 'fixed', zIndex: 9999 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="relative w-full h-[350px] sm:h-[400px] overflow-hidden bg-black shadow-2xl border-t border-zinc-600">
+          {/* Terminal header - more authentic Linux style */}
+          <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-600 bg-zinc-800">
+            <div className="flex items-center gap-3">
+              <span className="text-zinc-300 font-mono text-sm">malek@dev: ~</span>
+            </div>
+            <button
+              onClick={onClose}
+              className="text-zinc-400 hover:text-white transition-colors px-2 py-1 hover:bg-zinc-700 rounded text-sm font-mono"
+              type="button"
+            >
+              ✕
+            </button>
           </div>
 
-          <div className="flex items-center border-t border-zinc-800 pt-2">
-            <span className="text-green-400 mr-2 flex-shrink-0">{getPrompt()}</span>
-            <input
-              ref={inputRef}
-              type="text"
-              value={currentCommand}
-              onChange={(e) => setCurrentCommand(e.target.value)}
-              onKeyDown={handleKeyPress}
-              className="flex-1 bg-transparent text-white outline-none font-mono text-left"
+          {/* Terminal content */}
+          <div className="p-4 font-mono text-sm bg-black h-[calc(350px-45px)] sm:h-[calc(400px-45px)] flex flex-col">
+            <div
+              ref={terminalRef}
+              className="flex-1 space-y-1 overflow-y-auto mb-2 cursor-text text-left"
               style={{
-                caretColor: 'white',
-                caretShape: 'block'
+                scrollbarWidth: 'thin',
+                scrollbarColor: '#4a5568 #000000',
+                minHeight: '0'
               }}
-              placeholder=""
-              autoFocus
-            />
+            >
+              {commandHistory.map((entry, index) => (
+                <div key={index} className={`text-left ${
+                  entry.type === 'command' ? 'text-green-400' : ''
+                } ${
+                  entry.type === 'error' ? 'text-red-400' : ''
+                } ${
+                  entry.type === 'output' ? 'text-zinc-300' : ''
+                }`}>
+                  <pre className="whitespace-pre-wrap font-mono leading-relaxed text-left">{entry.content}</pre>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center border-t border-zinc-800 pt-2">
+              <span className="text-green-400 mr-2 flex-shrink-0">{getPrompt()}</span>
+              <input
+                ref={inputRef}
+                type="text"
+                value={currentCommand}
+                onChange={(e) => setCurrentCommand(e.target.value)}
+                onKeyDown={handleKeyPress}
+                className="flex-1 bg-transparent text-white outline-none font-mono text-left"
+                style={{
+                  caretColor: 'white',
+                  caretShape: 'block'
+                }}
+                placeholder=""
+                autoFocus
+              />
+            </div>
           </div>
         </div>
       </div>

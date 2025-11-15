@@ -10,7 +10,11 @@ export function FloatingUI() {
   return (
     <>
       <FloatingControls onOpenChat={() => setIsChatOpen(true)} />
-      <Chatbot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <Chatbot
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        onOpen={() => setIsChatOpen(true)}
+      />
     </>
   )
 }

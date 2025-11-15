@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { trackChatbotEvent } from '@/lib/analytics'
 
-export function Chatbot({ isOpen, onClose }) {
+export function Chatbot({ isOpen, onClose, onOpen }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
@@ -15,6 +15,7 @@ export function Chatbot({ isOpen, onClose }) {
   ])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [showInvitation, setShowInvitation] = useState(false)
   const messagesEndRef = useRef(null)
   const chatWindowRef = useRef(null)
   const requestStartTime = useRef(null)
@@ -27,10 +28,21 @@ export function Chatbot({ isOpen, onClose }) {
     scrollToBottom()
   }, [messages])
 
+  // Show invitation popup instantly on first visit
+  useEffect(() => {
+    const hasSeenInvitation = localStorage.getItem('chatbot-invitation-seen')
+
+    if (!hasSeenInvitation) {
+      setShowInvitation(true)
+      localStorage.setItem('chatbot-invitation-seen', 'true')
+    }
+  }, [])
+
   // Track when chatbot opens
   useEffect(() => {
     if (isOpen) {
       trackChatbotEvent.opened()
+      setShowInvitation(false)
     }
   }, [isOpen])
 
@@ -103,10 +115,63 @@ export function Chatbot({ isOpen, onClose }) {
     }
   }
 
-  if (!isOpen) return null
+  const handleInvitationClick = () => {
+    setShowInvitation(false)
+    onOpen()
+  }
+
+  const handleInvitationClose = () => {
+    setShowInvitation(false)
+  }
 
   return (
     <>
+      {/* Invitation Popup */}
+      {showInvitation && !isOpen && (
+        <div className="fixed bottom-24 right-4 z-40 sm:bottom-28 sm:right-6 animate-in slide-in-from-bottom-5 fade-in duration-500">
+          <div className="relative w-[calc(100vw-2rem)] sm:w-[320px] rounded-2xl bg-white shadow-2xl border border-zinc-200 dark:border-zinc-700 dark:bg-zinc-900">
+            <button
+              onClick={handleInvitationClose}
+              className="absolute top-3 right-3 rounded-lg p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
+              aria-label="Close invitation"
+            >
+              <XMarkIcon className="h-4 w-4" />
+            </button>
+
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex-shrink-0">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-500 text-white">
+                    <ChatBubbleLeftRightIcon className="h-5 w-5" />
+                  </div>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-zinc-900 dark:text-zinc-100">
+                    Hi!
+                  </h4>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    I&apos;m Malek&apos;s AI assistant
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                Have questions about Malek&apos;s experience, projects, or skills? I&apos;m here to help!
+              </p>
+
+              <button
+                onClick={handleInvitationClick}
+                className="w-full rounded-lg bg-teal-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+              >
+                Start chatting
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Chat Window */}
+      {isOpen && (
         <div
           ref={chatWindowRef}
           className="fixed bottom-4 right-4 z-50 flex flex-col rounded-2xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-700 dark:bg-zinc-900
@@ -117,7 +182,7 @@ export function Chatbot({ isOpen, onClose }) {
           <div className="flex items-center justify-between rounded-t-2xl bg-teal-500 px-4 py-3 text-white">
             <div className="flex items-center gap-2">
               <ChatBubbleLeftRightIcon className="h-5 w-5" />
-              <h3 className="font-semibold">Chat with Malek's Bot</h3>
+              <h3 className="font-semibold">Chat with Malek&apos;s Bot</h3>
             </div>
             <button
               onClick={() => {
@@ -229,6 +294,7 @@ export function Chatbot({ isOpen, onClose }) {
             </div>
           </form>
         </div>
+      )}
     </>
   )
 }

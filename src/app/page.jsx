@@ -270,10 +270,6 @@ function EnhancedCarousel() {
               className="font-medium"
             />
           </h2>
-          <p className="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            Malek Hammoud is a dedicated programmer, robotics enthusiast, and Innovator based in London, Ontario, Canada. Passionate about building innovative websites, immersive games, and pioneering robotics systems, he applies his expertise in full-stack development, machine learning, and agile methodologies to tackle real-world challenges.
-          </p>
-
           {/* Social links - new addition */}
           <div className="mt-6 flex justify-center gap-4">
             <MainSocialLink href="https://github.com/malekhammoud" icon={GitHubIcon}>
@@ -284,12 +280,13 @@ function EnhancedCarousel() {
             </MainSocialLink>
           </div>
 
-          {/* Primary CTAs */}
+          {/* Primary CTAs
           <div className="mt-8 flex flex-wrap gap-4">
             <Button href="/projects" variant="primary">Explore Projects</Button>
             <Button href="/about" variant="secondary">About Me</Button>
             <Button href="/resume.pdf" target="_blank" variant="secondary">Resume</Button>
           </div>
+          */}
         </div>
       </Container>
 
@@ -400,7 +397,7 @@ function FeaturedProjects() {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {featured.map((p, idx) => (
             <Card as="article" key={idx}>
-              <div className="relative mb-4 h-48 w-full overflow-hidden rounded-xl bg-zinc-50 shadow-sm dark:bg-zinc-800">
+              <div className="relative z-10 mb-4 h-48 w-full overflow-hidden rounded-xl bg-zinc-50 shadow-sm dark:bg-zinc-800">
                 {p.type === 'video' ? (
                   <OptimizedVideo
                     webmSrc={p.webm}
@@ -621,33 +618,32 @@ function SupportedBy() {
             Proud to work with organizations that believe in innovation and growth
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-8 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-8 items-center justify-items-center">
             {supportingCompanies.map((company, index) => (
               <div
                 key={index}
                 className="group flex flex-col items-center p-3 md:p-6 transition-all duration-300 hover:scale-105"
                 title={`${company.name} - ${company.description}`}
               >
-                {/* Responsive logos - medium size on mobile, larger on desktop */}
-                <div className="flex items-center justify-center mb-3 md:mb-4 transition-transform duration-300 group-hover:scale-110">
-                  {/* Handle TKS with light/dark mode logos */}
+                {/* Logo container with consistent sizing */}
+                <div className="relative mb-3 md:mb-4 h-20 md:h-24 w-full max-w-[220px] md:max-w-[220px] mx-auto">
                   {company.lightLogo && company.darkLogo ? (
                     <>
                       <Image
                         src={company.darkLogo}
                         alt={company.name}
-                        width={80}
-                        height={80}
-                        className="h-16 w-16 md:h-20 md:w-20 object-contain dark:hidden"
+                        fill
+                        sizes="(min-width: 1024px) 220px, (min-width: 768px) 180px, 160px"
+                        className="object-contain dark:hidden"
                         loading="lazy"
                         quality={90}
                       />
                       <Image
                         src={company.lightLogo}
                         alt={company.name}
-                        width={80}
-                        height={80}
-                        className="h-16 w-16 md:h-20 md:w-20 object-contain hidden dark:block"
+                        fill
+                        sizes="(min-width: 1024px) 220px, (min-width: 768px) 180px, 160px"
+                        className="object-contain hidden dark:block"
                         loading="lazy"
                         quality={90}
                       />
@@ -656,15 +652,16 @@ function SupportedBy() {
                     <Image
                       src={company.logo}
                       alt={company.name}
-                      width={80}
-                      height={80}
-                      className="h-16 w-16 md:h-20 md:w-20 object-contain"
+                      fill
+                      sizes="(min-width: 1024px) 220px, (min-width: 768px) 180px, 160px"
+                      className="object-contain"
                       loading="lazy"
                       quality={90}
                     />
                   )}
                 </div>
-                {/* Company name and description - always visible on mobile, hover on desktop */}
+
+                {/* Company name and description */}
                 <div className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
                   <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1 text-center">
                     {company.name}

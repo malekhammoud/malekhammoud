@@ -60,10 +60,10 @@ export default function About() {
         </div>
         <div className="lg:order-first lg:row-span-2">
           <Reveal as="h1" variant="fade" className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-            I'm Malek Hammoud. Building systems, empowering builders.
+            Building Systems & Empowering Builders.
           </Reveal>
           <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
-            <Reveal delay={100}><p>Growing up in Lebanon with daily power outages and water shortages shaped how I think about technology. When I moved to Canada at 7, I carried a question: Why do some communities struggle with resources while others waste them? That gap drives everything I build.</p></Reveal>
+            <Reveal delay={100}><p>Growing up in Lebanon with daily power outages and water shortages shaped how I view technology. When I moved to Canada at age 7, I carried a question: How can we use technologies to improve the quality of life in communities in Canada and all over the world?</p></Reveal>
             <Reveal delay={200}><p>My tech journey began with Scratch and JavaScript, just for fun at first. But over time, I learned to ask harder questions: What should we build? For whom? With what consequences? I expanded into web development, robotics, and machine learning, but always with the same core question: How do we design technology that actually serves people?</p></Reveal>
             <Reveal delay={300}><p>I'm constantly learning and pushing myself not just to innovate, but to innovate responsibly. My passion for tech is inseparable from my passion for using it to empower others and tackle real challenges.</p></Reveal>
           </div>
@@ -103,7 +103,7 @@ export default function About() {
               </h3>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
                 Three years of science fair projects: maze-solving robot, GreenGuardian
-                weed detection (CWSF Bronze), litter-detection drone. Each project
+                weed detection & elimination(CWSF Bronze), litter-detection drone. Each project
                 taught me something new about the gap between technical solutions and
                 real-world impact.
               </p>
@@ -150,7 +150,7 @@ export default function About() {
                 </div>
                 <span className="text-xs text-zinc-500 dark:text-zinc-400">Sep 2023 – Present</span>
               </div>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">When I joined in Grade 9, I barely knew how to code. My CS teacher built my confidence and empowered me to try. That experience changed me, and I've spent three years paying it forward.</p>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">When I joined the Senior Web Development Club in Grade 9, I barely knew how to code. My CS teacher built my confidence and empowered me to try. That experience changed me, and I've spent three years paying it forward.</p>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">I transformed our club from a competition-focused group into a space where "I don't know how to code" became an invitation, not a barrier. When Andy joined last year with zero experience, I didn't fix his bugs. I asked questions until he debugged them himself. Today he's building sophisticated algorithms.</p>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 font-medium italic">The lesson: The greatest impact isn't writing the best code. It's helping someone else discover they can.</p>
             </div>
@@ -243,7 +243,7 @@ export default function About() {
               </div>
               <div>
                 <p className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">🔬 Science Fairs</p>
-                <p>Bronze (CWSF 2024), Gold (TVSEF 2025, 2024), Silver (2023)</p>
+                <p>Bronze (CWSF 2024), Gold (TVSEF 2025, 2024), Silver (TVSEF 2023)</p>
               </div>
               <div>
                 <p className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">💼 Competitions</p>

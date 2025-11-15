@@ -14,7 +14,8 @@ import clsx from 'clsx'
 import Image from 'next/image'
 
 import { Container } from '@/components/Container'
-import { trackResumeEvent } from '@/lib/analytics'
+import { trackResumeEvent, trackTerminalEvent } from '@/lib/analytics'
+import { InteractiveTerminal } from '@/components/InteractiveTerminal'
 import avatarImage from '@/images/avatar.jpg'
 
 function CloseIcon(props) {
@@ -70,6 +71,27 @@ function MoonIcon(props) {
     <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
       <path
         d="M17.25 16.22a6.937 6.937 0 0 1-9.47-9.47 7.451 7.451 0 1 0 9.47 9.47ZM12.75 7C17 7 17 2.75 17 2.75S17 7 21.25 7C17 7 17 11.25 17 11.25S17 7 12.75 7Z"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function TerminalIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
+      <path
+        d="M4 6h16M4 12h16M11 18h9"
+        fill="none"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M4 15l3 3-3 3"
+        fill="none"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -195,40 +217,84 @@ function ThemeToggle() {
   )
 }
 
-export function Header() {
+function TerminalToggle({ onOpenTerminal }) {
   return (
-    <header className="pointer-events-none relative z-50 flex flex-none flex-col">
-      <div className="top-0 z-10 h-16 pt-6">
-        <Container className="w-full">
-          <div className="relative flex items-center gap-4">
-            {/* Left: small avatar */}
-            <div className="flex flex-1 items-center">
-              <div className="pointer-events-auto rounded-full bg-white/90 p-0.5 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:ring-white/10 h-10 w-10 flex items-center justify-center">
-                <Link href="/" aria-label="Home">
-                  <Image
-                    src={avatarImage}
-                    alt=""
-                    sizes="2.25rem"
-                    className="h-9 w-9 rounded-full bg-zinc-100 object-cover dark:bg-zinc-800"
-                    priority
-                  />
-                </Link>
+    <button
+      type="button"
+      aria-label="Open terminal"
+      className="group rounded-full bg-white/90 px-3 py-2 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur transition dark:bg-zinc-800/90 dark:ring-white/10 dark:hover:ring-white/20"
+      onClick={onOpenTerminal}
+    >
+      <TerminalIcon className="h-6 w-6 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-400 dark:group-hover:stroke-zinc-300" />
+    </button>
+  )
+}
+
+export function Header() {
+  const [isTerminalOpen, setIsTerminalOpen] = useState(false)
+
+  const handleToggleTerminal = () => {
+    setIsTerminalOpen((prev) => {
+      const next = !prev
+      try {
+        if (next) trackTerminalEvent.opened()
+        else trackTerminalEvent.closed()
+      } catch {}
+      return next
+    })
+  }
+
+  const handleCloseTerminal = () => {
+    try { trackTerminalEvent.closed() } catch {}
+    setIsTerminalOpen(false)
+  }
+
+  return (
+    <>
+      <header className="pointer-events-none relative z-50 flex flex-none flex-col">
+        <div className="top-0 z-10 h-16 pt-6">
+          <Container className="w-full">
+            <div className="relative flex items-center gap-4">
+              {/* Left: small avatar */}
+              <div className="flex flex-1 items-center">
+                <div className="pointer-events-auto rounded-full bg-white/90 p-0.5 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:ring-white/10 h-10 w-10 flex items-center justify-center">
+                  <Link href="/" aria-label="Home">
+                    <Image
+                      src={avatarImage}
+                      alt=""
+                      sizes="2.25rem"
+                      className="h-9 w-9 rounded-full bg-zinc-100 object-cover dark:bg-zinc-800"
+                      priority
+                    />
+                  </Link>
+                </div>
+              </div>
+              {/* Nav wrapper: centered */}
+              <div className="flex flex-1 justify-start md:justify-center">
+                <MobileNavigation className="pointer-events-auto md:hidden" />
+                <DesktopNavigation className="pointer-events-auto hidden md:block" />
+              </div>
+              {/* Right: terminal toggle (desktop only) + theme toggle */}
+              <div className="flex flex-1 justify-end">
+                <div className="pointer-events-auto flex items-center gap-4">
+                  <div className="hidden md:block">
+                    <TerminalToggle onOpenTerminal={handleToggleTerminal} />
+                  </div>
+                  <ThemeToggle />
+                </div>
               </div>
             </div>
-            {/* Nav wrapper: centered */}
-            <div className="flex flex-1 justify-start md:justify-center">
-              <MobileNavigation className="pointer-events-auto md:hidden" />
-              <DesktopNavigation className="pointer-events-auto hidden md:block" />
-            </div>
-            {/* Right: theme toggle */}
-            <div className="flex flex-1 justify-end">
-              <div className="pointer-events-auto">
-                <ThemeToggle />
-              </div>
-            </div>
-          </div>
-        </Container>
-      </div>
-    </header>
+          </Container>
+        </div>
+      </header>
+
+      {/* Interactive Terminal */}
+      {isTerminalOpen && (
+        <InteractiveTerminal
+          isOpen={isTerminalOpen}
+          onClose={handleCloseTerminal}
+        />
+      )}
+    </>
   )
 }
