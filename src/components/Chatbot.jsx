@@ -147,7 +147,7 @@ export function Chatbot({ isOpen, onClose, onOpen, showInvitation, setShowInvita
                   </div>
                   <div>
                     <h4 className="font-semibold text-zinc-900 dark:text-zinc-100">
-                      Hi there! 👋
+                      Greetings!
                     </h4>
                     <p className="text-xs text-zinc-600 dark:text-zinc-400">
                       I&apos;m Malek&apos;s AI assistant
