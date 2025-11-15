@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { trackChatbotEvent } from '@/lib/analytics'
 
-export function Chatbot({ isOpen, onClose, onOpen }) {
+export function Chatbot({ isOpen, onClose, onOpen, showInvitation, setShowInvitation }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
@@ -15,7 +15,6 @@ export function Chatbot({ isOpen, onClose, onOpen }) {
   ])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [showInvitation, setShowInvitation] = useState(false)
   const messagesEndRef = useRef(null)
   const chatWindowRef = useRef(null)
   const requestStartTime = useRef(null)
@@ -126,45 +125,57 @@ export function Chatbot({ isOpen, onClose, onOpen }) {
 
   return (
     <>
-      {/* Invitation Popup */}
+      {/* Invitation Popup with Speech Bubble Tail */}
       {showInvitation && !isOpen && (
         <div className="fixed bottom-24 right-4 z-40 sm:bottom-28 sm:right-6 animate-in slide-in-from-bottom-5 fade-in duration-500">
-          <div className="relative w-[calc(100vw-2rem)] sm:w-[320px] rounded-2xl bg-white shadow-2xl border border-zinc-200 dark:border-zinc-700 dark:bg-zinc-900">
-            <button
-              onClick={handleInvitationClose}
-              className="absolute top-3 right-3 rounded-lg p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
-              aria-label="Close invitation"
-            >
-              <XMarkIcon className="h-4 w-4" />
-            </button>
+          <div className="relative w-[calc(100vw-2rem)] sm:w-[320px]">
+            <div className="relative rounded-2xl bg-white shadow-2xl border border-zinc-200 dark:border-zinc-700 dark:bg-zinc-900">
+              <button
+                onClick={handleInvitationClose}
+                className="absolute top-3 right-3 rounded-lg p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
+                aria-label="Close invitation"
+              >
+                <XMarkIcon className="h-4 w-4" />
+              </button>
 
-            <div className="p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="flex-shrink-0">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-500 text-white">
-                    <ChatBubbleLeftRightIcon className="h-5 w-5" />
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex-shrink-0">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-500 text-white shadow-lg shadow-teal-500/50">
+                      <ChatBubbleLeftRightIcon className="h-5 w-5" />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-zinc-900 dark:text-zinc-100">
+                      Greetings!
+                    </h4>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                      I&apos;m Malek&apos;s AI assistant
+                    </p>
                   </div>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-zinc-900 dark:text-zinc-100">
-                    Hi!
-                  </h4>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                    I&apos;m Malek&apos;s AI assistant
-                  </p>
-                </div>
+
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                  Have questions about Malek&apos;s experience, projects, or skills? I&apos;m here to help!
+                </p>
+
+                <button
+                  onClick={handleInvitationClick}
+                  className="w-full rounded-lg bg-teal-500 px-4 py-2.5 text-sm font-medium text-white transition-all hover:bg-teal-600 hover:shadow-lg hover:shadow-teal-500/50 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                >
+                  Start chatting
+                </button>
               </div>
+            </div>
 
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
-                Have questions about Malek&apos;s experience, projects, or skills? I&apos;m here to help!
-              </p>
-
-              <button
-                onClick={handleInvitationClick}
-                className="w-full rounded-lg bg-teal-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-              >
-                Start chatting
-              </button>
+            {/* Speech Bubble Tail - pointing down to button */}
+            <div className="absolute -bottom-3 right-8 sm:right-10">
+              <div className="relative">
+                {/* Border layer */}
+                <div className="w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[12px] border-t-zinc-200 dark:border-t-zinc-700"></div>
+                {/* Fill layer */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[1px] w-0 h-0 border-l-[9px] border-l-transparent border-r-[9px] border-r-transparent border-t-[11px] border-t-white dark:border-t-zinc-900"></div>
+              </div>
             </div>
           </div>
         </div>
