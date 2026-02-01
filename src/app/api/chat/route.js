@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { OpenRouter } from '@openrouter/sdk'
 
 // Rate limiting configuration
 const RATE_LIMIT_WINDOW_MS = 60 * 1000 // 1 minute
@@ -282,9 +282,8 @@ You're representing Malek's authentic voice - direct, passionate, action-oriente
 Be him. Not a polished, corporate version - the real Malek.
 `
 
-// Choose a stable model name supported by v1beta. Override with GEMINI_MODEL if set.
-// Note: gemini-pro is deprecated; using gemini-1.5-flash as default
-const DEFAULT_MODEL = 'gemini-1.5-flash'
+// Default to a model available on OpenRouter
+const DEFAULT_MODEL = 'google/gemini-2.0-flash-001'
 
 export async function POST(request) {
   try {
@@ -320,69 +319,34 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Missing messages array' }, { status: 400 })
     }
 
-    const rawKey = (process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY || '').trim()
-    if (!rawKey) {
-      return NextResponse.json({ error: 'GEMINI_API_KEY not configured' }, { status: 500 })
+    const apiKey = (process.env.OPENROUTER_API_KEY || process.env.GEMINI_API_KEY || '').trim()
+    if (!apiKey) {
+      return NextResponse.json({ error: 'OPENROUTER_API_KEY not configured' }, { status: 500 })
     }
 
-    const modelName = process.env.GEMINI_MODEL?.trim() || DEFAULT_MODEL
+    const modelName = process.env.OPENROUTER_MODEL?.trim() || DEFAULT_MODEL
 
-    // Fix: Pass API key as a string directly, not as an object
-    const genAI = new GoogleGenerativeAI(rawKey)
-
-    // Separate last user input from prior history
-    const last = messages[messages.length - 1]
-    const historyInput = messages.slice(0, -1)
-
-    // Normalize roles for SDK: user | model
-    const history = historyInput
-      .filter(m => typeof m?.content === 'string' && m.content.trim().length > 0)
-      .map(m => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: m.content }]
-      }))
-
-    // Guarantee first message is user; if not, inject a short user seed.
-    if (history[0] && history[0].role !== 'user') {
-      history.unshift({ role: 'user', parts: [{ text: 'Hello.' }] })
-    }
-    if (history.length === 0) {
-      // Provide an empty user seed so chat session can start
-      history.push({ role: 'user', parts: [{ text: last?.content?.slice(0, 1) || 'Hi' }] })
-    }
-
-    const userInput = last?.content
-    if (!userInput || typeof userInput !== 'string') {
-      return NextResponse.json({ error: 'Last message content missing' }, { status: 400 })
-    }
-
-    // Acquire model; do not prefix with 'models/' (SDK handles). Pass systemInstruction separately.
-    const model = genAI.getGenerativeModel({ model: modelName, systemInstruction: SYSTEM_PROMPT })
-
-    const chat = model.startChat({
-      history,
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 1024,
-        topK: 40,
-        topP: 0.9
-      }
+    const client = new OpenRouter({
+      apiKey,
     })
 
-    const result = await chat.sendMessage(userInput)
+    // Construct messages with system prompt first
+    const conversationMessages = [
+      { role: 'system', content: SYSTEM_PROMPT },
+      ...messages.map(m => ({
+        role: m.role,
+        content: m.content
+      }))
+    ]
+
+    const completion = await client.chat.send({
+      model: modelName,
+      messages: conversationMessages,
+    })
 
     let text = ''
-    try {
-      if (result?.response?.text) {
-        text = typeof result.response.text === 'function' ? result.response.text() : String(result.response.text)
-      } else if (result?.text) {
-        text = typeof result.text === 'function' ? result.text() : String(result.text)
-      } else if (Array.isArray(result?.response?.candidates) && result.response.candidates[0]?.content?.parts) {
-        const part = result.response.candidates[0].content.parts.find(p => p.text)
-        if (part?.text) text = part.text
-      }
-    } catch (e) {
-      console.warn('Failed extracting text:', e)
+    if (completion?.choices?.[0]?.message?.content) {
+      text = completion.choices[0].message.content
     }
 
     // Include rate limit info in successful responses
@@ -402,8 +366,8 @@ export async function POST(request) {
     let msg = 'Internal server error'
     const em = String(error?.message || '')
     if (/API key/i.test(em)) { status = 403; msg = 'API key invalid or missing' }
-    else if (/quota|rate/i.test(em)) { status = 429; msg = 'Rate limit exceeded' }
-    else if (/not found|404|model/i.test(em)) { status = 500; msg = 'Model not available; set GEMINI_MODEL to a supported name (e.g. gemini-1.5-flash)' }
+    else if (/rate/i.test(em)) { status = 429; msg = 'Rate limit exceeded' }
+    
     return NextResponse.json({ error: msg, details: em }, { status })
   }
 }
