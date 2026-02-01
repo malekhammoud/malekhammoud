@@ -283,8 +283,8 @@ Be him. Not a polished, corporate version - the real Malek.
 `
 
 // Choose a stable model name supported by v1beta. Override with GEMINI_MODEL if set.
-// Note: gemini-pro is deprecated; using gemini-2.0-flash-lite-001 as default
-const DEFAULT_MODEL = 'gemini-2.0-flash'
+// Note: gemini-pro is deprecated; using gemini-3.0-flash as default
+const DEFAULT_MODEL = 'gemini-3.0-flash'
 
 export async function POST(request) {
   try {
