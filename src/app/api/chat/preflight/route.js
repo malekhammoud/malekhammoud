@@ -4,7 +4,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 // Simple preflight: validates API key & model by invoking countTokens
 export async function GET() {
   const apiKey = (process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY || '').trim()
-  const modelName = process.env.GEMINI_MODEL?.trim() || 'gemini-pro'
+  const modelName = process.env.GEMINI_MODEL?.trim() || 'gemini-2.0-flash-lite-preview-02-05'
 
   if (!apiKey) {
     return NextResponse.json({ ok: false, error: 'Missing GEMINI_API_KEY' }, { status: 500 })
