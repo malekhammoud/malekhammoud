@@ -283,8 +283,8 @@ Be him. Not a polished, corporate version - the real Malek.
 `
 
 // Choose a stable model name supported by v1beta. Override with GEMINI_MODEL if set.
-// Note: gemini-pro is deprecated; using gemini-2.0-flash-lite-preview-02-05 as default
-const DEFAULT_MODEL = 'gemini-2.0-flash-lite-preview-02-05'
+// Note: gemini-pro is deprecated; using gemini-1.5-flash as default
+const DEFAULT_MODEL = 'gemini-1.5-flash'
 
 export async function POST(request) {
   try {
@@ -403,7 +403,7 @@ export async function POST(request) {
     const em = String(error?.message || '')
     if (/API key/i.test(em)) { status = 403; msg = 'API key invalid or missing' }
     else if (/quota|rate/i.test(em)) { status = 429; msg = 'Rate limit exceeded' }
-    else if (/not found|404|model/i.test(em)) { status = 500; msg = 'Model not available; set GEMINI_MODEL to a supported name (e.g. gemini-pro)' }
+    else if (/not found|404|model/i.test(em)) { status = 500; msg = 'Model not available; set GEMINI_MODEL to a supported name (e.g. gemini-1.5-flash)' }
     return NextResponse.json({ error: msg, details: em }, { status })
   }
 }

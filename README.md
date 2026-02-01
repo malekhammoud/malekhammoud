@@ -48,7 +48,7 @@ Create `.env.local` in the project root (this file is git-ignored) and add:
 ```
 GEMINI_API_KEY=your_ai_studio_api_key
 # Optional, override default model (defaults to gemini-pro)
-GEMINI_MODEL=gemini-pro
+GEMINI_MODEL=gemini-1.5-flash
 ```
 
 Note: Do not prefix with quotes. Ensure there are no trailing spaces.
