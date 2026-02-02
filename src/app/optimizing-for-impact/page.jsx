@@ -110,15 +110,24 @@ export default function OptimizingForImpact() {
       }
     };
 
+    const onPlayerReady = (event) => {
+      // Attempt to set the highest suggested quality
+      if (event.target.setPlaybackQuality) {
+        event.target.setPlaybackQuality('hd1080');
+      }
+    };
+
     const initPlayer = () => {
       if (window.YT && window.YT.Player) {
         player = new window.YT.Player('impact-video', {
           events: {
+            'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange
           }
         });
       }
     };
+
 
     if (!window.YT) {
       window.onYouTubeIframeAPIReady = initPlayer;
@@ -145,7 +154,7 @@ export default function OptimizingForImpact() {
                 <iframe 
                     id="impact-video"
                     className="w-full h-full"
-                    src="https://www.youtube.com/embed/8Dl4qGGw5Xs?enablejsapi=1&rel=0&modestbranding=1&iv_load_policy=3" 
+                    src="https://www.youtube.com/embed/8Dl4qGGw5Xs?enablejsapi=1&rel=0&modestbranding=1&iv_load_policy=3&vq=hd1080" 
                     title="Optimizing for Impact Video"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                     allowFullScreen
