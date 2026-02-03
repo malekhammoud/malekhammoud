@@ -16,10 +16,13 @@ import ai from '@/images/projects/ai.png';
 import p1 from '@/images/projects/green.png';
 import eco from '@/images/projects/ecosphere.png';
 import reconnect from '@/images/projects/reconnect.png';
-import p2 from '@/images/projects/linux.png';
 import p4 from '@/images/projects/centralweb.png';
 import p6 from '@/images/projects/ecosoute.png';
 import p7 from '@/images/projects/reminderapp.png';
+import flowarch from '@/images/projects/flowarch.gif';
+import plane from '@/images/projects/plane.gif';
+import deca from '@/images/projects/deca.gif';
+import basil from '@/images/projects/basil.gif';
 /*Project images*/
 
 const projects = [
@@ -31,6 +34,48 @@ const projects = [
     logo: robot,
     image: p1,
     category: ['robotics', 'ai'],
+    type: 'image',
+  },
+  {
+    name: 'Minecraft Flight Mod',
+    description:
+        'A Minecraft mod allowing you to build and fly planes with realistic mechanics. Use W/S to control throttle, A/D to yaw, and the mouse to pitch. Accelerate past takeoff speed to lift off! Developed with Java and the Fabric API.',
+    link: { href: 'https://www.youtube.com/watch?v=XpVNSnGqamM', label: 'YouTube >' },
+    logo: game,
+    image: plane,
+    category: ['game'],
+    type: 'image',
+    downloads: 'Over 650 Total Downloads',
+  },
+  {
+    name: 'Flow Arch',
+    description:
+        'The Productivity-First Operating System. Arch-based. Hyprland-driven. Designed for the 1% who need absolute focus. Enforced Pomodoro, intention checks, and zero distractions.',
+    link: { href: 'https://flowarch-os.github.io/', label: 'Download Flow Arch >' },
+    logo: webdev,
+    image: flowarch,
+    category: ['webdev'],
+    type: 'image',
+    downloads: '> 250 Total Downloads',
+  },
+  {
+    name: 'Basil home AI',
+    description:
+        'An AI-powered app and device that scans your fridge to provide real-time inventory management and intelligent recipe suggestions. Currently in development as a high-impact startup venture.',
+    link: { href: 'https://basilhome.ca/', label: 'Website >' },
+    logo: ai,
+    image: basil,
+    category: ['ai', 'mobile'],
+    type: 'image',
+  },
+  {
+    name: 'Ontario DECA App',
+    description:
+        'A comprehensive mobile application built with Expo for the Ontario DECA event. Features include user authentication, event calendars, interactive maps, and competition resources. This project showcases proficiency in React Native and full-stack mobile development.',
+    link: { href: 'https://github.com/malekhammoud/ontario-deca', label: 'GitHub >' },
+    logo: webdev,
+    image: deca,
+    category: ['mobile'],
     type: 'image',
   },
   {
@@ -54,12 +99,32 @@ const projects = [
     type: 'image',
   },
   {
-    name: 'Linux Exploration',
+    name: 'Maze-Solving Robot Car',
     description:
-        'Linux Exploration chronicles my journey from using a Chromebook without a GUI to dual-booting Ubuntu on my Acer laptop. This experience has significantly shaped my programming environment.',
-    link: { href: '#', label: '' },
+        'The Maze-Solving Robot Car is a 2023 award-winning TVSEF project that autonomously navigates a maze. It uses pathfinding and obstacle avoidance to reach its destination.',
+    link: { href: 'https://github.com/mhammoud-os/Real-World-Graph-Theory-Simulation', label: '2023 TVSEF Project >' },
+    logo: robot,
+    video: { webm: '/videos/maze.webm', mp4: '/videos/maze.mp4' },
+    category: ['robotics'],
+    type: 'video',
+  },
+  {
+    name: 'Posture Pall',
+    description:
+        'Posture Pall is a device that sprays you if you have bad posture. It is designed to help improve your posture by providing instant feedback.',
+    link: { href: 'https://github.com/joaoP-santos/posturepal', label: 'See the video >' },
     logo: webdev,
-    image: p2,
+    video: { webm: '/videos/posture.webm', mp4: '/videos/posture.mp4' },
+    category: ['webdev', 'ai'],
+    type: 'video',
+  },
+  {
+    name: 'EcoScout',
+    description:
+        'EcoScout is a Hack49 app that lets users report litter, access an interactive dashboard, and navigate using GPS. It aims to promote environmental sustainability through community engagement.',
+    link: { href: 'https://github.com/mhammoud-os/EcoScout', label: 'View the code >' },
+    logo: webdev,
+    image: p6,
     category: ['webdev'],
     type: 'image',
   },
@@ -84,42 +149,22 @@ const projects = [
     type: 'video',
   },
   {
-    name: 'Central Tech Tribe',
-    description:
-        'Central Tech Tribe is a React-based website with a MySQL backend built as a programming club project. It serves the school community and showcases full-stack development skills.',
-    link: { href: 'https://central-server-theta.vercel.app/', label: 'Currently In Development...' },
-    logo: webdev,
-    image: p4,
-    category: ['webdev'],
-    type: 'image',
-  },
-  {
-    name: 'Maze-Solving Robot Car',
-    description:
-        'The Maze-Solving Robot Car is a 2023 award-winning TVSEF project that autonomously navigates a maze. It uses pathfinding and obstacle avoidance to reach its destination.',
-    link: { href: 'https://github.com/mhammoud-os/Real-World-Graph-Theory-Simulation', label: '2023 TVSEF Project >' },
-    logo: robot,
-    video: { webm: '/videos/maze.webm', mp4: '/videos/maze.mp4' },
-    category: ['robotics'],
-    type: 'video',
-  },
-  {
-    name: 'EcoScout',
-    description:
-        'EcoScout is a Hack49 app that lets users report litter, access an interactive dashboard, and navigate using GPS. It aims to promote environmental sustainability through community engagement.',
-    link: { href: 'https://github.com/mhammoud-os/EcoScout', label: 'View the code >' },
-    logo: webdev,
-    image: p6,
-    category: ['webdev'],
-    type: 'image',
-  },
-  {
     name: 'Reminder App',
     description:
         'The Focus Reminder App is an Electron-based tool that tracks focus days, logs progress, uploads documents, and provides productivity stats. It is designed to help users maintain consistent focus.',
     link: { href: 'https://github.com/mhammoud-os/Project-Reminder', label: 'Download The App >' },
     logo: webdev,
     image: p7,
+    category: ['webdev'],
+    type: 'image',
+  },
+  {
+    name: 'Central Tech Tribe',
+    description:
+        'Central Tech Tribe is a React-based website with a MySQL backend built as a programming club project. It serves the school community and showcases full-stack development skills.',
+    link: { href: 'https://central-server-theta.vercel.app/', label: 'Currently In Development...' },
+    logo: webdev,
+    image: p4,
     category: ['webdev'],
     type: 'image',
   },
@@ -131,16 +176,6 @@ const projects = [
     logo: webdev,
     video: { webm: '/videos/offshape.webm', mp4: '/videos/offshape.mp4' },
     category: ['webdev'],
-    type: 'video',
-  },
-  {
-    name: 'Posture Pall',
-    description:
-        'Posture Pall is a device that sprays you if you have bad posture. It is designed to help improve your posture by providing instant feedback.',
-    link: { href: 'https://github.com/joaoP-santos/posturepal', label: 'See the video >' },
-    logo: webdev,
-    video: { webm: '/videos/posture.webm', mp4: '/videos/posture.mp4' },
-    category: ['webdev', 'ai'],
     type: 'video',
   }
 ]
@@ -163,6 +198,7 @@ export default function Projects() {
     { id: 'all', name: 'All Projects' },
     { id: 'robotics', name: 'Robotics' },
     { id: 'webdev', name: 'Web Development' },
+    { id: 'mobile', name: 'Mobile Development' },
     { id: 'game', name: 'Game Development' },
     { id: 'ai', name: 'AI' },
   ]
@@ -213,6 +249,7 @@ export default function Projects() {
             const categoryLogos = {
               'robotics': robot,
               'webdev': webdev,
+              'mobile': webdev,
               'game': game,
               'ai': ai
             }
@@ -245,6 +282,11 @@ export default function Projects() {
                   <p>
                     {project.description}
                   </p>
+                  {project.downloads && (
+                    <p className="mt-2 text-lg font-bold text-teal-600 dark:text-teal-400">
+                      {project.downloads}
+                    </p>
+                  )}
                   <div className="mb-4">
                     <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
                       {project.type === 'video' ? (
@@ -267,12 +309,10 @@ export default function Projects() {
                   </div>
                 </Card.PDescription>
 
-                <p className="relative z-10 mt-6 flex text-sm font-medium text-zinc-400 transition group-hover:text-teal-500 dark:text-zinc-200">
-                  <Card.Link href={project.link.href} className="flex items-center" target="_blank" rel="noopener noreferrer">
-                    <span>Visit {project.link.label}</span>
-                    <LinkIcon className="ml-2 h-4 w-4" />
-                  </Card.Link>
-                </p>
+                <div className="relative z-10 mt-6 flex items-center text-sm font-medium text-zinc-400 transition group-hover:text-teal-500 dark:text-zinc-200">
+                  <span>Visit {project.link.label}</span>
+                  <LinkIcon className="ml-2 h-4 w-4" />
+                </div>
               </Card>
             )
           })}
