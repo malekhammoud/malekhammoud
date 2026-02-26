@@ -2,8 +2,12 @@ import { getAllArticles as getAllNews } from '@/lib/news'
 import { getAllArticles } from '@/lib/articles'
 import glob from 'fast-glob'
 
+export const dynamic = 'force-static'
+
 export default async function sitemap() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://malekhammoud.com'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL 
+    ? process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')
+    : 'https://malekhammoud.com'
 
   // 1. Static Routes
   const staticRoutes = [
@@ -20,33 +24,48 @@ export default async function sitemap() {
   }))
 
   // 2. News Articles
-  const news = await getAllNews()
-  const newsRoutes = news.map((article) => ({
-    url: `${baseUrl}/news/${article.slug}`,
-    lastModified: new Date(article.date),
-    changeFrequency: 'monthly',
-    priority: 0.8,
-  }))
+  let newsRoutes = []
+  try {
+    const news = await getAllNews()
+    newsRoutes = news.map((article) => ({
+      url: `${baseUrl}/news/${article.slug}`,
+      lastModified: new Date(article.date),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    }))
+  } catch (e) {
+    console.error('Error loading news for sitemap:', e)
+  }
 
   // 3. Technical Articles
-  const articles = await getAllArticles()
-  const articleRoutes = articles.map((article) => ({
-    url: `${baseUrl}/articles/${article.slug}`,
-    lastModified: new Date(article.date),
-    changeFrequency: 'monthly',
-    priority: 0.8,
-  }))
+  let articleRoutes = []
+  try {
+    const articles = await getAllArticles()
+    articleRoutes = articles.map((article) => ({
+      url: `${baseUrl}/articles/${article.slug}`,
+      lastModified: new Date(article.date),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    }))
+  } catch (e) {
+    console.error('Error loading articles for sitemap:', e)
+  }
 
   // 4. Software Pages (Manual/Existing)
-  const softwareFiles = await glob('*/page.mdx', {
-    cwd: './src/app/software',
-  })
-  const softwareRoutes = softwareFiles.map((file) => ({
-    url: `${baseUrl}/software/${file.replace('/page.mdx', '')}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly',
-    priority: 0.7,
-  }))
+  let softwareRoutes = []
+  try {
+    const softwareFiles = await glob('*/page.mdx', {
+      cwd: './src/app/software',
+    })
+    softwareRoutes = softwareFiles.map((file) => ({
+      url: `${baseUrl}/software/${file.replace('/page.mdx', '')}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    }))
+  } catch (e) {
+    console.error('Error loading software pages for sitemap:', e)
+  }
 
   /**
    * 5. Dynamic Software Pages (The 30k Pages)
