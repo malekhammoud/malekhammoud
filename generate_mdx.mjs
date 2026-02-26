@@ -12,8 +12,8 @@ if (!fs.existsSync(outputDir)) {
 }
 
 // 2. Initialize OpenRouter with hardcoded key
-const openrouter = new OpenRouter({  
-  apiKey: "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"
+const openrouter = new OpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY
 });
 
 // 3. Connect to Database
@@ -151,13 +151,13 @@ export const metadata = {
 `;
 
       try {
-        const stream = await openrouter.chat.send({
-          chatGenerationParams: {
-            model: "arcee-ai/trinity-large-preview:free", 
-            messages: [{ role: "user", content: prompt }],
-            stream: true,
-          }
-        });
+	const stream = await openrouter.chat.send({
+	  model: "arcee-ai/trinity-large-preview:free",
+	  messages: [
+	    { role: "user", content: prompt }
+	  ],
+	  stream: true,
+	});
 
         let fileContent = "";
         for await (const chunk of stream) {
