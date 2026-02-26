@@ -1,4 +1,4 @@
-import { Providers } from '@/app/providers'
+import { Providers } from '@/app/(main)/providers'
 import { Layout } from '@/components/Layout'
 import { Particles } from '@/components/particles/page'
 import { FloatingUI } from '@/components/FloatingUI'
