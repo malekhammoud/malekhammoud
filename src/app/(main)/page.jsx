@@ -687,8 +687,14 @@ export default async function Home() {
       {/* Enhanced animated carousel */}
       <EnhancedCarousel />
 
+      {/* Latest Articles section */}
+      <LatestArticles articles={articles} />
+
       {/* Featured Projects */}
       <FeaturedProjects />
+
+      {/* Newsletter signup section */}
+      <NewsletterCta />
 
       {/* Timeline Resume Section */}
       <Container className="mt-24 md:mt-28 relative">
