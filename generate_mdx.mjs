@@ -3,7 +3,6 @@ import fs from 'fs';
 import sqlite3 from 'sqlite3';
 import path from 'path';
 
-// Changed the output directory to exactly match your Next.js structure
 const dbPath = './saas_data.db';
 const outputDir = './src/app/software';
 
@@ -71,11 +70,8 @@ async function main() {
 
     console.log(`Found ${pairs.length} unique pairs to compare.`);
 
-    const currentDate = new Date().toISOString().split('T')[0];
-
     // 6. Generate MDX
     for (const [toolA, toolB] of pairs) {
-      // NEW LOGIC: Create the folder name and the page.mdx path
       const folderName = `${toolA.slug}-vs-${toolB.slug}`;
       const pairDirPath = path.join(outputDir, folderName);
       const filePath = path.join(pairDirPath, 'page.mdx');
@@ -85,7 +81,7 @@ async function main() {
         continue;
       }
 
-      // Ensure the specific pair directory exists before saving the file
+      // Ensure the specific pair directory exists
       if (!fs.existsSync(pairDirPath)) {
         fs.mkdirSync(pairDirPath, { recursive: true });
       }
@@ -110,20 +106,17 @@ Here is the exact data for Tool B (${toolB.name}):
 
 CRITICAL INSTRUCTIONS:
 1. Output ONLY raw, valid MDX text. DO NOT wrap the output in \`\`\`mdx or \`\`\`markdown code blocks. Do not say "Here is the file". 
-2. You MUST use the exact Markdown table structure provided below. Do not use lists for the comparison.
-3. Keep the copy punchy, technical, and formatted for developers. 
+2. You MUST use the exact Next.js metadata export structure provided below instead of YAML frontmatter.
+3. You MUST use the exact Markdown table structure provided below. Do not use lists for the comparison.
+4. Keep the copy punchy, technical, and formatted for developers. 
 
 REQUIRED STRUCTURE:
 
----
-title: "${toolA.name} vs ${toolB.name}: Which is the Best ${toolA.category_name}?"
-seo_title: "${toolA.name} vs ${toolB.name} (${currentDate.split('-')[0]} Comparison & Pricing)"
-description: "An in-depth, technical comparison of ${toolA.name} and ${toolB.name}. We break down pricing, features, API limits, and architecture to help you choose the best ${toolA.category_name}."
-keywords: "${toolA.name} vs ${toolB.name}, ${toolA.name} alternatives, ${toolB.name} alternatives, ${toolA.category_name} comparison"
-category: "${toolA.category_name}"
-date: "${currentDate}"
-author: "Malek Hammoud"
----
+export const metadata = {
+  title: "${toolA.name} vs ${toolB.name}: Which is the Best ${toolA.category_name}?",
+  description: "An in-depth, technical comparison of ${toolA.name} and ${toolB.name}. We break down pricing, features, API limits, and architecture to help you choose the best ${toolA.category_name}.",
+  keywords: "${toolA.name} vs ${toolB.name}, ${toolA.name} alternatives, ${toolB.name} alternatives, ${toolA.category_name} comparison"
+};
 
 # ${toolA.name} vs ${toolB.name}: The Ultimate Comparison
 
