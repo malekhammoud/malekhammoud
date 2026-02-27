@@ -1,0 +1,51 @@
+export const metadata = {
+  title: "URLhaus vs URLScan.io: Which is the Best Malware Analysis & Intelligence?",
+  description: "An in-depth, technical comparison of URLhaus and URLScan.io. We break down pricing, features, API limits, and architecture to help you choose the best Malware Analysis & Intelligence.",
+  keywords: "URLhaus vs URLScan.io, URLhaus alternatives, URLScan.io alternatives, Malware Analysis & Intelligence comparison"
+};
+
+# URLhaus vs URLScan.io: The Ultimate Comparison
+
+> **TL;DR:** Choose URLhaus for bulk malware sample downloads and threat intelligence feeds, while URLScan.io excels at interactive website scanning and forensic analysis.
+
+## At a Glance Comparison
+
+| Feature/Spec | **URLhaus** | **URLScan.io** |
+| :--- | :--- | :--- |
+| **Starting Price** | N/A | N/A |
+| **Best For** | Malware sample collection | Interactive website scanning |
+| **Core Strength** | Threat intelligence feeds | Forensic analysis capabilities |
+
+## Deep Dive: URLhaus
+
+URLhaus is a project by abuse.ch that specializes in tracking and distributing malware URLs. It functions as a threat intelligence platform, collecting URLs from various malware families and providing them through a REST API. The system requires authentication via an Auth-Key and focuses on delivering structured data about malicious URLs, payloads, and associated metadata. It's particularly valuable for security researchers, SOC teams, and threat intelligence platforms that need automated access to curated malware URL datasets.
+
+The platform's architecture emphasizes bulk data delivery, offering hourly and daily malware batch downloads that can be integrated into security workflows. URLhaus excels at providing context around malicious URLs through its tag-based system and signature information, making it ideal for organizations that need to correlate threat data across multiple sources.
+
+### Standout Features of URLhaus
+- **Hourly/Daily Malware Batches**: Download large datasets of malware URLs for bulk processing and analysis
+- **Tag-Based Intelligence**: Query URLs by specific malware families or threat tags for targeted intelligence gathering
+- **Payload Information**: Access detailed metadata about malware samples associated with URLs
+
+## Deep Dive: URLScan.io
+
+URLScan.io is a website scanning service that provides interactive analysis of suspicious URLs. It captures screenshots, HTTP requests/responses, and JavaScript execution details to give comprehensive visibility into how a website behaves. The platform supports multiple visibility levels (Public, Unlisted, Private) and accepts submissions from various sources including email, API, and browser extensions. It's designed for security analysts who need to investigate potentially malicious websites in a sandboxed environment.
+
+The service's strength lies in its forensic capabilities - it doesn't just tell you a URL is bad, it shows you exactly what happens when you visit it. This makes it invaluable for incident response, phishing investigations, and understanding attack vectors. The comprehensive API documentation enables automation of scanning workflows, while the search functionality allows analysts to find related scans and build threat intelligence.
+
+### Standout Features of URLScan.io
+- **Interactive Scanning**: Capture screenshots and HTTP traffic to see exactly how malicious sites behave
+- **Multi-Level Visibility**: Control who can see your scans with Public, Unlisted, and Private options
+- **Comprehensive Forensics**: Analyze JavaScript execution, network requests, and page rendering in a sandboxed environment
+
+## The Final Verdict
+
+Choose URLhaus if you need:
+- Bulk malware URL datasets for threat intelligence platforms
+- Automated access to curated threat feeds
+- Malware family-specific intelligence gathering
+
+Choose URLScan.io if you need:
+- Interactive website analysis and forensic investigation
+- Visual evidence of malicious behavior through screenshots
+- Detailed HTTP request/response analysis for incident response
