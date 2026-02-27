@@ -4,8 +4,8 @@ import sqlite3 from 'sqlite3';
 import path from 'path';
 
 const dbPath = './saas_data.db';
-//const outputDir = './src/app/software';
-const outputDir = './_stash';
+const outputDir = './src/app/software';
+//const outputDir = './_stash';
 
 // 1. Ensure the base output directory exists
 if (!fs.existsSync(outputDir)) {
