@@ -65,8 +65,8 @@ export function TerminalButton() {
         >
           {/* Terminal icon with animation */}
           <div className="relative">
-            <span className="text-green-400 group-hover:text-green-300 transition-colors duration-300 text-lg">
-              🐧
+            <span className="text-green-400 group-hover:text-green-300 transition-colors duration-300 text-lg font-mono">
+              &gt;_
             </span>
             <div className="absolute -inset-1 bg-green-400/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </div>
@@ -91,7 +91,7 @@ export function TerminalButton() {
 
         {/* Subtle hint animation */}
         <div className="mt-2 flex items-center justify-center gap-2 text-xs text-zinc-400 dark:text-zinc-500">
-          <span className="animate-pulse">💡</span>
+          <span className="animate-pulse">[*]</span>
           <span>Explore my background through an interactive command-line interface</span>
         </div>
       </div>

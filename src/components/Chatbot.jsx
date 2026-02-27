@@ -10,7 +10,7 @@ export function Chatbot({ isOpen, onClose, onOpen, showInvitation, setShowInvita
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: "Hi! I'm Malek's AI assistant. Ask me anything about his experience, projects, or skills!"
+      content: "Hi! I'm Malek's AI assistant. Ask me anything about his experience, projects, or skills! Or choose a question below to get started:"
     }
   ])
   const [input, setInput] = useState('')
@@ -63,16 +63,25 @@ export function Chatbot({ isOpen, onClose, onOpen, showInvitation, setShowInvita
   }, [isOpen, onClose])
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    if (e) e.preventDefault()
     if (!input.trim() || isLoading) return
 
     const userMessage = input.trim()
+    await sendMessage(userMessage)
+  }
+
+  const handleQuickQuestion = async (question) => {
+    if (isLoading) return
+    await sendMessage(question)
+  }
+
+  const sendMessage = async (content) => {
     setInput('')
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }])
+    setMessages(prev => [...prev, { role: 'user', content }])
     setIsLoading(true)
 
     // Track message sent with content
-    trackChatbotEvent.messageSent(userMessage.length, userMessage)
+    trackChatbotEvent.messageSent(content.length, content)
     requestStartTime.current = Date.now()
 
     try {
@@ -82,28 +91,24 @@ export function Chatbot({ isOpen, onClose, onOpen, showInvitation, setShowInvita
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: [...messages, { role: 'user', content: userMessage }]
+          messages: [...messages, { role: 'user', content }]
         }),
       })
 
       const data = await response.json()
 
       if (!response.ok) {
-        // Use the specific error message from the API
         throw new Error(data.error || 'Failed to get response')
       }
 
-      // Track response received with response time and content
       const responseTime = Date.now() - requestStartTime.current
       trackChatbotEvent.responseReceived(responseTime, data.message)
 
       setMessages(prev => [...prev, { role: 'assistant', content: data.message }])
     } catch (error) {
       console.error('Error:', error)
-      // Track error
       trackChatbotEvent.error(error.message || 'Unknown error')
 
-      // Display the specific error message to the user
       const errorMessage = error.message || 'Sorry, I encountered an error. Please try again.'
       setMessages(prev => [...prev, {
         role: 'assistant',
@@ -269,6 +274,29 @@ export function Chatbot({ isOpen, onClose, onOpen, showInvitation, setShowInvita
                 </div>
               </div>
             ))}
+
+            {/* Quick Start Questions */}
+            {messages.length === 1 && !isLoading && (
+              <div className="flex flex-col gap-2 pt-2 animate-in fade-in slide-in-from-bottom-2 duration-700">
+                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 ml-1">Suggested questions:</p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    "What are your top projects?",
+                    "What are your core technical skills?",
+                    "Tell me about your work experience."
+                  ].map((question) => (
+                    <button
+                      key={question}
+                      onClick={() => handleQuickQuestion(question)}
+                      className="text-left px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 text-xs text-zinc-600 dark:text-zinc-300 hover:border-teal-500 hover:text-teal-500 dark:hover:border-teal-400 dark:hover:text-teal-400 transition-colors bg-white/50 dark:bg-zinc-800/50"
+                    >
+                      {question}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {isLoading && (
               <div className="flex justify-start">
                 <div className="max-w-[80%] rounded-2xl bg-zinc-100 px-4 py-2 dark:bg-zinc-800">

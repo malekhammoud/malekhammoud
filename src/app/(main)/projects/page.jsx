@@ -7,22 +7,18 @@ import { OptimizedVideo } from '@/components/OptimizedVideo'
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
 /*LOGOS*/
-import webdev from '@/images/projects/webdev.png';
-import game from '@/images/projects/gamedev.png';
-import robot from '@/images/projects/robot.png';
-import ai from '@/images/projects/ai.png';
+import webdev from '@/images/projects/webdev.webp';
+import game from '@/images/projects/gamedev.webp';
+import robot from '@/images/projects/robot.webp';
+import ai from '@/images/projects/ai.webp';
 
 
-import p1 from '@/images/projects/green.png';
-import eco from '@/images/projects/ecosphere.png';
-import reconnect from '@/images/projects/reconnect.png';
-import p4 from '@/images/projects/centralweb.png';
-import p6 from '@/images/projects/ecosoute.png';
-import p7 from '@/images/projects/reminderapp.png';
-import flowarch from '@/images/projects/flowarch.gif';
-import plane from '@/images/projects/plane.gif';
-import deca from '@/images/projects/deca.gif';
-import basil from '@/images/projects/basil.gif';
+import p1 from '@/images/projects/green.webp';
+import eco from '@/images/projects/ecosphere.webp';
+import reconnect from '@/images/projects/reconnect.webp';
+import p4 from '@/images/projects/centralweb.webp';
+import p6 from '@/images/projects/ecosoute.webp';
+import p7 from '@/images/projects/reminderapp.webp';
 /*Project images*/
 
 const projects = [
@@ -42,9 +38,9 @@ const projects = [
         'A Minecraft mod allowing you to build and fly planes with realistic mechanics. Use W/S to control throttle, A/D to yaw, and the mouse to pitch. Accelerate past takeoff speed to lift off! Developed with Java and the Fabric API.',
     link: { href: 'https://www.youtube.com/watch?v=XpVNSnGqamM', label: 'YouTube >' },
     logo: game,
-    image: plane,
+    video: { webm: '/videos/plane.webm', mp4: '/videos/plane.mp4' },
     category: ['game'],
-    type: 'image',
+    type: 'video',
     downloads: 'Over 650 Total Downloads',
   },
   {
@@ -53,9 +49,9 @@ const projects = [
         'The Productivity-First Operating System. Arch-based. Hyprland-driven. Designed for the 1% who need absolute focus. Enforced Pomodoro, intention checks, and zero distractions.',
     link: { href: 'https://flowarch-os.github.io/', label: 'Download Flow Arch >' },
     logo: webdev,
-    image: flowarch,
+    video: { webm: '/videos/flowarch.webm', mp4: '/videos/flowarch.mp4' },
     category: ['webdev'],
-    type: 'image',
+    type: 'video',
     downloads: '> 250 Total Downloads',
   },
   {
@@ -64,9 +60,9 @@ const projects = [
         'An AI-powered app and device that scans your fridge to provide real-time inventory management and intelligent recipe suggestions. Currently in development as a high-impact startup venture.',
     link: { href: 'https://basilhome.ca/', label: 'Website >' },
     logo: ai,
-    image: basil,
+    video: { webm: '/videos/basil.webm', mp4: '/videos/basil.mp4' },
     category: ['ai', 'mobile'],
-    type: 'image',
+    type: 'video',
   },
   {
     name: 'Ontario DECA App',
@@ -74,9 +70,9 @@ const projects = [
         'A comprehensive mobile application built with Expo for the Ontario DECA event. Features include user authentication, event calendars, interactive maps, and competition resources. This project showcases proficiency in React Native and full-stack mobile development.',
     link: { href: 'https://github.com/malekhammoud/ontario-deca', label: 'GitHub >' },
     logo: webdev,
-    image: deca,
+    video: { webm: '/videos/deca.webm', mp4: '/videos/deca.mp4' },
     category: ['mobile'],
-    type: 'image',
+    type: 'video',
   },
   {
     name: 'Autonomous Litter Detection',

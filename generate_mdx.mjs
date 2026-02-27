@@ -73,7 +73,15 @@ async function main() {
 
     // 6. Generate MDX
     for (const [toolA, toolB] of pairs) {
-      const folderName = `${toolA.slug}-vs-${toolB.slug}`;
+      let folderName = `${toolA.slug}-vs-${toolB.slug}`;
+      // Sanitize folder name: remove accents, replace non-alphanumeric with hyphen, collapse hyphens, trim hyphens
+      folderName = folderName
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // remove accents
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
       const pairDirPath = path.join(outputDir, folderName);
       const filePath = path.join(pairDirPath, 'page.mdx');
 

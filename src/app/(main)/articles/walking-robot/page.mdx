@@ -1,4 +1,5 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
+import { OptimizedVideo } from '@/components/OptimizedVideo'
 import gui from './gui.png'
 import guiwalk from './guiwalk.gif'
 import sway from './sway.gif'
@@ -74,20 +75,20 @@ The **algorithm** behind the robotic claw system calculates joint positions and 
 ---
 <div className="flex min-w-0 gap-4 p-4"> {/* min-w-0 prevents overflow issues */}
     <div className="flex-1 rounded-lg overflow-hidden ">
-        <Image
-            src={guiwalk}
+        <OptimizedVideo
+            mp4Src="/videos/articles/guiwalk.mp4"
+            webmSrc="/videos/articles/guiwalk.webm"
             alt="Walking algorithm GUI"
             className="w-full h-auto object-contain"
-            layout="responsive"
         />
     </div>
 
     <div className="flex-1 rounded-lg overflow-hidden">
-        <Image
-            src={sway}
+        <OptimizedVideo
+            mp4Src="/videos/articles/sway.mp4"
+            webmSrc="/videos/articles/sway.webm"
             alt="Sway compensation visualization"
             className="w-full h-auto object-contain"
-            layout="responsive"
         />
     </div>
 </div>

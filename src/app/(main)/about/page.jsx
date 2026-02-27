@@ -9,7 +9,7 @@ import {
   LinkedInIcon,
   XIcon,
 } from '@/components/SocialIcons'
-import portraitImage from '@/images/portrait.jpg'
+import portraitImage from '@/images/portrait.webp'
 import { Reveal } from '@/components/Reveal'
 
 function SocialLink({ className, href, children, icon: Icon }) {

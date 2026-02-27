@@ -17,21 +17,21 @@ import logoSimmad from '@/images/logos/simmad.png'
 import logoBRYCK from '@/images/logos/bryck.png'
 import logoLPL from '@/images/logos/lpl.png'
 import logoPlaytoon from '@/images/logos/playtoon.png'
-import img0254 from '@/images/photos/IMG_0254.JPG'
-import img0547 from '@/images/photos/IMG_0547.JPG'
-import img0920 from '@/images/photos/IMG_0920.png'
-import img0922 from '@/images/photos/IMG_0922.png'
-import img0926 from '@/images/photos/IMG_0926.png'
-import img1027 from '@/images/photos/IMG_1027.JPG'
+import img0254 from '@/images/photos/IMG_0254.webp'
+import img0547 from '@/images/photos/IMG_0547.webp'
+import img0920 from '@/images/photos/IMG_0920.webp'
+import img0922 from '@/images/photos/IMG_0922.webp'
+import img0926 from '@/images/photos/IMG_0926.webp'
+import img1027 from '@/images/photos/IMG_1027.webp'
+import htn from '@/images/photos/htn.webp'
+import htnp from '@/images/photos/htnproject.webp'
+import ht6ix from '@/images/photos/ht6ix.webp'
 
 // Project images (static)
-import centralwebImage from '@/images/projects/centralweb.png'
-import ecosouteImage from '@/images/projects/ecosoute.png'
-import greenImage from '@/images/projects/green.png'
-import linuxImage from '@/images/projects/linux.png'
-import reminderappImage from '@/images/projects/reminderapp.png'
-import reconnectImage from '@/images/projects/reconnect.png'
-import eco from '@/images/projects/ecosphere.png'
+import ecosouteImage from '@/images/projects/ecosoute.webp'
+import greenImage from '@/images/projects/green.webp'
+
+import eco from '@/images/projects/ecosphere.webp'
 // Import animations
 import '@/styles/animations.css'
 
@@ -107,11 +107,11 @@ function MainSocialLink({ className, href, children, icon: Icon }) {
       href={href}
       className={clsx(
         className,
-        "group flex text-sm font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500"
+        "group flex items-center text-base font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500"
       )}
       target="_blank"
     >
-      <Icon className="h-5 w-5 flex-none fill-zinc-500 transition group-hover:fill-teal-500" />
+      <Icon className="h-6 w-6 flex-none fill-zinc-500 transition group-hover:fill-teal-500" />
       <span className="ml-3">{children}</span>
     </Link>
   )
@@ -236,22 +236,29 @@ function EnhancedCarousel() {
   const allItems = [
     { type: 'image', src: img0254 },
     { type: 'image', src: img0547 },
+    { type: 'image', src: htn},
+    { type: 'image', src: htnp},
+    { type: 'image', src: ht6ix},
+    { type: 'video', webm: '/videos/deca.webm', mp4: '/videos/deca.mp4' },
     { type: 'image', src: img0920 },
-    { type: 'image', src: img0922 },
     { type: 'image', src: img0926 },
     { type: 'image', src: img1027 },
-    { type: 'image', src: centralwebImage },
+    { type: 'video', webm: '/videos/plane.webm', mp4: '/videos/plane.mp4' },
     { type: 'image', src: ecosouteImage },
     { type: 'image', src: greenImage },
     { type: 'video', webm: '/videos/javagame.webm', mp4: '/videos/javagame.mp4' },
-    { type: 'image', src: linuxImage },
     { type: 'video', webm: '/videos/maze.webm', mp4: '/videos/maze.mp4' },
-    { type: 'video', webm: '/videos/posture.webm', mp4: '/videos/posture.mp4' },
-    { type: 'image', src: reminderappImage },
-    { type: 'image', src: reconnectImage },
     { type: 'video', webm: '/videos/drone.webm', mp4: '/videos/drone.mp4' },
     { type: 'image', src: eco },
+    { type: 'video', webm: '/videos/flowarch.webm', mp4: '/videos/flowarch.mp4' },
+    { type: 'video', webm: '/videos/posture.webm', mp4: '/videos/posture.mp4' },
+    { type: 'video', webm: '/videos/basil.webm', mp4: '/videos/basil.mp4' },
   ]
+
+  // Create a jumbled version for the second row
+  const shuffledIndices = [5, 12, 0, 16, 8, 3, 14, 1, 10, 6, 15, 2, 11, 4, 13, 7, 9]
+  const shuffledItems = shuffledIndices.map((i) => allItems[i])
+  const bottomRowItems = [...shuffledItems, ...shuffledItems]
 
   return (
     <div className="mt-16 sm:mt-20">
@@ -270,6 +277,9 @@ function EnhancedCarousel() {
               className="font-medium"
             />
           </h2>
+          <p className="text-base text-zinc-600 dark:text-zinc-400 mb-6 max-w-2xl">
+            Software engineer and robotics enthusiast, building autonomous and intelligent systems.
+          </p>
           {/* Social links - new addition */}
           <div className="mt-6 flex justify-center gap-4">
             <MainSocialLink href="https://github.com/malekhammoud" icon={GitHubIcon}>
@@ -308,13 +318,12 @@ function EnhancedCarousel() {
               ) : (
                 <Image
                   src={item.src}
-                  alt={`Project ${index}`}
+                  alt=""
                   fill
                   className="object-cover"
                   sizes="16rem"
                   priority={index === 0}
                   loading={index === 0 ? undefined : 'lazy'}
-                  fetchPriority={index === 0 ? 'high' : undefined}
                   quality={index < 4 ? 85 : 75}
                 />
               )}
@@ -326,7 +335,7 @@ function EnhancedCarousel() {
       {/* Second row with reverse animation */}
       <div className="carousel-container relative overflow-hidden mt-6">
         <div className="carousel-track flex gap-6 animate-scroll-reverse">
-          {[...allItems.slice().reverse(), ...allItems.slice().reverse()].map((item, index) => (
+          {bottomRowItems.map((item, index) => (
             <div
               key={`reverse-item-${index}`}
               className="carousel-item relative flex-none w-48 h-60 overflow-hidden rounded-lg shadow-md bg-zinc-50 dark:bg-zinc-800"
@@ -341,7 +350,7 @@ function EnhancedCarousel() {
               ) : (
                 <Image
                   src={item.src}
-                  alt={`Project ${index}`}
+                  alt=""
                   fill
                   className="object-cover"
                   sizes="12rem"
@@ -378,12 +387,13 @@ function FeaturedProjects() {
       mp4: '/videos/drone.mp4',
     },
     {
-      name: 'EcoSphere',
+      name: 'Flow Arch',
       description:
-        'A mission-control platform for conservation teams: species ID, team chat, and seamless collaboration.',
-      href: 'https://www.eco-sphere.co/',
-      image: eco,
-      type: 'image',
+        'The Productivity-First Operating System. Arch-based. Hyprland-driven. Designed for focus with zero distractions.',
+      href: 'https://flowarch-os.github.io/',
+      type: 'video',
+      webm: '/videos/flowarch.webm',
+      mp4: '/videos/flowarch.mp4',
     },
   ]
 
@@ -508,30 +518,30 @@ function TimelineResume() {
       {/* Timeline */}
       <div className="relative">
         {/* Vertical line */}
-        <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-zinc-200 dark:bg-zinc-700"></div>
+        <div className="absolute left-6 sm:left-8 top-0 bottom-0 w-0.5 bg-zinc-200 dark:bg-zinc-700"></div>
 
-        <div className="space-y-12">
+        <div className="space-y-8 sm:space-y-12">
           {resume.map((role, index) => (
             <div key={index} className="relative flex items-start">
               {/* Timeline dot */}
-              <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-white dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 shadow-sm">
-                <Image src={role.logo} alt={role.company} className="h-8 w-8 rounded-full" unoptimized />
+              <div className="relative z-10 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-white dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 shadow-sm">
+                <Image src={role.logo} alt={role.company} className="h-6 w-6 sm:h-8 sm:w-8 rounded-full" unoptimized />
               </div>
 
               {/* Content card */}
-              <div className="ml-8 flex-1">
-                <div className="rounded-2xl border border-zinc-100 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md dark:border-zinc-700/40 dark:bg-zinc-800">
-                  <div className="flex items-start justify-between">
+              <div className="ml-4 sm:ml-8 flex-1">
+                <div className="rounded-2xl border border-zinc-100 bg-white p-5 sm:p-6 shadow-sm transition-all duration-200 hover:shadow-md dark:border-zinc-700/40 dark:bg-zinc-800">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
                     <div>
-                      <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                      <h3 className="text-base sm:text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                         {role.title}
                       </h3>
-                      <p className="text-base font-medium text-zinc-600 dark:text-zinc-400">
+                      <p className="text-sm sm:text-base font-medium text-zinc-600 dark:text-zinc-400">
                         {role.company}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <span className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-700 px-3 py-1 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    <div className="sm:text-right">
+                      <span className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-700 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300">
                         {role.start} - {typeof role.end === 'string' ? role.end : role.end.label}
                       </span>
                     </div>
@@ -607,26 +617,26 @@ function SupportedBy() {
   ]
 
   return (
-    <div className="py-16 pt-24">
+    <div className="py-12 pt-16 sm:py-16 sm:pt-24">
       <Container>
         <div className="mx-auto max-w-6xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 mb-4">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 mb-4">
             Supported By
           </h2>
-          <div className="w-24 h-0.5 bg-zinc-300 dark:bg-zinc-700 mx-auto rounded-full mb-12"></div>
-          <p className="text-base text-zinc-600 dark:text-zinc-400 mb-12">
+          <div className="w-16 h-0.5 bg-zinc-300 dark:bg-zinc-700 mx-auto rounded-full mb-8 sm:mb-12"></div>
+          <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mb-8 sm:mb-12">
             Proud to work with organizations that believe in innovation and growth
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-8 items-center justify-items-center">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8 items-center justify-items-center">
             {supportingCompanies.map((company, index) => (
               <div
                 key={index}
-                className="group flex flex-col items-center p-3 md:p-6 transition-all duration-300 hover:scale-105"
+                className="group flex flex-col items-center p-2 md:p-6 transition-all duration-300 hover:scale-105"
                 title={`${company.name} - ${company.description}`}
               >
                 {/* Logo container with consistent sizing */}
-                <div className="relative mb-3 md:mb-4 h-20 md:h-24 w-full max-w-[220px] md:max-w-[220px] mx-auto">
+                <div className="relative mb-2 md:mb-4 h-16 md:h-24 w-full max-w-[140px] md:max-w-[220px] mx-auto">
                   {company.lightLogo && company.darkLogo ? (
                     <>
                       <Image
@@ -680,21 +690,16 @@ function SupportedBy() {
 }
 
 export default async function Home() {
-  let articles = (await getAllArticles()).slice(0, 4)
-
   return (
     <>
       {/* Enhanced animated carousel */}
       <EnhancedCarousel />
 
-      {/* Latest Articles section */}
-      <LatestArticles articles={articles} />
-
       {/* Featured Projects */}
       <FeaturedProjects />
 
       {/* Newsletter signup section */}
-      <NewsletterCta />
+      {/* <NewsletterCta />*/}
 
       {/* Timeline Resume Section */}
       <Container className="mt-24 md:mt-28 relative">

@@ -16,7 +16,7 @@ import Image from 'next/image'
 import { Container } from '@/components/Container'
 import { trackResumeEvent, trackTerminalEvent } from '@/lib/analytics'
 import { InteractiveTerminal } from '@/components/InteractiveTerminal'
-import avatarImage from '@/images/avatar.jpg'
+import avatarImage from '@/images/avatar.webp'
 
 function CloseIcon(props) {
   return (

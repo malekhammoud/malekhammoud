@@ -137,22 +137,34 @@
   4% { transform: translate(2px, 2px); }
 }
 
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes scroll-reverse {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
 .animate-scroll {
-  animation: scroll 6s linear infinite;
+  animation: scroll 30s linear infinite;
+  width: max-content;
 }
 
 .animate-scroll-reverse {
-  animation: scroll-reverse 4s linear infinite;
+  animation: scroll-reverse 25s linear infinite;
+  width: max-content;
 }
 
-/* Much slower speed for desktop/larger screens since viewers can see more photos */
+/* Speed adjustments for larger screens */
 @media (min-width: 768px) {
   .animate-scroll {
-    animation-duration: 25s;
+    animation-duration: 60s;
   }
 
   .animate-scroll-reverse {
-    animation-duration: 20s;
+    animation-duration: 50s;
   }
 }
 
