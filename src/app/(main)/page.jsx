@@ -93,29 +93,7 @@ function Article({ article }) {
   )
 }
 
-function SocialLink({ icon: Icon, ...props }) {
-  return (
-    <Link className="group -m-1 p-1" {...props}>
-      <Icon className="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
-    </Link>
-  )
-}
-
-function MainSocialLink({ className, href, children, icon: Icon }) {
-  return (
-    <Link
-      href={href}
-      className={clsx(
-        className,
-        "group flex items-center text-base font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500"
-      )}
-      target="_blank"
-    >
-      <Icon className="h-6 w-6 flex-none fill-zinc-500 transition group-hover:fill-teal-500" />
-      <span className="ml-3">{children}</span>
-    </Link>
-  )
-}
+import { EnhancedCarousel } from '@/components/EnhancedCarousel'
 
 function Role({ role }) {
   let startLabel =
@@ -230,117 +208,6 @@ function Photos() {
 
 function FloatingElements() {
   return null; // Removed floating background elements
-}
-
-function EnhancedCarousel() {
-  const allItems = [
-    { type: 'image', src: img0254 },
-    { type: 'image', src: img0547 },
-    { type: 'image', src: htn},
-    { type: 'image', src: ht6ix},
-    { type: 'video', webm: '/videos/deca.webm', mp4: '/videos/deca.mp4' },
-    { type: 'image', src: img0920 },
-    { type: 'image', src: img0926 },
-    { type: 'image', src: img1027 },
-    { type: 'image', src: ecosouteImage },
-    { type: 'image', src: greenImage },
-    { type: 'video', webm: '/videos/javagame.webm', mp4: '/videos/javagame.mp4' },
-    { type: 'video', webm: '/videos/maze.webm', mp4: '/videos/maze.mp4' },
-    { type: 'video', webm: '/videos/drone.webm', mp4: '/videos/drone.mp4' },
-    { type: 'image', src: eco },
-    { type: 'video', webm: '/videos/flowarch.webm', mp4: '/videos/flowarch.mp4' },
-    { type: 'video', webm: '/videos/posture.webm', mp4: '/videos/posture.mp4' },
-    { type: 'video', webm: '/videos/basil.webm', mp4: '/videos/basil.mp4' },
-  ]
-
-  const imageItems = allItems.filter(item => item.type === 'image')
-  const videoItemsRaw = allItems.filter(item => item.type === 'video')
-  // Duplicate some videos to match the image count (11) for perfectly synchronized speed
-  const videoItems = [...videoItemsRaw, videoItemsRaw[0], videoItemsRaw[1], videoItemsRaw[2]]
-
-  return (
-    <div className="mt-16 sm:mt-20">
-      {/* Main hero section - simplified */}
-      <Container className="mb-16">
-        <div className="max-w-4xl">
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100 mb-6">
-            Malek Hammoud
-          </h1>
-          <h2 className="text-xl font-medium text-zinc-600 dark:text-zinc-400 mb-6">
-            <TypewriterText
-              texts={['Programmer', 'Robotics Enthusiast', 'Digital Innovator']}
-              typingSpeed={100}
-              deletingSpeed={50}
-              pauseDuration={2000}
-              className="font-medium"
-            />
-          </h2>
-          <p className="text-base text-zinc-600 dark:text-zinc-400 mb-6 max-w-2xl">
-            Software engineer and robotics enthusiast, building autonomous and intelligent systems.
-          </p>
-          {/* Social links - new addition */}
-          <div className="mt-6 flex justify-center gap-4">
-            <MainSocialLink href="https://github.com/malekhammoud" icon={GitHubIcon}>
-              GitHub
-            </MainSocialLink>
-            <MainSocialLink href="https://www.linkedin.com/in/malekhammoud/" icon={LinkedInIcon}>
-              LinkedIn
-            </MainSocialLink>
-          </div>
-
-          {/* Primary CTAs
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Button href="/projects" variant="primary">Explore Projects</Button>
-            <Button href="/about" variant="secondary">About Me</Button>
-            <Button href="/resume.pdf" target="_blank" variant="secondary">Resume</Button>
-          </div>
-          */}
-        </div>
-      </Container>
-
-      {/* Images carousel container */}
-      <div className="carousel-container relative overflow-hidden">
-        <div className="carousel-track flex gap-6 animate-scroll">
-          {[...imageItems, ...imageItems].map((item, index) => (
-            <div
-              key={`image-${index}`}
-              className="carousel-item relative flex-none w-64 h-80 overflow-hidden rounded-xl shadow-lg bg-zinc-50 dark:bg-zinc-800"
-            >
-              <Image
-                src={item.src}
-                alt=""
-                fill
-                className="object-cover"
-                sizes="16rem"
-                priority={index === 0}
-                loading={index === 0 ? undefined : 'lazy'}
-                quality={index < 4 ? 85 : 75}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Videos carousel with reverse animation */}
-      <div className="carousel-container relative overflow-hidden mt-6">
-        <div className="carousel-track flex gap-6 animate-scroll-reverse">
-          {[...videoItems, ...videoItems].map((item, index) => (
-            <div
-              key={`video-${index}`}
-              className="carousel-item relative flex-none w-64 h-80 overflow-hidden rounded-xl shadow-md bg-zinc-50 dark:bg-zinc-800"
-            >
-              <OptimizedVideo
-                webmSrc={item.webm}
-                mp4Src={item.mp4}
-                className="absolute inset-0 h-full w-full object-cover"
-                priority={false}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
 }
 
 // Highlight a small, curated set of projects for first-time visitors
@@ -667,10 +534,32 @@ function SupportedBy() {
 }
 
 export default async function Home() {
+  const allItems = [
+    { src: img0254 },
+    { webm: '/videos/deca.webm', mp4: '/videos/deca.mp4' },
+    { src: img0547 },
+    { webm: '/videos/plane.mp4', mp4: '/videos/plane.mp4' },
+    { src: htn },
+    { webm: '/videos/javagame.webm', mp4: '/videos/javagame.mp4' },
+    { src: ht6ix },
+    { webm: '/videos/maze.webm', mp4: '/videos/maze.mp4' },
+    { src: img0920 },
+    { webm: '/videos/drone.webm', mp4: '/videos/drone.mp4' },
+    { src: img0926 },
+    { webm: '/videos/posture.webm', mp4: '/videos/posture.mp4' },
+    { src: img1027 },
+    { webm: '/videos/basil.webm', mp4: '/videos/basil.mp4' },
+    { src: greenImage },
+  ]
+
+  // Split into top and bottom rows
+  const topItems = allItems.slice(0, 8)
+  const bottomItems = allItems.slice(8)
+
   return (
     <>
       {/* Enhanced animated carousel */}
-      <EnhancedCarousel />
+      <EnhancedCarousel topItems={topItems} bottomItems={bottomItems} />
 
       {/* Featured Projects */}
       <FeaturedProjects />

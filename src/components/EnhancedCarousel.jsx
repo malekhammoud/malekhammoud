@@ -25,34 +25,55 @@ function MainSocialLink({ className, href, children, icon: Icon }) {
   )
 }
 
+function CarouselItem({ item, index, priority = false }) {
+  const isVideo = !!(item.webm || item.mp4)
+  
+  return (
+    <div
+      className={clsx(
+        "carousel-item relative flex-none w-52 h-64 overflow-hidden rounded-xl shadow-lg bg-zinc-50 dark:bg-zinc-800",
+        !isVideo && "shadow-lg",
+        isVideo && "shadow-md"
+      )}
+    >
+      {isVideo ? (
+        <OptimizedVideo
+          webmSrc={item.webm}
+          mp4Src={item.mp4}
+          className="absolute inset-0 h-full w-full object-cover"
+          priority={false}
+        />
+      ) : (
+        <Image
+          src={item.src}
+          alt=""
+          fill
+          className="object-cover"
+          sizes="13rem"
+          priority={priority}
+          loading={priority ? undefined : 'lazy'}
+          quality={index < 4 ? 85 : 75}
+        />
+      )}
+    </div>
+  )
+}
+
 export function EnhancedCarousel({ 
-  imageItems, 
-  videoItems, 
-  images = [], 
-  videos = [] 
+  topItems, 
+  bottomItems
 }) {
   const topTrackRef = useRef(null)
   const bottomTrackRef = useRef(null)
 
-  const handleMouseEnter = (ref) => {
-    const track = ref.current
-    if (!track) return
-    const animations = track.getAnimations()
-    animations.forEach(anim => {
-      // Slow down to 20% speed
-      anim.updatePlaybackRate(0.2)
-    })
-  }
+  // To prevent repetition on screen, we want the "set" to be wider than the screen.
+  // We repeat the unique items to make a long enough "unit".
+  const repeatedTop = [...topItems, ...topItems]
+  const repeatedBottom = [...bottomItems, ...bottomItems]
 
-  const handleMouseLeave = (ref) => {
-    const track = ref.current
-    if (!track) return
-    const animations = track.getAnimations()
-    animations.forEach(anim => {
-      // Return to normal speed
-      anim.updatePlaybackRate(1)
-    })
-  }
+  // Animation durations to maintain the same linear speed (pixels per second)
+  const topDuration = repeatedTop.length * 6
+  const bottomDuration = repeatedBottom.length * 6
 
   return (
     <div className="mt-16 sm:mt-20">
@@ -70,10 +91,10 @@ export function EnhancedCarousel({
               className="font-medium"
             />
           </h2>
-          <p className="text-base text-zinc-600 dark:text-zinc-400 mb-6 max-w-2xl">
-            Software engineer and robotics enthusiast, building autonomous and intelligent systems.
+          <p className="text-base text-zinc-600 dark:text-zinc-400 mb-6 max-w-none">
+            Software engineer and robotics enthusiast, dedicated to building autonomous and intelligent systems.
           </p>
-          <div className="mt-6 flex justify-center gap-4">
+          <div className="mt-6 flex flex-wrap justify-center gap-4">
             <MainSocialLink href="https://github.com/malekhammoud" icon={GitHubIcon}>
               GitHub
             </MainSocialLink>
@@ -84,52 +105,37 @@ export function EnhancedCarousel({
         </div>
       </Container>
 
-      {/* Images carousel container */}
-      <div 
-        className="carousel-container relative overflow-hidden"
-        onMouseEnter={() => handleMouseEnter(topTrackRef)}
-        onMouseLeave={() => handleMouseLeave(topTrackRef)}
-      >
-        <div ref={topTrackRef} className="carousel-track flex gap-6 animate-scroll">
-          {[...imageItems, ...imageItems].map((item, index) => (
-            <div
-              key={`image-${index}`}
-              className="carousel-item relative flex-none w-64 h-80 overflow-hidden rounded-xl shadow-lg bg-zinc-50 dark:bg-zinc-800"
-            >
-              <Image
-                src={item.src}
-                alt=""
-                fill
-                className="object-cover"
-                sizes="16rem"
-                priority={index === 0}
-                loading={index === 0 ? undefined : 'lazy'}
-                quality={index < 4 ? 85 : 75}
-              />
-            </div>
+      {/* Top carousel container */}
+      <div className="carousel-container relative overflow-hidden">
+        <div 
+          ref={topTrackRef} 
+          className="carousel-track flex gap-6 animate-scroll"
+          style={{ animationDuration: `${topDuration}s` }}
+        >
+          {[...repeatedTop, ...repeatedTop].map((item, index) => (
+            <CarouselItem 
+              key={`top-${index}`} 
+              item={item} 
+              index={index} 
+              priority={index === 0}
+            />
           ))}
         </div>
       </div>
 
-      {/* Videos carousel with reverse animation */}
-      <div 
-        className="carousel-container relative overflow-hidden mt-6"
-        onMouseEnter={() => handleMouseEnter(bottomTrackRef)}
-        onMouseLeave={() => handleMouseLeave(bottomTrackRef)}
-      >
-        <div ref={bottomTrackRef} className="carousel-track flex gap-6 animate-scroll-reverse">
-          {[...videoItems, ...videoItems].map((item, index) => (
-            <div
-              key={`video-${index}`}
-              className="carousel-item relative flex-none w-64 h-80 overflow-hidden rounded-xl shadow-md bg-zinc-50 dark:bg-zinc-800"
-            >
-              <OptimizedVideo
-                webmSrc={item.webm}
-                mp4Src={item.mp4}
-                className="absolute inset-0 h-full w-full object-cover"
-                priority={false}
-              />
-            </div>
+      {/* Bottom carousel with reverse animation */}
+      <div className="carousel-container relative overflow-hidden mt-6">
+        <div 
+          ref={bottomTrackRef} 
+          className="carousel-track flex gap-6 animate-scroll-reverse"
+          style={{ animationDuration: `${bottomDuration}s` }}
+        >
+          {[...repeatedBottom, ...repeatedBottom].map((item, index) => (
+            <CarouselItem 
+              key={`bottom-${index}`} 
+              item={item} 
+              index={index} 
+            />
           ))}
         </div>
       </div>
