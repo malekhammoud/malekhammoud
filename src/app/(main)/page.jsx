@@ -237,13 +237,11 @@ function EnhancedCarousel() {
     { type: 'image', src: img0254 },
     { type: 'image', src: img0547 },
     { type: 'image', src: htn},
-    { type: 'image', src: htnp},
     { type: 'image', src: ht6ix},
     { type: 'video', webm: '/videos/deca.webm', mp4: '/videos/deca.mp4' },
     { type: 'image', src: img0920 },
     { type: 'image', src: img0926 },
     { type: 'image', src: img1027 },
-    { type: 'video', webm: '/videos/plane.webm', mp4: '/videos/plane.mp4' },
     { type: 'image', src: ecosouteImage },
     { type: 'image', src: greenImage },
     { type: 'video', webm: '/videos/javagame.webm', mp4: '/videos/javagame.mp4' },
@@ -255,10 +253,10 @@ function EnhancedCarousel() {
     { type: 'video', webm: '/videos/basil.webm', mp4: '/videos/basil.mp4' },
   ]
 
-  // Create a jumbled version for the second row
-  const shuffledIndices = [5, 12, 0, 16, 8, 3, 14, 1, 10, 6, 15, 2, 11, 4, 13, 7, 9]
-  const shuffledItems = shuffledIndices.map((i) => allItems[i])
-  const bottomRowItems = [...shuffledItems, ...shuffledItems]
+  const imageItems = allItems.filter(item => item.type === 'image')
+  const videoItemsRaw = allItems.filter(item => item.type === 'video')
+  // Duplicate some videos to match the image count (11) for perfectly synchronized speed
+  const videoItems = [...videoItemsRaw, videoItemsRaw[0], videoItemsRaw[1], videoItemsRaw[2]]
 
   return (
     <div className="mt-16 sm:mt-20">
@@ -300,64 +298,43 @@ function EnhancedCarousel() {
         </div>
       </Container>
 
-      {/* Simple carousel container */}
+      {/* Images carousel container */}
       <div className="carousel-container relative overflow-hidden">
         <div className="carousel-track flex gap-6 animate-scroll">
-          {[...allItems, ...allItems].map((item, index) => (
+          {[...imageItems, ...imageItems].map((item, index) => (
             <div
-              key={`item-${index}`}
+              key={`image-${index}`}
               className="carousel-item relative flex-none w-64 h-80 overflow-hidden rounded-xl shadow-lg bg-zinc-50 dark:bg-zinc-800"
             >
-              {item.type === 'video' ? (
-                <OptimizedVideo
-                  webmSrc={item.webm}
-                  mp4Src={item.mp4}
-                  className="absolute inset-0 h-full w-full object-cover"
-                  priority={index === 0}
-                />
-              ) : (
-                <Image
-                  src={item.src}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="16rem"
-                  priority={index === 0}
-                  loading={index === 0 ? undefined : 'lazy'}
-                  quality={index < 4 ? 85 : 75}
-                />
-              )}
+              <Image
+                src={item.src}
+                alt=""
+                fill
+                className="object-cover"
+                sizes="16rem"
+                priority={index === 0}
+                loading={index === 0 ? undefined : 'lazy'}
+                quality={index < 4 ? 85 : 75}
+              />
             </div>
           ))}
         </div>
       </div>
 
-      {/* Second row with reverse animation */}
+      {/* Videos carousel with reverse animation */}
       <div className="carousel-container relative overflow-hidden mt-6">
         <div className="carousel-track flex gap-6 animate-scroll-reverse">
-          {bottomRowItems.map((item, index) => (
+          {[...videoItems, ...videoItems].map((item, index) => (
             <div
-              key={`reverse-item-${index}`}
-              className="carousel-item relative flex-none w-48 h-60 overflow-hidden rounded-lg shadow-md bg-zinc-50 dark:bg-zinc-800"
+              key={`video-${index}`}
+              className="carousel-item relative flex-none w-64 h-80 overflow-hidden rounded-xl shadow-md bg-zinc-50 dark:bg-zinc-800"
             >
-              {item.type === 'video' ? (
-                <OptimizedVideo
-                  webmSrc={item.webm}
-                  mp4Src={item.mp4}
-                  className="absolute inset-0 h-full w-full object-cover"
-                  priority={false}
-                />
-              ) : (
-                <Image
-                  src={item.src}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="12rem"
-                  loading="lazy"
-                  quality={75}
-                />
-              )}
+              <OptimizedVideo
+                webmSrc={item.webm}
+                mp4Src={item.mp4}
+                className="absolute inset-0 h-full w-full object-cover"
+                priority={false}
+              />
             </div>
           ))}
         </div>

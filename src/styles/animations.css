@@ -148,23 +148,23 @@
 }
 
 .animate-scroll {
-  animation: scroll 30s linear infinite;
+  animation: scroll 40s linear infinite;
   width: max-content;
 }
 
 .animate-scroll-reverse {
-  animation: scroll-reverse 25s linear infinite;
+  animation: scroll-reverse 40s linear infinite;
   width: max-content;
 }
 
 /* Speed adjustments for larger screens */
 @media (min-width: 768px) {
   .animate-scroll {
-    animation-duration: 60s;
+    animation-duration: 80s;
   }
 
   .animate-scroll-reverse {
-    animation-duration: 50s;
+    animation-duration: 80s;
   }
 }
 
