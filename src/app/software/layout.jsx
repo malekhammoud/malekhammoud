@@ -18,11 +18,11 @@ export default function SoftwareLayout({ children }) {
             {/* Header / Nav */}
             <div className="mx-auto max-w-4xl mb-6 sm:mb-8 flex justify-between items-center">
               <Link 
-                href="/" 
+                href="/software" 
                 className="group flex items-center gap-2 text-zinc-400 hover:text-white transition-colors duration-200"
               >
                 <span className="text-xl group-hover:-translate-x-1 transition-transform">←</span>
-                <span className="text-sm font-medium tracking-wide uppercase">Back to Portfolio</span>
+                <span className="text-sm font-medium tracking-wide uppercase">Back to Software Hub</span>
               </Link>
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-8 hidden sm:block" />
             </div>

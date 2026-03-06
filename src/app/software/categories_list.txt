@@ -1,0 +1,203 @@
+3D & Game Development
+AI & Machine Learning
+API Testing & Development
+Ad & Tracker Blockers
+Anti-Malware
+Antivirus & Endpoint Security
+Art & Design
+Auth Protocols & Utilities
+Authentication
+Automation
+Blockchain
+Books
+Business
+CIAM & Auth Platforms
+CRM
+CRM & Client Management
+Calendar
+Cloud & Infrastructure Security
+Cloud Hosting & Deployment
+Cloud Infrastructure
+Cloud Storage
+Cloud Storage & File Sharing
+Code Hosting & Version Control
+Collaborative Whiteboarding
+Community & Engagement
+Containerization & Orchestration
+Content Management System
+Continuous Integration
+Cryptocurrency
+Currency Exchange
+Customer Support
+Cybersecurity Tools
+Data Science
+Data Validation
+Database-as-a-Service
+Databases
+Design & Creative
+Development
+Development Tools
+Diagramming & Mind Mapping
+Dictionaries
+Digital Experience Monitoring
+Documentation & Knowledge Base
+Documents & Productivity
+E-commerce
+Email
+Email Marketing
+Enterprise Collaboration
+Entertainment
+Environment
+Events
+File Management
+Finance
+Financial & Accounting
+Food & Drink
+Form Builders
+Forms & Surveys
+GIS & Mapping
+Geocoding
+Government
+Graphic Design & Photo Editing
+HR & Recruiting
+Headless CMS
+Health
+Health & Fitness
+Heatmaps & Session Recording
+IDEs & Editors
+Icons & Font Libraries
+Identity & Access Management
+Identity Providers
+Image & Video Management
+Jobs
+Knowledge Management
+Landing Page & Funnel Builders
+Learning Management Systems
+Legal & Compliance
+Libraries & Frameworks
+Machine Learning
+Malware Analysis & Intelligence
+Marketing Automation
+Music
+Network Security & Scanning
+News
+No-Code & Website Builders
+NoSQL & Real-time Databases
+Observability
+Online Learning Platforms
+Open Data
+Open Source Projects
+PR & Communications
+Package Managers & Registries
+Password Managers
+Patent
+Payment Gateways
+Personality
+Phone
+Photography
+Presentations
+Product & User Analytics
+Productivity & Notes
+Programming
+Project Management
+Relational Databases
+Remote Desktop & Connectivity
+Research & Education
+Retail POS
+SEO & Marketing Analytics
+SEO Tools
+Scheduling
+Science & Math
+Search
+Security
+Security & Privacy
+Serverless Databases
+Shopping
+Social
+Social Media Management
+Sports & Fitness
+Task Management & Kanban
+Team Communication
+Test Data
+Text Analysis
+Time Tracking
+Tracking
+Transactional Email
+Translation & Localization
+Transportation
+UI/UX & Prototyping
+URL Shorteners
+VPN Services
+Vehicle
+Video
+Video & Screen Recording
+Weather
+Web & WordPress Security
+Web Application
+Web Frameworks & Libraries
+Web Monitoring & Performance
+ai
+analytics
+architecture
+artificial intelligence
+audio
+audio production
+business intelligence
+cloud collaboration
+cloud computing
+cloud services
+coaching
+communication
+communication tech
+consulting
+cybersecurity
+data analytics
+data services
+design
+digital archiving
+digital marketing
+digital media
+digital publishing
+education
+educational services
+employment services
+event management
+finance
+financial services
+geophysics
+gis
+graphic design
+healthcare
+hosting
+human resources
+information
+information security
+information services
+information technology
+interior design
+internet
+internet services
+it services
+law
+legal services
+media
+mobile apps
+music licensing
+nonprofit
+online analytics
+online reviews
+photography
+podcasting
+professional services
+publishing
+scheduling
+scientific publishing
+security
+social media
+social networking
+software
+software development
+standards
+streaming services
+telecommunications
+web development
