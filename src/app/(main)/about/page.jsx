@@ -90,10 +90,12 @@ export default function About() {
 
       {/* Where Curiosity Meets Action */}
       <section className="mt-16">
-        <Reveal as="h2" variant="slide-left" className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-         My Focus Areas
+        <Reveal variant="slide-left">
+          <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+            My Focus Areas
+          </h2>
+          <div className="w-20 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-4 mb-6" />
         </Reveal>
-        <div className="w-20 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-3 mb-6" />
 
         <div className="space-y-6">
           <Reveal variant="scale" delay={100}>
@@ -138,8 +140,10 @@ export default function About() {
 
       {/* Leadership */}
       <section className="mt-16">
-        <Reveal as="h2" variant="slide-up" className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Leadership & Community Impact</Reveal>
-        <div className="w-20 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-3 mb-6" />
+        <Reveal variant="slide-up">
+          <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Leadership & Community Impact</h2>
+          <div className="w-20 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-4 mb-6" />
+        </Reveal>
         <div className="space-y-8">
           <Reveal variant="slide-up" delay={100}>
             <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
@@ -198,8 +202,10 @@ export default function About() {
 
       {/* Skills */}
       <section className="mt-16">
-        <Reveal as="h2" variant="slide-left" className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Technical Skills</Reveal>
-        <div className="w-20 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-3 mb-6" />
+        <Reveal variant="slide-left">
+          <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Technical Skills</h2>
+          <div className="w-20 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-4 mb-6" />
+        </Reveal>
         <Reveal variant="fade" delay={150}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
@@ -232,8 +238,10 @@ export default function About() {
 
       {/* Awards & Recognition */}
       <section className="mt-16">
-        <Reveal as="h2" variant="slide-up" className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Recognition</Reveal>
-        <div className="w-20 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-3 mb-6" />
+        <Reveal variant="slide-up">
+          <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Recognition</h2>
+          <div className="w-20 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-4 mb-10" />
+        </Reveal>
         <Reveal variant="scale" delay={200}>
           <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-zinc-600 dark:text-zinc-400">

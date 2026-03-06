@@ -2,6 +2,7 @@
 
 import { Container } from '@/components/Container'
 import { Reveal } from '@/components/Reveal'
+import { EnhancedIframe } from '@/components/EnhancedIframe'
 import { useRef, useState, useEffect } from 'react'
 
 function InteractiveHeader() {
@@ -151,7 +152,7 @@ export default function OptimizingForImpact() {
             <div className="absolute -bottom-2 -right-2 w-6 h-6 border-b-2 border-r-2 border-sky-500/40 rounded-br-lg transition-all duration-300 group-hover:w-8 group-hover:h-8 group-hover:border-sky-400" />
 
             <div className="relative w-full aspect-video bg-zinc-900 rounded-xl overflow-hidden shadow-2xl shadow-emerald-900/20 ring-1 ring-zinc-200 dark:ring-zinc-800/50">
-                <iframe 
+                <EnhancedIframe 
                     id="impact-video"
                     className="w-full h-full"
                     src="https://www.youtube.com/embed/8Dl4qGGw5Xs?enablejsapi=1&rel=0&modestbranding=1&iv_load_policy=3&vq=hd1080" 
