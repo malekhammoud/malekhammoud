@@ -82,13 +82,13 @@ export function EnhancedCarousel({
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100 mb-6">
             Malek Hammoud
           </h1>
-          <h2 className="text-xl font-medium text-zinc-600 dark:text-zinc-400 mb-6">
+          <h2 className="text-xl font-bold text-teal-600 dark:text-teal-400 mb-6">
             <TypewriterText
               texts={['Programmer', 'Robotics Enthusiast', 'Digital Innovator']}
               typingSpeed={100}
               deletingSpeed={50}
               pauseDuration={2000}
-              className="font-medium"
+              className=""
             />
           </h2>
           <p className="text-base text-zinc-600 dark:text-zinc-400 mb-6 max-w-none">

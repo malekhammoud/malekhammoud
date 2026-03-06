@@ -52,6 +52,7 @@ export function TypewriterText({
   return (
     <span className={`typewriter ${className}`}>
       {currentText}
+      <span className="invisible" aria-hidden="true">&#8203;</span>
     </span>
   )
 }
