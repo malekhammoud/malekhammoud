@@ -24,8 +24,6 @@ jobs:
 
       - name: Run Smart Drip & Link Resolver
         run: node scripts/smart_deploy.mjs
-        env:
-          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
 
       - name: Commit and Push to Main
         run: |
