@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(
+  request: Request,
+  { params }: { params: { key: string } }
+) {
   const indexNowKey = process.env.INDEXNOW_KEY;
 
-  if (!indexNowKey) {
+  if (!indexNowKey || params.key !== indexNowKey) {
     return new NextResponse('Key not found', { status: 404 });
   }
 

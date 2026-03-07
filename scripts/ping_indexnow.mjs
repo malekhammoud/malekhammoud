@@ -21,7 +21,8 @@ async function ping() {
   const payload = {
     host: "www.malekhammoud.com",
     key: indexNowKey,
-    keyLocation: `https://www.malekhammoud.com/api/indexnow.txt`,
+    // IndexNow often requires the key file at the root or correctly served
+    keyLocation: `https://www.malekhammoud.com/${indexNowKey}.txt`,
     urlList: movedUrls
   };
 
