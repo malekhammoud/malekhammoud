@@ -171,7 +171,6 @@ export default async function SoftwareDirectoryPage({ searchParams }: { searchPa
         <p>Showing {displayedComparisons.length} {isSearching ? 'results' : `of ${allComparisons.length} comparisons`}</p>
         <div className="flex gap-6">
           <Link href="/software" className="hover:text-blue-400 transition-colors">Software Hub</Link>
-          <Link href="/rss" className="hover:text-blue-400 transition-colors">RSS Feed</Link>
         </div>
       </div>
     </div>
