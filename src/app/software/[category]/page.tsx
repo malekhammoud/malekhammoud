@@ -35,6 +35,9 @@ export async function generateMetadata({ params }: { params: { category: string 
   return {
     title: `${name} Comparisons | Software Hub`,
     description: `Browse the best ${name} solutions. Detailed technical comparisons and deep-dives for developers and teams.`,
+    icons: {
+      icon: '/software/icon.svg',
+    },
   }
 }
 

@@ -7,6 +7,9 @@ import SoftwareSearch from './_components/SoftwareSearch'
 export const metadata = {
   title: 'Software Comparison Hub | Find Your Perfect Tech Stack',
   description: 'The ultimate directory for B2B SaaS comparisons. Browse categories and discover the latest deep-dives into authentication, payments, CRM, and more.',
+  icons: {
+    icon: '/software/icon.svg',
+  },
 }
 
 const ICON_MAP: Record<string, any> = {
