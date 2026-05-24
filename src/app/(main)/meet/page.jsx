@@ -22,7 +22,7 @@ export default function Meet() {
           src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0l3xC50zCsAVuXPaX0_QncbfIsohYnOZRwIAeGXkKo5sLR9UEuBrYVsNW0CEMBAbXIuMhnrQ-w?gv=true" 
           style={{ border: 0, overflow: 'hidden' }} 
           width="100%" 
-          height="1500" 
+          height="2000"
           frameBorder="0"
           scrolling="no"
           title="Google Calendar Appointment Scheduling"
