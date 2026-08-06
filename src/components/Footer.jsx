@@ -1,36 +1,86 @@
 import Link from 'next/link'
 
-import { ContainerInner, ContainerOuter } from '@/components/Container'
+import { ContainerOuter } from '@/components/Container'
+import { siteConfig } from '@/lib/site'
 
-function NavLink({ href, children }) {
-  return (
-    <Link
-      href={href}
-      className="transition hover:text-teal-500 dark:hover:text-teal-400"
-    >
-      {children}
-    </Link>
-  )
-}
+const columns = [
+  {
+    label: 'Work',
+    links: [
+      { href: '/work', label: 'Case studies' },
+      { href: '/services', label: 'Services' },
+      { href: '/contact', label: 'Book a call' },
+    ],
+  },
+  {
+    label: 'Writing',
+    links: [
+      { href: '/articles', label: 'Articles' },
+      { href: '/feed.xml', label: 'RSS' },
+    ],
+  },
+  {
+    label: 'Elsewhere',
+    links: [
+      { href: '/about', label: 'About' },
+      { href: '/resume', label: 'Résumé' },
+      { href: siteConfig.socials.github, label: 'GitHub', external: true },
+      { href: siteConfig.socials.linkedin, label: 'LinkedIn', external: true },
+    ],
+  },
+]
 
 export function Footer() {
   return (
-    <footer className="mt-32 flex-none">
+    <footer className="mt-auto border-t border-rule">
       <ContainerOuter>
-        <div className="border-t border-zinc-100 pb-16 pt-10 dark:border-zinc-700/40">
-          <ContainerInner>
-            <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-              <div className="flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                <NavLink href="/">Home</NavLink>
-                <NavLink href="/about">About</NavLink>
-                <NavLink href="/projects">Projects</NavLink>
-              </div>
-              <p className="text-sm text-zinc-400 dark:text-zinc-500">
-                &copy; {new Date().getFullYear()} Malek Hammoud. All rights
-                reserved.
+        <div className="lg:px-10">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-14 sm:grid-cols-4">
+            <div className="col-span-2 sm:col-span-1">
+              <p className="font-display text-sm font-semibold">
+                {siteConfig.name}
               </p>
+              <p className="mt-2 max-w-[24ch] text-sm text-mute">
+                Private AI systems, built and handed over.
+              </p>
+              <a
+                href={`mailto:${siteConfig.email}`}
+                className="mt-4 inline-block font-mono text-xs text-signal underline decoration-rule underline-offset-4 hover:decoration-signal"
+              >
+                {siteConfig.email}
+              </a>
             </div>
-          </ContainerInner>
+
+            {columns.map((column) => (
+              <div key={column.label}>
+                <p className="font-mono text-2xs uppercase text-mute">
+                  {column.label}
+                </p>
+                <ul className="mt-4 space-y-2.5">
+                  {column.links.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        {...(link.external
+                          ? { target: '_blank', rel: 'noopener noreferrer' }
+                          : {})}
+                        className="text-sm text-ink transition hover:text-signal"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-2 border-t border-rule py-6 font-mono text-2xs uppercase text-mute sm:flex-row sm:items-center sm:justify-between">
+            <span>
+              {siteConfig.location} · Available for contract work
+            </span>
+            <span>&copy; {new Date().getFullYear()} {siteConfig.name}</span>
+          </div>
         </div>
       </ContainerOuter>
     </footer>

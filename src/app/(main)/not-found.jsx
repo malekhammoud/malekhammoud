@@ -1,23 +1,32 @@
 import { Button } from '@/components/Button'
-import { Container } from '@/components/Container'
+import { ContainerOuter } from '@/components/Container'
+
+export const metadata = {
+  title: 'Page not found',
+  robots: { index: false, follow: true },
+}
 
 export default function NotFound() {
   return (
-    <Container className="flex h-full items-center pt-16 sm:pt-32">
-      <div className="flex flex-col items-center">
-        <p className="text-base font-semibold text-zinc-400 dark:text-zinc-500">
-          404
-        </p>
-        <h1 className="mt-4 text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-          Page not found
-        </h1>
-        <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
-          Sorry, we couldn’t find the page you’re looking for.
-        </p>
-        <Button href="/" variant="secondary" className="mt-4">
-          Go back home
-        </Button>
+    <ContainerOuter>
+      <div className="lg:px-10">
+        <div className="max-w-measure py-24 sm:py-32">
+          <p className="font-mono text-2xs uppercase text-signal">Error 404</p>
+          <h1 className="mt-5 font-display text-4xl font-bold sm:text-5xl">
+            That page isn’t here.
+          </h1>
+          <p className="mt-5 text-lg text-mute">
+            It may have moved during the site rebuild. The work, the services
+            and the articles are all still where you’d expect.
+          </p>
+          <div className="mt-9 flex flex-wrap gap-4">
+            <Button href="/">Home</Button>
+            <Button href="/work" variant="secondary">
+              See the work
+            </Button>
+          </div>
+        </div>
       </div>
-    </Container>
+    </ContainerOuter>
   )
 }

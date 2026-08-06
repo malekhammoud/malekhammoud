@@ -2,37 +2,65 @@
 
 import Link from 'next/link'
 import clsx from 'clsx'
-import { trackResumeEvent } from '@/lib/analytics'
 
-const variantStyles = {
+import { trackBooking } from '@/components/Analytics'
+
+const base =
+  'inline-flex items-center justify-center gap-2 rounded font-display text-sm font-medium leading-none transition disabled:opacity-50'
+
+const variants = {
+  // The accent appears here and on links. Nowhere else.
   primary:
-    'bg-zinc-800 font-semibold text-zinc-100 hover:bg-zinc-700 active:bg-zinc-800 active:text-zinc-100/70 dark:bg-zinc-700 dark:hover:bg-zinc-600 dark:active:bg-zinc-700 dark:active:text-zinc-100/70',
+    'bg-signal px-5 py-3 text-paper hover:bg-ink active:translate-y-px',
   secondary:
-    'bg-zinc-50 font-medium text-zinc-900 hover:bg-zinc-100 active:bg-zinc-100 active:text-zinc-900/60 dark:bg-zinc-800/50 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:active:bg-zinc-800/50 dark:active:text-zinc-50/70',
+    'border border-ink px-5 py-3 text-ink hover:bg-ink hover:text-paper active:translate-y-px',
+  quiet:
+    'border border-rule px-4 py-2.5 text-ink hover:border-ink active:translate-y-px',
+  inverse:
+    'bg-paper px-5 py-3 text-deep hover:bg-signal hover:text-paper active:translate-y-px',
+  link: 'text-signal underline decoration-rule underline-offset-4 hover:decoration-signal',
 }
 
-export function Button({ variant = 'primary', className, href, onClick, ...props }) {
-  className = clsx(
-    'inline-flex items-center gap-2 justify-center rounded-md py-2 px-3 text-sm outline-offset-2 transition active:transition-none',
-    variantStyles[variant],
-    className,
-  )
+export function Button({
+  variant = 'primary',
+  className,
+  href,
+  onClick,
+  track,
+  ...props
+}) {
+  const cx = clsx(base, variants[variant], className)
 
-  const handleClick = (e) => {
-    // Track resume clicks
-    if (href && href.includes('resume.pdf')) {
-      trackResumeEvent.viewed('button')
-    }
-
-    // Call original onClick if provided
-    if (onClick) {
-      onClick(e)
-    }
+  const handleClick = (event) => {
+    if (track) trackBooking(track)
+    onClick?.(event)
   }
 
-  return typeof href === 'undefined' ? (
-    <button className={className} onClick={handleClick} {...props} />
-  ) : (
-    <Link className={className} href={href} onClick={handleClick} {...props} />
+  if (typeof href === 'undefined') {
+    return <button className={cx} onClick={handleClick} {...props} />
+  }
+
+  return <Link className={cx} href={href} onClick={handleClick} {...props} />
+}
+
+/** Text link with the arrow affordance used on cards. */
+export function ArrowLink({ href, children, className, ...props }) {
+  return (
+    <Link
+      href={href}
+      className={clsx(
+        'group/arrow inline-flex items-center gap-1.5 font-mono text-xs uppercase text-signal',
+        className,
+      )}
+      {...props}
+    >
+      {children}
+      <span
+        aria-hidden="true"
+        className="transition-transform group-hover/arrow:translate-x-1"
+      >
+        →
+      </span>
+    </Link>
   )
 }

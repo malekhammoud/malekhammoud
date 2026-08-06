@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { CyberLoader } from '@/components/CyberLoader'
 
 /**
  * OptimizedVideo component for replacing GIF images with video
@@ -45,7 +44,6 @@ export function OptimizedVideo({
 
   return (
     <div className={`relative overflow-hidden ${className}`}>
-      <CyberLoader isLoading={isLoading} />
       <video
         ref={videoRef}
         autoPlay={isInView}

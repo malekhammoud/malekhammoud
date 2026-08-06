@@ -1,270 +1,293 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import clsx from 'clsx'
 
-import { Container } from '@/components/Container'
-import {
-  GitHubIcon,
-  InstagramIcon,
-  LinkedInIcon,
-  XIcon,
-} from '@/components/SocialIcons'
+import { Button } from '@/components/Button'
+import { ContainerOuter, Eyebrow, Section } from '@/components/Container'
+import { siteConfig } from '@/lib/site'
 import portraitImage from '@/images/portrait.webp'
-import { Reveal } from '@/components/Reveal'
-
-function SocialLink({ className, href, children, icon: Icon }) {
-  return (
-    <li className={clsx(className, 'flex')}>
-      <Link
-        href={href}
-        className="group flex text-sm font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500"
-        target="_blank"
-      >
-        <Icon className="h-6 w-6 flex-none fill-zinc-500 transition group-hover:fill-teal-500" />
-        <span className="ml-4">{children}</span>
-      </Link>
-    </li>
-  )
-}
-
-function MailIcon(props) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
-      <path
-        fillRule="evenodd"
-        d="M6 5a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6Zm.245 2.187a.75.75 0 0 0-.99 1.126l6.25 5.5a.75.75 0 0 0 .99 0l6.25-5.5a.75.75 0 0 0-.99-1.126L12 12.251 6.245 7.187Z"
-      />
-    </svg>
-  )
-}
+import cwsfLogo from '@/images/supports/cwsf.png'
+import hackLogo from '@/images/supports/hack.png'
+import tksLogo from '@/images/supports/tks-dark.png'
+import tvdsbLogo from '@/images/supports/tvdsb.png'
+import tvsefLogo from '@/images/supports/tvsef.png'
 
 export const metadata = {
   title: 'About',
   description:
-    "I grew up in Lebanon, where power outages and water shortages were daily reality. That experience drives everything I build - not just what can I code, but what should we build, and for whom?",
+    'I grew up in Lebanon with daily power cuts, moved to Canada at seven, and have been building systems ever since. Robotics, science fairs, a Linux distribution, and one responsibly disclosed AI vulnerability.',
+  alternates: { canonical: '/about' },
 }
+
+const background = [
+  { logo: cwsfLogo, name: 'Youth Science Canada', note: 'National science fair' },
+  { logo: hackLogo, name: 'Hack Club', note: 'Teen maker community' },
+  { logo: tksLogo, name: 'The Knowledge Society', note: 'Innovation program' },
+  { logo: tvsefLogo, name: 'Thames Valley Science Fair', note: 'Regional science fair' },
+  { logo: tvdsbLogo, name: 'Thames Valley DSB', note: 'London, Ontario' },
+]
 
 export default function About() {
   return (
-    <Container className="mt-16 sm:mt-32">
-      <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
-        <div className="lg:pl-20">
-          <div className="max-w-xs px-2.5 lg:max-w-none">
-            <Image
-                src={portraitImage}
-                alt=""
-                sizes="(min-width: 1024px) 32rem, 20rem"
-                className="aspect-square rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
-            />
-          </div>
-        </div>
-        <div className="lg:order-first lg:row-span-2">
-          <Reveal as="h1" variant="fade" className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-            Building Systems & Empowering Builders.
-          </Reveal>
-          <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
-            <Reveal delay={100}><p>Growing up in Lebanon with daily power outages and water shortages shaped how I view technology. When I moved to Canada at age 7, I carried a question: How can we use technologies to improve the quality of life in communities in Canada and all over the world?</p></Reveal>
-            <Reveal delay={200}><p>My tech journey began with Scratch and JavaScript, just for fun at first. But over time, I learned to ask harder questions: What should we build? For whom? With what consequences? I expanded into web development, robotics, and machine learning, but always with the same core question: How do we design technology that actually serves people?</p></Reveal>
-            <Reveal delay={300}><p>I'm constantly learning and pushing myself not just to innovate, but to innovate responsibly. My passion for tech is inseparable from my passion for using it to empower others and tackle real challenges.</p></Reveal>
-          </div>
-        </div>
+    <>
+      <ContainerOuter>
+        <div className="lg:px-10">
+          <div className="grid gap-10 py-16 sm:py-20 lg:grid-cols-12 lg:gap-12">
+            <div className="lg:col-span-7">
+              <Eyebrow tone="signal">About</Eyebrow>
+              <h1
+                className="rise mt-5 max-w-[18ch] font-display text-4xl font-bold sm:text-5xl"
+                style={{ '--i': 0 }}
+              >
+                I build things that have to keep running.
+              </h1>
+              <div
+                className="rise mt-8 max-w-measure space-y-6 text-lg"
+                style={{ '--i': 1 }}
+              >
+                <p>
+                  I grew up in Lebanon, where the power went out on a schedule
+                  and the water sometimes didn’t come at all. You learn early
+                  that infrastructure is not an abstraction — it’s the
+                  difference between a normal evening and a bad one. We moved to
+                  Canada when I was seven, and I’ve been carrying that around
+                  ever since: the question isn’t whether a thing works in a
+                  demo, it’s whether it works on a Tuesday when nobody’s
+                  watching.
+                </p>
+                <p>
+                  I started with Scratch, then JavaScript, mostly for fun. It
+                  turned into robots — a maze solver, then a weed-detection
+                  robot that had to survive being driven across an actual field,
+                  then a drone that had to find litter from the air. Hardware is
+                  a good teacher because it refuses to be impressed by your
+                  architecture diagram. Either the thing drives into the wall or
+                  it doesn’t.
+                </p>
+                <p>
+                  These days most of my work is AI systems, and I’ve ended up
+                  specialising in the part most people skip: actually running
+                  the model. Anyone can call an API. Fewer people can size the
+                  hardware, quantise the weights, put authentication and
+                  failover in front of it, and hand the whole thing over to a
+                  team who’ll still be operating it a year later. That’s the
+                  work I like, and it happens to be the work that lets a company
+                  keep its data.
+                </p>
+              </div>
+            </div>
 
-        <div className="lg:pl-20">
-          <ul role="list">
-            <SocialLink href="https://github.com/malekhammoud" icon={GitHubIcon} className="mt-4">
-              View my GitHub
-            </SocialLink>
-            <SocialLink href="https://www.linkedin.com/in/malekhammoud/" icon={LinkedInIcon} className="mt-4">
-              Let's connect on LinkedIn!
-            </SocialLink>
-            <SocialLink
-                href="mailto:malek@malekhammoud.com"
-                icon={MailIcon}
-                className="mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
-            >
-              malek@malekhammoud.com
-            </SocialLink>
-          </ul>
+            <div className="lg:col-span-5">
+              <div className="rise" style={{ '--i': 2 }}>
+                <div className="border border-rule bg-panel/40 p-3">
+                  <Image
+                    src={portraitImage}
+                    alt="Malek Hammoud"
+                    sizes="(min-width: 1024px) 26rem, 100vw"
+                    className="aspect-[4/5] w-full object-cover"
+                    priority
+                  />
+                </div>
+                <dl className="mt-4 border border-rule bg-panel/40 p-5 font-mono text-2xs uppercase">
+                  <div className="flex gap-4 border-b border-rule pb-3">
+                    <dt className="w-20 shrink-0 text-mute">Based</dt>
+                    <dd>{siteConfig.location}</dd>
+                  </div>
+                  <div className="flex gap-4 border-b border-rule py-3">
+                    <dt className="w-20 shrink-0 text-mute">Focus</dt>
+                    <dd>Private AI deployments</dd>
+                  </div>
+                  <div className="flex gap-4 pt-3">
+                    <dt className="w-20 shrink-0 text-mute">Contact</dt>
+                    <dd>
+                      <a
+                        href={`mailto:${siteConfig.email}`}
+                        className="text-signal underline decoration-rule underline-offset-4 hover:decoration-signal"
+                      >
+                        Email
+                      </a>
+                      {' · '}
+                      <a
+                        href={siteConfig.socials.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-signal underline decoration-rule underline-offset-4 hover:decoration-signal"
+                      >
+                        GitHub
+                      </a>
+                      {' · '}
+                      <a
+                        href={siteConfig.socials.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-signal underline decoration-rule underline-offset-4 hover:decoration-signal"
+                      >
+                        LinkedIn
+                      </a>
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          </div>
         </div>
+      </ContainerOuter>
+
+      <ContainerOuter>
+        <div className="lg:px-10">
+          <Section index="01" label="Security">
+            <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+              <div className="lg:col-span-7">
+                <h2 className="font-display text-2xl font-bold sm:text-3xl">
+                  On knowing how these things break
+                </h2>
+                <div className="mt-5 max-w-measure space-y-5 text-base">
+                  <p>
+                    I don’t sell security services — I don’t have the
+                    credential depth for that, and a half-qualified security
+                    offer is worse than none. But I do spend time on the
+                    offensive side, because it’s the fastest way to learn what
+                    an AI system will do when someone is deliberately unkind to
+                    it.
+                  </p>
+                  <p>
+                    One example, since it’s the one that’s public: I found a
+                    prompt-injection path in a commercial AI support agent where
+                    injected instructions could get user data exfiltrated
+                    through the markdown the agent rendered back to the page.
+                    Reported through Bugcrowd, triaged, fixed. It’s a small
+                    finding in the scheme of things, but it changed how I build:
+                    every agent I ship now has scoped credentials, a logged
+                    audit trail, and output that isn’t trusted just because a
+                    model produced it.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-8 lg:col-span-5 lg:mt-0">
+                <div className="border-l-2 border-signal bg-panel/40 p-6">
+                  <p className="font-mono text-2xs uppercase text-mute">
+                    The short version
+                  </p>
+                  <p className="mt-3 text-lg">
+                    I build AI systems that don’t fall over in embarrassing
+                    ways, because I’ve spent time making other people’s fall
+                    over.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Section>
+        </div>
+      </ContainerOuter>
+
+      <ContainerOuter>
+        <div className="lg:px-10">
+          <Section index="02" label="Teaching">
+            <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+              <div className="lg:col-span-7">
+                <h2 className="font-display text-2xl font-bold sm:text-3xl">
+                  The clubs
+                </h2>
+                <div className="mt-5 max-w-measure space-y-5 text-base">
+                  <p>
+                    When I joined the web development club in grade 9, I barely
+                    knew how to code. My CS teacher didn’t fix my bugs; he asked
+                    questions until I found them. I’ve spent three years paying
+                    that forward as co-president of the programming club,
+                    president of the STEM club, and co-president of the maths
+                    enrichment club at London Central.
+                  </p>
+                  <p>
+                    The thing I’m actually proud of isn’t the medals. It’s that
+                    “I don’t know how to code” stopped being a reason not to
+                    turn up. One member joined last year with zero experience;
+                    I never once fixed his bug for him, and he’s now writing
+                    things I’d have found hard at his stage.
+                  </p>
+                  <p>
+                    I also spent a summer as a tech tutor at the London Public
+                    Library, teaching computer basics to whoever booked a slot —
+                    which is the single best training I’ve had in explaining a
+                    technical thing without condescending to anyone.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Section>
+        </div>
+      </ContainerOuter>
+
+      <ContainerOuter>
+        <div className="lg:px-10">
+          <Section index="03" label="Background">
+            <h2 className="font-display text-2xl font-bold sm:text-3xl">
+              Where the early work came from
+            </h2>
+            <p className="mt-4 max-w-measure text-base text-mute">
+              Programs and organisations I came up through. They’re the reason
+              I had a workshop, a science fair to enter, and people to build
+              alongside — not endorsements of my work now.
+            </p>
+
+            <ul className="mt-10 grid grid-cols-2 gap-px border border-rule bg-rule sm:grid-cols-3 lg:grid-cols-5">
+              {background.map((item) => (
+                <li
+                  key={item.name}
+                  className="flex flex-col items-center gap-3 bg-paper p-5 text-center"
+                >
+                  <div className="relative h-10 w-full">
+                    <Image
+                      src={item.logo}
+                      alt=""
+                      fill
+                      sizes="160px"
+                      className="object-contain opacity-70"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-display text-xs font-semibold leading-tight">
+                      {item.name}
+                    </p>
+                    <p className="mt-1 font-mono text-2xs uppercase text-mute">
+                      {item.note}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <p className="mt-8 text-base text-mute">
+              The full list of awards, roles and coursework lives on the{' '}
+              <Link
+                href="/resume"
+                className="text-signal underline decoration-rule underline-offset-4 hover:decoration-signal"
+              >
+                résumé
+              </Link>
+              .
+            </p>
+          </Section>
+        </div>
+      </ContainerOuter>
+
+      <div className="bg-deep text-paper">
+        <ContainerOuter>
+          <div className="lg:px-10">
+            <div className="grid gap-8 py-16 sm:py-20 lg:grid-cols-12">
+              <div className="lg:col-span-8">
+                <h2 className="max-w-[20ch] font-display text-3xl font-bold sm:text-4xl">
+                  If any of that sounds like the right fit, say hello.
+                </h2>
+              </div>
+              <div className="flex items-end lg:col-span-4 lg:justify-end">
+                <Button href="/contact" variant="inverse" track="about">
+                  Book a call
+                </Button>
+              </div>
+            </div>
+          </div>
+        </ContainerOuter>
       </div>
-
-      {/* Where Curiosity Meets Action */}
-      <section className="mt-16">
-        <Reveal variant="slide-left">
-          <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-            My Focus Areas
-          </h2>
-          <div className="w-20 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-4 mb-6" />
-        </Reveal>
-
-        <div className="space-y-6">
-          <Reveal variant="scale" delay={100}>
-            <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-                Autonomous Systems & Environmental Impact
-              </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Three years of science fair projects: maze-solving robot, GreenGuardian
-                weed detection & elimination(CWSF Bronze), litter-detection drone. Each project
-                taught me something new about the gap between technical solutions and
-                real-world impact.
-              </p>
-            </div>
-          </Reveal>
-          <Reveal variant="scale" delay={200}>
-            <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-                Production Software Development
-              </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Internships at Playtoon and Bryck building scalable applications for
-                real users. Learning professional workflows, team collaboration, and
-                how production systems differ from school projects.
-              </p>
-            </div>
-          </Reveal>
-          <Reveal variant="scale" delay={300}>
-            <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-                AI-Powered Solutions
-              </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Basil Home AI won Deloitte's Best Use of AI for Green at Hack the 6ix.
-                Now working toward Kickstarter launch—turning a hackathon project into
-                something people actually use.
-              </p>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Leadership */}
-      <section className="mt-16">
-        <Reveal variant="slide-up">
-          <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Leadership & Community Impact</h2>
-          <div className="w-20 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-4 mb-6" />
-        </Reveal>
-        <div className="space-y-8">
-          <Reveal variant="slide-up" delay={100}>
-            <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">Programming Club</h3>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">Co-President, London Central SS</p>
-                </div>
-                <span className="text-xs text-zinc-500 dark:text-zinc-400">Sep 2023 – Present</span>
-              </div>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">When I joined the Senior Web Development Club in Grade 9, I barely knew how to code. My CS teacher built my confidence and empowered me to try. That experience changed me, and I've spent three years paying it forward.</p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">I transformed our club from a competition-focused group into a space where "I don't know how to code" became an invitation, not a barrier. When Andy joined last year with zero experience, I didn't fix his bugs. I asked questions until he debugged them himself. Today he's building sophisticated algorithms.</p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 font-medium italic">The lesson: The greatest impact isn't writing the best code. It's helping someone else discover they can.</p>
-            </div>
-          </Reveal>
-
-          <Reveal variant="slide-up" delay={200}>
-            <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">STEM Club</h3>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">President, London Central SS</p>
-                </div>
-                <span className="text-xs text-zinc-500 dark:text-zinc-400">Sep 2024 – Present</span>
-              </div>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
-
-                Run weekly meetings where we dive into emerging tech, break down research
-                methods, and help students build independent projects.
-                We've completely transformed our school. We now dominate the
-                local science fair, sweeping top spots consistently and send multiple students to nationals every year.
-              </p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 font-medium italic">
-                Making STEM accessible isn't about dumbing things down. It's about removing
-                barriers so everyone can reach up.
-              </p>
-
-            </div>
-          </Reveal>
-
-          <Reveal variant="slide-up" delay={300}>
-            <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">Math Enrichment Club</h3>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">Co-President, London Central SS</p>
-                </div>
-                <span className="text-xs text-zinc-500 dark:text-zinc-400">Sep 2023 – Present</span>
-              </div>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">"Math isn't a solo sport. It's collaborative problem-solving."</p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">That's the philosophy behind our club. We explore Game Theory, 4th Dimensions, and advanced topics beyond curriculum while preparing for CEMC competitions. But the real goal isn't winning competitions. It's transforming how students see mathematics: not as something you're "good at" or "bad at," but as a language for exploring complex ideas together.</p>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Skills */}
-      <section className="mt-16">
-        <Reveal variant="slide-left">
-          <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Technical Skills</h2>
-          <div className="w-20 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-4 mb-6" />
-        </Reveal>
-        <Reveal variant="fade" delay={150}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-3">Languages</h3>
-              <div className="flex flex-wrap gap-2">
-                {['Python', 'JavaScript/TypeScript', 'C++', 'Java', 'SQL'].map((s) => (
-                  <span key={s} className="text-xs px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">{s}</span>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-3">Frameworks & Libraries</h3>
-              <div className="flex flex-wrap gap-2">
-                {['React/Next.js', 'Node.js', 'TensorFlow', 'OpenCV', 'Flask'].map((s) => (
-                  <span key={s} className="text-xs px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">{s}</span>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-3">Tools & Platforms</h3>
-              <div className="flex flex-wrap gap-2">
-                {['Git/GitHub', 'Linux', 'Firebase', 'Arduino', 'Raspberry Pi'].map((s) => (
-                  <span key={s} className="text-xs px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">{s}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Reveal>
-      </section>
-
-      {/* Awards & Recognition */}
-      <section className="mt-16">
-        <Reveal variant="slide-up">
-          <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Recognition</h2>
-          <div className="w-20 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-4 mb-10" />
-        </Reveal>
-        <Reveal variant="scale" delay={200}>
-          <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-              <div>
-                <p className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">🏆 Hackathons</p>
-                <p>Winner (Hack the 6ix), Top 32 Finalist (Hack the North), Top 4 (TKS Global)</p>
-              </div>
-              <div>
-                <p className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">🔬 Science Fairs</p>
-                <p>Bronze (CWSF 2024), Gold (TVSEF 2025, 2024), Silver (TVSEF 2023)</p>
-              </div>
-              <div>
-                <p className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">💼 Competitions</p>
-                <p>Finalist in Microsoft Sustainability & IKEA Customer Experience Challenges</p>
-              </div>
-              <div>
-                <p className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">📚 Academic</p>
-                <p>AP CS (5/5), CCC Senior Distinction, School Excellence Award</p>
-              </div>
-            </div>
-          </div>
-        </Reveal>
-      </section>
-    </Container>
+    </>
   )
 }

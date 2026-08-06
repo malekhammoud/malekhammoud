@@ -1,581 +1,261 @@
-import Image from 'next/image'
 import Link from 'next/link'
-import clsx from 'clsx'
-import { getAllArticles } from '@/lib/articles'
-import { formatDate } from '@/lib/formatDate'
-import { NewsletterForm } from '@/components/NewsletterForm'
-import { Button } from '@/components/Button'
-import { Card } from '@/components/Card'
-import { Container } from '@/components/Container'
-import { TypewriterText } from '@/components/TypewriterText'
-import {
-  GitHubIcon,
-  LinkedInIcon,
-} from '@/components/SocialIcons'
-import { OptimizedVideo } from '@/components/OptimizedVideo'
-import logoSimmad from '@/images/logos/simmad.png'
-import logoBRYCK from '@/images/logos/bryck.png'
-import logoLPL from '@/images/logos/lpl.png'
-import logoPlaytoon from '@/images/logos/playtoon.png'
-import img0254 from '@/images/photos/IMG_0254.webp'
-import img0547 from '@/images/photos/IMG_0547.webp'
-import img0920 from '@/images/photos/IMG_0920.webp'
-import img0922 from '@/images/photos/IMG_0922.webp'
-import img0926 from '@/images/photos/IMG_0926.webp'
-import img1027 from '@/images/photos/IMG_1027.webp'
-import htn from '@/images/photos/htn.webp'
-import htnp from '@/images/photos/htnproject.webp'
-import ht6ix from '@/images/photos/ht6ix.webp'
 
-// Project images (static)
-import ecosouteImage from '@/images/projects/ecosoute.webp'
-import greenImage from '@/images/projects/green.webp'
+import { ArrowLink, Button } from '@/components/Button'
+import { ContainerOuter, Eyebrow, Section } from '@/components/Container'
+import { Trace } from '@/components/Trace'
+import { featuredWork } from '@/lib/work'
+import { offers, siteConfig } from '@/lib/site'
 
-import eco from '@/images/projects/ecosphere.webp'
-// Import animations
-import '@/styles/animations.css'
-
-// Company logos - add your 5 supporting company imports here
-import cwsfLogo from '@/images/supports/cwsf.png'
-import hackLogo from '@/images/supports/hack.png'
-import tksLightLogo from '@/images/supports/tks-light.png'
-import tksDarkLogo from '@/images/supports/tks-dark.png'
-import tvdsbLogo from '@/images/supports/tvdsb.png'
-import tvsefLogo from '@/images/supports/tvsef.png'
-
-function BriefcaseIcon(props) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path
-        d="M2.75 9.75a3 3 0 0 1 3-3h12.5a3 3 0 0 1 3 3v8.5a3 3 0 0 1-3 3H5.75a3 3 0 0 1-3-3v-8.5Z"
-        className="fill-zinc-100 stroke-zinc-400 dark:fill-zinc-100/10 dark:stroke-zinc-500"
-      />
-      <path
-        d="M3 14.25h6.249c.484 0 .952-.002 1.316.319l.777.682a.996.996 0 0 0 1.316 0l.777-.682c.364-.32.832-.319 1.316-.319H21M8.75 6.5V4.75a2 2 0 0 1 2-2h2.5a2 2 0 0 1 2 2V6.5"
-        className="stroke-zinc-400 dark:stroke-zinc-500"
-      />
-    </svg>
-  )
-}
-function ArrowRightIcon(props) {
-  return (
-      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
-        <path
-            d="M7.25 4.75L10.75 8m0 0-3.5 3.25M10.75 8h-8.5"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
-      </svg>
-  );
+export const metadata = {
+  title: `${siteConfig.name} — ${siteConfig.tagline}`,
+  description: siteConfig.description,
+  alternates: { canonical: '/' },
 }
 
-function Article({ article }) {
+/* Every item here is something that exists and can be checked. No figures I
+   was not given, and no client names. */
+const proof = [
+  {
+    id: 'Fig. 01',
+    title: 'Self-hosted inference, in production',
+    body: 'Open-weight Qwen models running on Apple Silicon through MLX-LM, behind a Python router I wrote: authentication, model management and crash recovery.',
+  },
+  {
+    id: 'Fig. 02',
+    title: 'Shipped an operating system',
+    body: 'Flow Arch — an Arch Linux distribution built on Hyprland, designed around enforced focus. Packaged, documented and released for other people to install.',
+  },
+  {
+    id: 'Fig. 03',
+    title: 'Autonomous computer vision',
+    body: 'A weed-detection robot that identifies and sprays individual plants instead of whole fields. Bronze medal, Canada-Wide Science Fair.',
+  },
+  {
+    id: 'Fig. 04',
+    title: 'Reported an AI data-exfiltration bug',
+    body: 'Found a prompt-injection path in a commercial AI support agent that leaked user data through rendered markdown. Disclosed through Bugcrowd and fixed.',
+  },
+]
+
+function Hero() {
   return (
-    <Card as="article">
-      <Card.Title href={`/articles/${article.slug}`}>
-        {article.title}
-      </Card.Title>
-      <Card.Eyebrow as="time" dateTime={article.date} decorate>
-        {formatDate(article.date)}
-      </Card.Eyebrow>
-      <Card.Description>{article.description}</Card.Description>
-      <Card.Cta>Read article</Card.Cta>
-    </Card>
-  )
-}
-
-import { EnhancedCarousel } from '@/components/EnhancedCarousel'
-
-function Role({ role }) {
-  let startLabel =
-    typeof role.start === 'string' ? role.start : role.start.label
-  let startDate =
-    typeof role.start === 'string' ? role.start : role.start.dateTime
-
-  let endLabel = typeof role.end === 'string' ? role.end : role.end.label
-  let endDate = typeof role.end === 'string' ? role.end : role.end.dateTime
-
-  return (
-    <li className="flex gap-4">
-      <div className="relative mt-1 flex h-10 w-10 flex-none items-center justify-center rounded-full shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
-        <Image src={role.logo} alt="" className="h-7 w-7" unoptimized />
-      </div>
-      <dl className="flex flex-auto flex-wrap gap-x-2">
-        <dt className="sr-only">Company</dt>
-        <dd className="w-full flex-none text-sm font-medium text-zinc-900 dark:text-zinc-100">
-          {role.company}
-        </dd>
-        <dt className="sr-only">Role</dt>
-        <dd className="text-xs text-zinc-500 dark:text-zinc-400">
-          {role.title}
-        </dd>
-        <dt className="sr-only">Date</dt>
-        <dd
-          className="ml-auto text-xs text-zinc-400 dark:text-zinc-500"
-          aria-label={`${startLabel} until ${endLabel}`}
-        >
-          <time dateTime={startDate}>{startLabel}</time>{' '}
-          <span aria-hidden="true">—</span>{' '}
-          <time dateTime={endDate}>{endLabel}</time>
-        </dd>
-      </dl>
-    </li>
-  )
-}
-
-function Resume() {
-  let resume = [
-    {
-      company: 'SIMMAD',
-      title: 'Software Engineer',
-      logo: logoSimmad,
-      start: 'Oct, 2024',
-      end: {
-        label: 'Present',
-        dateTime: new Date().toString(),
-      },
-    },
-    {
-      company: 'BRYCK',
-      title: 'Software Engineer',
-      logo: logoBRYCK,
-      start: 'Sep, 2024',
-      end: 'Jan, 2025',
-    },
-    {
-      company: 'London Public Libary',
-      title: 'Tech Tutor',
-      logo: logoLPL,
-      start: 'Mar, 2023',
-      end: 'Aug, 2023',
-    },
-  ]
-
-  return (
-    <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-      <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-        <BriefcaseIcon className="h-6 w-6 flex-none" />
-        <span className="ml-3">Work</span>
-      </h2>
-      <ol className="mt-6 space-y-4">
-        {resume.map((role, roleIndex) => (
-          <Role key={roleIndex} role={role} />
-        ))}
-      </ol>
-      <Button href="/resume.pdf" target={"_blank"} variant="secondary" className="group mt-6 w-full">
-        View Resume
-        <ArrowRightIcon className="h-4 w-4 stroke-zinc-400 transition group-active:stroke-zinc-600 dark:group-hover:stroke-zinc-50 dark:group-active:stroke-zinc-50" />
-      </Button>
-    </div>
-  )
-}
-
-function Photos() {
-  let rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
-
-  return (
-    <div className="mt-16 sm:mt-20">
-      <div className="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8">
-        {[image1, image2, image3, image4, image5].map((image, imageIndex) => (
-          <div
-            key={image.src}
-            className={clsx(
-              'relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl dark:bg-zinc-800',
-              rotations[imageIndex % rotations.length],
-            )}
-          >
-            <Image
-              src={image}
-              alt=""
-              sizes="(min-width: 640px) 18rem, 11rem"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function FloatingElements() {
-  return null; // Removed floating background elements
-}
-
-// Highlight a small, curated set of projects for first-time visitors
-function FeaturedProjects() {
-  const featured = [
-    {
-      name: 'GreenGuardian',
-      description:
-        'Autonomous weed detection and precise spraying robot that reduces herbicide use with computer vision.',
-      href: 'https://partner.projectboard.world/ysc/project/greenguardian-automated-weed-detection-and-elimination',
-      image: greenImage,
-      type: 'image',
-    },
-    {
-      name: 'Autonomous Litter Detection',
-      description:
-        'Low-cost drone-based system to detect and map litter for environmental monitoring and cleanup.',
-      href: 'https://www.notion.so/tksworld/Autonomous-Litter-Detection-Mapping-System-1f60b470b010802ba60cd8a57ee73b0e',
-      type: 'video',
-      webm: '/videos/drone.webm',
-      mp4: '/videos/drone.mp4',
-    },
-    {
-      name: 'Flow Arch',
-      description:
-        'The Productivity-First Operating System. Arch-based. Hyprland-driven. Designed for focus with zero distractions.',
-      href: 'https://flowarch-os.github.io/',
-      type: 'video',
-      webm: '/videos/flowarch.webm',
-      mp4: '/videos/flowarch.mp4',
-    },
-  ]
-
-  return (
-    <Container className="mt-24">
-      <div className="mx-auto max-w-6xl">
-        <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-          Featured Projects
-        </h2>
-        <div className="w-24 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-4 mb-8" />
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((p, idx) => (
-            <Card as="article" key={idx}>
-              <div className="relative z-10 mb-4 h-48 w-full overflow-hidden rounded-xl bg-zinc-50 shadow-sm dark:bg-zinc-800">
-                {p.type === 'video' ? (
-                  <OptimizedVideo
-                    webmSrc={p.webm}
-                    mp4Src={p.mp4}
-                    className="absolute inset-0 h-full w-full object-cover"
-                    priority={idx === 0}
-                  />
-                ) : (
-                  <Image
-                    src={p.image}
-                    alt={p.name}
-                    fill
-                    className="object-cover"
-                    sizes="(min-width: 1024px) 22rem, 100vw"
-                    loading="lazy"
-                    quality={80}
-                  />
-                )}
-              </div>
-              <Card.Title href={p.href} target="_blank">{p.name}</Card.Title>
-              <Card.Description>{p.description}</Card.Description>
-              <Card.Cta>Learn more</Card.Cta>
-            </Card>
-          ))}
-        </div>
-        <div className="mt-8">
-          <Button href="/projects" variant="secondary">See all projects</Button>
-        </div>
-      </div>
-    </Container>
-  )
-}
-
-function LatestArticles({ articles }) {
-  if (!articles?.length) return null
-  return (
-    <Container className="mt-24">
-      <div className="mx-auto max-w-6xl">
-        <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-          Latest Articles
-        </h2>
-        <div className="w-24 h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mt-4 mb-8" />
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          {articles.map((article) => (
-            <Article key={article.slug} article={article} />
-          ))}
-        </div>
-        <div className="mt-8">
-          <Button href="/articles" variant="secondary">Browse all articles</Button>
-        </div>
-      </div>
-    </Container>
-  )
-}
-
-function NewsletterCta() {
-  return (
-    <Container className="mt-24">
-      <div className="mx-auto max-w-3xl rounded-2xl border border-zinc-100 p-8 shadow-sm dark:border-zinc-700/40">
-        <NewsletterForm />
-      </div>
-    </Container>
-  )
-}
-
-function TimelineResume() {
-  let resume = [
-    {
-      company: 'Playtoon',
-      title: 'Software Developer Intern',
-      logo: logoPlaytoon,
-      start: 'Mar 2025',
-      end: 'Aug 2025',
-    },
-    {
-      company: 'SIMMAD',
-      title: 'Software Engineer',
-      logo: logoSimmad,
-      start: 'Oct, 2024',
-      end: 'Apr, 2025',
-    },
-    {
-      company: 'BRYCK',
-      title: 'Software Developer',
-      logo: logoBRYCK,
-      start: 'Sep, 2024',
-      end: 'Jan, 2025',
-    },
-    {
-      company: 'London Public Library',
-      title: 'Tech Tutor',
-      logo: logoLPL,
-      start: 'Mar, 2023',
-      end: 'Aug, 2023',
-    },
-  ]
-
-  return (
-    <div className="relative">
-      {/* Header */}
-      <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 mb-4">
-          Professional Experience
-        </h2>
-        <div className="w-24 h-0.5 bg-zinc-300 dark:bg-zinc-700 mx-auto rounded-full"></div>
-      </div>
-
-      {/* Timeline */}
-      <div className="relative">
-        {/* Vertical line */}
-        <div className="absolute left-6 sm:left-8 top-0 bottom-0 w-0.5 bg-zinc-200 dark:bg-zinc-700"></div>
-
-        <div className="space-y-8 sm:space-y-12">
-          {resume.map((role, index) => (
-            <div key={index} className="relative flex items-start">
-              {/* Timeline dot */}
-              <div className="relative z-10 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-white dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 shadow-sm">
-                <Image src={role.logo} alt={role.company} className="h-6 w-6 sm:h-8 sm:w-8 rounded-full" unoptimized />
-              </div>
-
-              {/* Content card */}
-              <div className="ml-4 sm:ml-8 flex-1">
-                <div className="rounded-2xl border border-zinc-100 bg-white p-5 sm:p-6 shadow-sm transition-all duration-200 hover:shadow-md dark:border-zinc-700/40 dark:bg-zinc-800">
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
-                    <div>
-                      <h3 className="text-base sm:text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                        {role.title}
-                      </h3>
-                      <p className="text-sm sm:text-base font-medium text-zinc-600 dark:text-zinc-400">
-                        {role.company}
-                      </p>
-                    </div>
-                    <div className="sm:text-right">
-                      <span className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-700 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                        {role.start} - {typeof role.end === 'string' ? role.end : role.end.label}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
-                    {role.company === 'Playtoon' && (
-                      <p>At Playtoon, we're building a platform that reimagines how stories are created and experienced.</p>
-                    )}
-                    {role.company === 'SIMMAD' && (
-                      <p>Building scalable web applications and optimizing performance.</p>
-                    )}
-                    {role.company === 'BRYCK' && (
-                      <p>Led an internal Project: PlotPro. Developed responsive user interfaces and implemented backend APIs.</p>
-                    )}
-                    {role.company === 'London Public Library' && (
-                      <p>Taught computer fundamentals to community members and improved digital literacy in my community.</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Download button */}
-      <div className="mt-12 text-center">
-        <Button
-          href="/resume.pdf"
-          target="_blank"
-          variant="primary"
-          className="transition-transform hover:scale-105"
-        >
-          <span className="flex items-center gap-2">
-            📄 Download Full Resume
-            <ArrowRightIcon className="h-4 w-4" />
-          </span>
-        </Button>
-      </div>
-    </div>
-  )
-}
-
-function SupportedBy() {
-  const supportingCompanies = [
-    {
-      name: 'Youth Science Canada',
-      logo: cwsfLogo,
-      description: 'National Science Fair Organizer'
-    },
-    {
-      name: 'Hack Club',
-      logo: hackLogo,
-      description: 'Tech community where teens create, learn, and collaborate'
-    },
-    {
-      name: 'The Knowledge Society',
-      lightLogo: tksLightLogo,
-      darkLogo: tksDarkLogo,
-      description: 'Global innovation program for ambitious teens'
-    },
-    {
-      name: 'Thames Valley District School Board',
-      logo: tvdsbLogo,
-      description: 'Educational Institution'
-    },
-    {
-      name: 'Thames Valley Science & Engineering Fair',
-      logo: tvsefLogo,
-      description: 'Regional Science Fair'
-    }
-  ]
-
-  return (
-    <div className="py-12 pt-16 sm:py-16 sm:pt-24">
-      <Container>
-        <div className="mx-auto max-w-6xl text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 mb-4">
-            Supported By
-          </h2>
-          <div className="w-16 h-0.5 bg-zinc-300 dark:bg-zinc-700 mx-auto rounded-full mb-8 sm:mb-12"></div>
-          <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mb-8 sm:mb-12">
-            Proud to work with organizations that believe in innovation and growth
+    <ContainerOuter>
+      <div className="lg:px-10">
+        <div className="py-14 sm:py-20 lg:py-24">
+          <p className="rise font-mono text-2xs uppercase text-signal" style={{ '--i': 0 }}>
+            {siteConfig.location} · Available for contract work
           </p>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8 items-center justify-items-center">
-            {supportingCompanies.map((company, index) => (
-              <div
-                key={index}
-                className="group flex flex-col items-center p-2 md:p-6 transition-all duration-300 hover:scale-105"
-                title={`${company.name} - ${company.description}`}
-              >
-                {/* Logo container with consistent sizing */}
-                <div className="relative mb-2 md:mb-4 h-16 md:h-24 w-full max-w-[140px] md:max-w-[220px] mx-auto">
-                  {company.lightLogo && company.darkLogo ? (
-                    <>
-                      <Image
-                        src={company.darkLogo}
-                        alt={company.name}
-                        fill
-                        sizes="(min-width: 1024px) 220px, (min-width: 768px) 180px, 160px"
-                        className="object-contain dark:hidden"
-                        loading="lazy"
-                        quality={90}
-                      />
-                      <Image
-                        src={company.lightLogo}
-                        alt={company.name}
-                        fill
-                        sizes="(min-width: 1024px) 220px, (min-width: 768px) 180px, 160px"
-                        className="object-contain hidden dark:block"
-                        loading="lazy"
-                        quality={90}
-                      />
-                    </>
-                  ) : (
-                    <Image
-                      src={company.logo}
-                      alt={company.name}
-                      fill
-                      sizes="(min-width: 1024px) 220px, (min-width: 768px) 180px, 160px"
-                      className="object-contain"
-                      loading="lazy"
-                      quality={90}
-                    />
-                  )}
-                </div>
+          <div className="mt-6 lg:grid lg:grid-cols-12 lg:gap-12">
+            <h1
+              className="rise max-w-[20ch] font-display text-4xl font-bold sm:text-5xl lg:col-span-8 lg:text-6xl"
+              style={{ '--i': 1 }}
+            >
+              I build AI systems for companies that can’t put their data in
+              someone else’s cloud.
+            </h1>
 
-                {/* Company name and description */}
-                <div className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-                  <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1 text-center">
-                    {company.name}
-                  </h3>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 text-center">
-                    {company.description}
-                  </p>
-                </div>
+            <div className="lg:col-span-4 lg:self-end">
+              <p
+                className="rise mt-7 max-w-measure text-lg text-mute lg:mt-0"
+                style={{ '--i': 2 }}
+              >
+                Private models, agents and pipelines — deployed on
+                infrastructure you own, documented, and handed over working.
+                You keep the keys, the weights and the ability to run it
+                without me.
+              </p>
+
+              <div
+                className="rise mt-8 flex flex-wrap items-center gap-4"
+                style={{ '--i': 3 }}
+              >
+                <Button href="/contact" track="hero">
+                  Book a call
+                </Button>
+                <Button href="/work" variant="secondary">
+                  See the work
+                </Button>
               </div>
-            ))}
+            </div>
+          </div>
+
+          <Trace className="rise mt-16" style={{ '--i': 4 }} />
+        </div>
+      </div>
+    </ContainerOuter>
+  )
+}
+
+function Proof() {
+  return (
+    <div className="bg-deep text-paper">
+      <ContainerOuter>
+        <div className="lg:px-10">
+          <div className="py-14 sm:py-20">
+            <Eyebrow className="!text-deep-mute">
+              Things that exist and can be checked
+            </Eyebrow>
+            <dl className="mt-10 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+              {proof.map((item) => (
+                <div
+                  key={item.id}
+                  className="border-t border-deep-rule pt-5"
+                >
+                  <dt>
+                    <span className="block font-mono text-2xs uppercase text-signal">
+                      {item.id}
+                    </span>
+                    <span className="mt-2 block font-display text-base font-semibold">
+                      {item.title}
+                    </span>
+                  </dt>
+                  <dd className="mt-2.5 text-sm text-deep-mute">{item.body}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
-      </Container>
+      </ContainerOuter>
     </div>
   )
 }
 
-export default async function Home() {
-  const allItems = [
-    { src: img0254 },
-    { webm: '/videos/deca.webm', mp4: '/videos/deca.mp4' },
-    { src: img0547 },
-    { webm: '/videos/plane.mp4', mp4: '/videos/plane.mp4' },
-    { src: htn },
-    { webm: '/videos/javagame.webm', mp4: '/videos/javagame.mp4' },
-    { src: ht6ix },
-    { webm: '/videos/maze.webm', mp4: '/videos/maze.mp4' },
-    { src: img0920 },
-    { webm: '/videos/drone.webm', mp4: '/videos/drone.mp4' },
-    { src: img0926 },
-    { webm: '/videos/posture.webm', mp4: '/videos/posture.mp4' },
-    { src: img1027 },
-    { webm: '/videos/basil.webm', mp4: '/videos/basil.mp4' },
-    { src: greenImage },
-  ]
+function Offers() {
+  return (
+    <ContainerOuter>
+      <div className="lg:px-10">
+        <Section index="01" label="What I build">
+          <h2 className="max-w-[20ch] font-display text-3xl font-bold sm:text-4xl">
+            Four ways this usually starts.
+          </h2>
 
-  // Split into top and bottom rows
-  const topItems = allItems.slice(0, 8)
-  const bottomItems = allItems.slice(8)
+          <ul className="mt-12 grid gap-px border border-rule bg-rule sm:grid-cols-2">
+            {offers.map((offer) => (
+              <li key={offer.slug} className="bg-paper">
+                <Link
+                  href={`/services#${offer.slug}`}
+                  className="group flex h-full flex-col p-6 transition hover:bg-panel/70 sm:p-8"
+                >
+                  <span className="font-mono text-2xs uppercase text-signal">
+                    {offer.id}
+                  </span>
+                  <h3 className="mt-3 font-display text-xl font-semibold">
+                    {offer.title}
+                  </h3>
+                  <p className="mt-2.5 flex-1 text-sm text-mute">
+                    {offer.short}
+                  </p>
+                  <span className="mt-6 flex items-center justify-between gap-4 border-t border-rule pt-4 font-mono text-2xs uppercase">
+                    <span className="text-mute">{offer.shape}</span>
+                    <span
+                      aria-hidden="true"
+                      className="text-signal transition-transform group-hover:translate-x-1"
+                    >
+                      →
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
 
+          <div className="mt-8">
+            <ArrowLink href="/services">Full scope and process</ArrowLink>
+          </div>
+        </Section>
+      </div>
+    </ContainerOuter>
+  )
+}
+
+function SelectedWork() {
+  return (
+    <ContainerOuter>
+      <div className="lg:px-10">
+        <Section index="02" label="Selected work">
+          <h2 className="max-w-[20ch] font-display text-3xl font-bold sm:text-4xl">
+            Systems I designed, built and ran.
+          </h2>
+
+          <ul className="mt-12 space-y-px bg-rule">
+            {featuredWork.map((item) => (
+              <li key={item.slug} className="bg-paper">
+                <Link
+                  href={`/work#${item.slug}`}
+                  className="group grid gap-4 py-7 transition hover:bg-panel/70 sm:grid-cols-12 sm:gap-8 sm:px-4"
+                >
+                  <div className="sm:col-span-3">
+                    <span className="font-mono text-2xs uppercase text-signal">
+                      {item.number}
+                    </span>
+                    <h3 className="mt-2 font-display text-xl font-semibold">
+                      {item.title}
+                    </h3>
+                  </div>
+                  <div className="sm:col-span-6">
+                    <p className="text-sm text-mute">{item.outcome}</p>
+                  </div>
+                  <div className="flex items-start justify-between gap-4 sm:col-span-3">
+                    <span className="font-mono text-2xs uppercase text-mute">
+                      {item.stack.slice(0, 3).join(' · ')}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="text-signal transition-transform group-hover:translate-x-1"
+                    >
+                      →
+                    </span>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-8">
+            <ArrowLink href="/work">All case studies</ArrowLink>
+          </div>
+        </Section>
+      </div>
+    </ContainerOuter>
+  )
+}
+
+function Closing() {
+  return (
+    <div className="bg-deep text-paper">
+      <ContainerOuter>
+        <div className="lg:px-10">
+          <div className="grid gap-8 py-16 sm:py-24 lg:grid-cols-12">
+            <div className="lg:col-span-8">
+              <h2 className="max-w-[18ch] font-display text-3xl font-bold sm:text-4xl">
+                Tell me what you’re trying to build.
+              </h2>
+              <p className="mt-5 max-w-measure text-lg text-deep-mute">
+                Fifteen minutes, no deck. If it isn’t something I should take
+                on, I’ll say so on the call and point you somewhere better.
+              </p>
+            </div>
+            <div className="flex items-end lg:col-span-4 lg:justify-end">
+              <Button href="/contact" variant="inverse" track="footer_cta">
+                Book a call
+              </Button>
+            </div>
+          </div>
+        </div>
+      </ContainerOuter>
+    </div>
+  )
+}
+
+export default function Home() {
   return (
     <>
-      {/* Enhanced animated carousel */}
-      <EnhancedCarousel topItems={topItems} bottomItems={bottomItems} />
-
-      {/* Featured Projects */}
-      <FeaturedProjects />
-
-      {/* Newsletter signup section */}
-      {/* <NewsletterCta />*/}
-
-      {/* Timeline Resume Section */}
-      <Container className="mt-24 md:mt-28 relative">
-        <div className="mx-auto max-w-4xl">
-          <TimelineResume />
-        </div>
-      </Container>
-
-      {/* Supported By Section */}
-      <SupportedBy />
+      <Hero />
+      <Proof />
+      <Offers />
+      <SelectedWork />
+      <Closing />
     </>
   )
 }

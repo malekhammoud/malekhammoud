@@ -8,28 +8,44 @@ const nextConfig = {
   experimental: {
     outputFileTracingIncludes: {
       '/articles/*': ['./src/app/(main)/articles/**/*.mdx'],
-      '/news/*': ['./src/app/(main)/news/**/*.mdx'],
-      '/software/*': ['./src/app/software/**/*.mdx'],
     },
-    // Optional: enable css optimizer when available
-    optimizeCss: true,
-    optimizePackageImports: ['@heroicons/react', '@headlessui/react'],
+    optimizePackageImports: ['@headlessui/react', '@heroicons/react'],
   },
   images: {
     formats: ['image/avif', 'image/webp'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60,
-    dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  // Enable compression
   compress: true,
-  // Optimize fonts
-  optimizeFonts: true,
-  // Enable SWC minification
-  swcMinify: true,
-  output: undefined,
+
+  // PostHog is proxied through our own origin so the site carries no
+  // third-party host in the markup and analytics survive ad blockers.
+  skipTrailingSlashRedirect: true,
+  async rewrites() {
+    return [
+      {
+        source: '/ingest/static/:path*',
+        destination: 'https://us-assets.i.posthog.com/static/:path*',
+      },
+      {
+        source: '/ingest/:path*',
+        destination: 'https://us.i.posthog.com/:path*',
+      },
+    ]
+  },
+
+  async redirects() {
+    return [
+      // The old portfolio's routes. Every one of these has been indexed, so
+      // none of them may 404.
+      { source: '/projects', destination: '/work', permanent: true },
+      { source: '/meet', destination: '/contact', permanent: true },
+      { source: '/news', destination: '/articles', permanent: true },
+      { source: '/news/:slug', destination: '/articles', permanent: true },
+      { source: '/thank-you', destination: '/contact', permanent: true },
+    ]
+  },
 }
 
 const withMDX = nextMDX({

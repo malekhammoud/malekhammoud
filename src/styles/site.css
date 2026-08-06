@@ -1,0 +1,207 @@
+/*
+  "Datasheet" — the site's atmosphere and its one page-load sequence.
+  Everything here is CSS-only on purpose: no JS drives any animation.
+*/
+
+:root {
+  --paper: #e7e4dc;
+  --panel: #dedad0;
+  --ink: #14161a;
+  --mute: #5b6068;
+  --rule: #c6c1b5;
+  --signal: #1f35d6;
+  --deep: #10131a;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /*
+    No scroll-behavior: smooth. It animates every wheel tick, not just anchor
+    jumps, which reads as lag. Anchors land instantly instead; scroll-mt-20 on
+    the targets keeps them clear of the sticky header.
+  */
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body), Georgia, serif;
+  /*
+    Atmosphere, not a flat fill: a fine turbulence grain over the paper ground.
+    One inline SVG, ~3% opacity — no image request, no gradient, no glow.
+  */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)' opacity='0.035'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+::selection {
+  background-color: var(--signal);
+  color: var(--paper);
+}
+
+/* Visible, deliberate focus. Never removed. */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* ── The drawing frame ──────────────────────────────────────────────────────
+   Vertical rules at the content edges, like the border of an engineering
+   drawing. Structural, not decorative — they mark the measure. */
+.frame-rules {
+  position: relative;
+}
+.frame-rules::before,
+.frame-rules::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--rule);
+  opacity: 0.7;
+  pointer-events: none;
+}
+.frame-rules::before {
+  left: 0;
+}
+.frame-rules::after {
+  right: 0;
+}
+@media (max-width: 1023px) {
+  .frame-rules::before,
+  .frame-rules::after {
+    display: none;
+  }
+}
+
+/* ── The one page-load sequence ────────────────────────────────────────────
+   Staggered rise, 60ms apart, driven by --i. Fires once, on load. There is no
+   scroll-triggered reveal anywhere on the site. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  opacity: 0;
+  animation: rise 620ms cubic-bezier(0.22, 0.68, 0.29, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+/* ── Signature element: the request trace ──────────────────────────────────
+   Connectors draw themselves in sequence, then each node lights. Once. */
+@keyframes trace-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes node-live {
+  from {
+    fill: var(--paper);
+    stroke: var(--rule);
+  }
+  to {
+    fill: var(--paper);
+    stroke: var(--signal);
+  }
+}
+
+@keyframes pip-live {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.trace-path {
+  stroke-dasharray: var(--len, 200);
+  stroke-dashoffset: var(--len, 200);
+  animation: trace-draw 380ms linear forwards;
+  animation-delay: calc(320ms + var(--i, 0) * 200ms);
+}
+
+.trace-node {
+  stroke: var(--rule);
+  animation: node-live 240ms ease-out forwards;
+  animation-delay: calc(420ms + var(--i, 0) * 200ms);
+}
+
+.trace-pip {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pip-live 300ms cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
+  animation-delay: calc(460ms + var(--i, 0) * 200ms);
+}
+
+.trace-label {
+  opacity: 0;
+  animation: rise 320ms ease-out forwards;
+  animation-delay: calc(500ms + var(--i, 0) * 200ms);
+}
+
+/* ── Reduced motion: everything arrives already finished ──────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .trace-label {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+  .trace-path {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+  .trace-node {
+    stroke: var(--signal);
+    animation: none;
+  }
+  .trace-pip {
+    opacity: 1;
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Print: the /resume page is a real document ───────────────────────────── */
+@media print {
+  body {
+    background: #fff;
+    background-image: none;
+    color: #000;
+    font-size: 10.5pt;
+  }
+  .no-print {
+    display: none !important;
+  }
+  a {
+    text-decoration: none;
+    color: #000;
+  }
+  .print-url::after {
+    content: ' (' attr(href) ')';
+    font-size: 8pt;
+    color: #444;
+  }
+}

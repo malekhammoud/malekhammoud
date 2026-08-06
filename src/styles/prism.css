@@ -1,5 +1,11 @@
+/*
+  Syntax highlighting for code blocks, which sit on --deep.
+  Restrained on purpose: three hues, all desaturated, so a code sample never
+  out-shouts the one accent colour the rest of the page is allowed.
+*/
+
 pre[class*='language-'] {
-  color: theme('colors.zinc.100');
+  color: #d8d4ca;
 }
 
 .token.tag,
@@ -7,8 +13,9 @@ pre[class*='language-'] {
 .token.selector,
 .token.selector .class,
 .token.selector.class,
-.token.function {
-  color: theme('colors.pink.400');
+.token.function,
+.token.module {
+  color: #8fa4ff; /* signal, lifted for contrast on --deep */
 }
 
 .token.attr-name,
@@ -16,32 +23,30 @@ pre[class*='language-'] {
 .token.rule,
 .token.pseudo-class,
 .token.important {
-  color: theme('colors.zinc.300');
-}
-
-.token.module {
-  color: theme('colors.pink.400');
+  color: #f0ece2;
+  font-weight: 500;
 }
 
 .token.attr-value,
 .token.class,
 .token.string,
 .token.property {
-  color: theme('colors.teal.300');
+  color: #b9c9a8; /* the one warm-neutral, for literals */
 }
 
 .token.punctuation,
-.token.attr-equals {
-  color: theme('colors.zinc.500');
+.token.attr-equals,
+.token.operator,
+.token.combinator {
+  color: #8c9298;
 }
 
 .token.unit,
 .language-css .token.function {
-  color: theme('colors.sky.200');
+  color: #8fa4ff;
 }
 
-.token.comment,
-.token.operator,
-.token.combinator {
-  color: theme('colors.zinc.400');
+.token.comment {
+  color: #767d86;
+  font-style: italic;
 }

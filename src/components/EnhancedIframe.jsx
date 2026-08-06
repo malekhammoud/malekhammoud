@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { CyberLoader } from '@/components/CyberLoader'
 
 export function EnhancedIframe(props) {
   const [isLoading, setIsLoading] = useState(true)
@@ -18,7 +17,6 @@ export function EnhancedIframe(props) {
 
   return (
     <div className={`relative overflow-hidden rounded-lg ${className || ''}`} style={wrapperStyle}>
-      <CyberLoader isLoading={isLoading} />
       <iframe 
         {...iframeProps}
         onLoad={() => setIsLoading(false)}
