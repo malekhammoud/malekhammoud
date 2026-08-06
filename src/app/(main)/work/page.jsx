@@ -2,16 +2,18 @@ import Link from 'next/link'
 
 import { Button } from '@/components/Button'
 import { ContainerOuter, Eyebrow } from '@/components/Container'
-import { work } from '@/lib/work'
+import { getAllCaseStudies } from '@/lib/caseStudies'
 
 export const metadata = {
   title: 'Work',
   description:
-    'Case studies: a self-hosted LLM inference stack, an autonomous weed-control robot, a Linux distribution, and a drone litter-mapping system.',
+    'Case studies: a self-hosted LLM inference stack, an autonomous weed-control robot, a Linux distribution, a drone litter-mapping system and a flight-model mod.',
   alternates: { canonical: '/work' },
 }
 
-export default function Work() {
+export default async function Work() {
+  const studies = await getAllCaseStudies()
+
   return (
     <>
       <ContainerOuter>
@@ -28,9 +30,9 @@ export default function Work() {
               className="rise mt-6 max-w-measure text-lg text-mute"
               style={{ '--i': 1 }}
             >
-              Each of these is something I designed, built and ran. Where a
-              number would help and I don’t have one, there isn’t one — I’d
-              rather the page be thin than invented.
+              Each of these is something I designed, built and ran — written up
+              as problem, constraint, what I built and outcome. Where a number
+              would help and I don’t have one, there isn’t one.
             </p>
           </header>
         </div>
@@ -39,76 +41,70 @@ export default function Work() {
       <ContainerOuter>
         <div className="lg:px-10">
           <ul className="border-t border-rule">
-            {work.map((item) => (
-              <li
-                key={item.slug}
-                id={item.slug}
-                className="scroll-mt-20 border-b border-rule py-12 sm:py-14"
-              >
-                <article className="lg:flex lg:gap-8">
-                  <div className="mb-5 flex shrink-0 items-baseline gap-3 lg:mb-0 lg:w-rail lg:flex-col lg:gap-2">
+            {studies.map((study) => (
+              <li key={study.slug} className="border-b border-rule">
+                <Link
+                  href={`/work/${study.slug}`}
+                  className="group grid gap-4 py-10 transition hover:bg-panel/60 sm:px-4 lg:flex lg:gap-8"
+                >
+                  <div className="flex shrink-0 items-baseline gap-3 lg:w-rail lg:flex-col lg:gap-1.5">
                     <span className="font-mono text-xs text-signal">
-                      {item.number}
+                      {study.number}
                     </span>
                     <span className="font-mono text-2xs uppercase text-mute">
-                      {item.year}
+                      {study.year}
                     </span>
                   </div>
 
                   <div className="min-w-0 flex-1 lg:grid lg:grid-cols-12 lg:gap-8">
                     <div className="lg:col-span-7">
                       <h2 className="font-display text-2xl font-bold sm:text-3xl">
-                        {item.title}
+                        {study.title}
                       </h2>
-                      <p className="mt-4 max-w-measure text-lg">
-                        {item.outcome}
+                      <p className="mt-3 max-w-measure text-lg">
+                        {study.outcome}
                       </p>
-                      <p className="mt-3 max-w-measure text-base text-mute">
-                        {item.summary}
-                      </p>
-
-                      {item.href && (
-                        <a
-                          href={item.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-5 inline-flex items-center gap-1.5 font-mono text-xs uppercase text-signal underline decoration-rule underline-offset-4 transition hover:decoration-signal"
-                        >
-                          Project page
-                          <span aria-hidden="true">↗</span>
-                        </a>
-                      )}
                     </div>
 
-                    <div className="mt-6 lg:col-span-5 lg:mt-0">
+                    <div className="mt-5 lg:col-span-5 lg:mt-0">
                       <dl className="border border-rule bg-panel/50 p-5 font-mono text-2xs uppercase">
-                        <div className="flex gap-4 border-b border-rule pb-3">
+                        <div className="flex gap-4 pb-3">
                           <dt className="w-16 shrink-0 text-mute">Stack</dt>
-                          <dd className="text-ink">{item.stack.join(' · ')}</dd>
+                          <dd>{study.stack.join(' · ')}</dd>
                         </div>
-                        <div className="flex gap-4 pt-3">
-                          <dt className="w-16 shrink-0 text-mute">Area</dt>
-                          <dd className="text-ink">{item.tags.join(' · ')}</dd>
+                        <div className="flex gap-4 border-t border-rule pt-3">
+                          <dt className="w-16 shrink-0 text-mute">Status</dt>
+                          <dd>{study.status}</dd>
                         </div>
                       </dl>
+                      <span className="mt-4 flex items-center gap-1.5 font-mono text-2xs uppercase text-signal">
+                        Read the case study
+                        <span
+                          aria-hidden="true"
+                          className="transition-transform group-hover:translate-x-1"
+                        >
+                          →
+                        </span>
+                      </span>
                     </div>
                   </div>
-                </article>
+                </Link>
               </li>
             ))}
           </ul>
 
           <div className="py-14 sm:py-20">
             <p className="max-w-measure text-lg">
-              Full write-ups — problem, constraint, what I built, and what it
-              cost to run — are being added one at a time.{' '}
+              Client work is mostly under agreements that don’t allow write-ups.
+              What’s here is what I can show in full — and the technical
+              decisions behind it get more room in{' '}
               <Link
                 href="/articles"
                 className="text-signal underline decoration-rule underline-offset-4 hover:decoration-signal"
               >
-                The articles
-              </Link>{' '}
-              go deeper on the technical decisions in the meantime.
+                the articles
+              </Link>
+              .
             </p>
             <div className="mt-8">
               <Button href="/contact" track="work">

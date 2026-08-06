@@ -1,0 +1,98 @@
+import { CaseStudyLayout } from '@/components/CaseStudyLayout'
+
+export const caseStudy = {
+  number: '002',
+  slug: 'greenguardian',
+  title: 'GreenGuardian — autonomous weed control',
+  outcome:
+    'A robot that finds individual weeds and sprays only those plants, instead of treating an entire field uniformly because that is all a tractor can do.',
+  summary:
+    'Computer vision, obstacle avoidance and a 3D-printed spray assembly on a self-driving chassis. Bronze medal at the Canada-Wide Science Fair.',
+  stack: ['Python', 'OpenCV', 'Raspberry Pi', 'CAD', '3D printing'],
+  tags: ['Computer vision', 'Robotics'],
+  year: '2024',
+  status: 'Prototype',
+  featured: true,
+  links: [
+    {
+      label: 'CWSF project board',
+      href: 'https://partner.projectboard.world/ysc/project/greenguardian-automated-weed-detection-and-elimination',
+    },
+  ],
+}
+
+export const metadata = {
+  title: caseStudy.title,
+  description: caseStudy.summary,
+  alternates: { canonical: `/work/${caseStudy.slug}` },
+  openGraph: {
+    type: 'article',
+    title: caseStudy.title,
+    description: caseStudy.summary,
+  },
+}
+
+export const dynamic = 'force-static'
+
+export default (props) => <CaseStudyLayout caseStudy={caseStudy} {...props} />
+
+## The problem
+
+Herbicide is applied to fields, not to weeds. A sprayer covers everything
+because it has no way to tell the difference, which means the overwhelming
+majority of what gets sprayed lands on soil and crop rather than on the plant
+it was meant for.
+
+The technology to do better exists — it just usually costs more than a small
+farm has.
+
+## The constraint
+
+The interesting constraint was cost, and it drove every other decision.
+Commercial precision-spraying rigs are priced for industrial agriculture. A
+system that only works with expensive sensors solves the problem for people who
+already have options.
+
+That ruled out most of the obvious answers and left a harder one: a single
+camera, a cheap compute board, and a mechanism I could fabricate myself.
+
+Two more constraints came from the environment rather than the budget:
+
+- **A field is not a lab.** Lighting changes hour to hour, plants move in the
+  wind, and the ground is uneven enough to shift the camera between frames.
+- **The robot has to not drive into things**, including things that were not
+  there when it started.
+
+## What I built
+
+**Detection** runs on a Raspberry Pi using OpenCV — classifying what's in front
+of the machine as crop, weed or ground, frame by frame, on hardware with no
+GPU. That last part is the real constraint: it forces you to spend your compute
+budget deliberately rather than throwing a large model at the problem.
+
+**The spray assembly** is 3D-printed and designed around a single idea: the
+nozzle has to arrive over a specific plant, not a general area. Designing it
+myself in CAD meant I could iterate the geometry against what detection could
+actually resolve, rather than fitting the software to a part I'd bought.
+
+**Navigation and obstacle avoidance** keep it driving a row without hitting
+anything, which sounds like the simple part and is not. Most of the failure
+modes I found in testing were navigation failures, not detection failures.
+
+## The outcome
+
+It works: the robot drives a row, identifies weeds and sprays them
+individually, at a hardware cost far below a commercial system.
+
+The honest framing is that it's a proven prototype rather than a product. It
+demonstrated the approach well enough to take bronze at the **Canada-Wide
+Science Fair** in 2024 and gold at the regional fair, and the detection and
+mechanism both do what they claim. Turning it into something a farm could rely
+on for a season is a different and much larger piece of work.
+
+## Why it's on this page
+
+It's the clearest example of the thing I'm usually hired for now: taking a
+capability that only works when it's expensive, and finding the version of it
+that works on hardware someone can actually own. That's the same argument as
+running your own models — different domain, identical shape.

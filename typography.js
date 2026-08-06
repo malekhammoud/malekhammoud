@@ -52,6 +52,50 @@ module.exports = ({ theme }) => ({
 
       p: { marginTop: '1.25rem', marginBottom: '1.25rem' },
 
+      /*
+        Lists have to be spelled out. `theme.typography.DEFAULT` REPLACES the
+        plugin's default style object rather than merging into it, so anything
+        not named here simply never gets a rule — and Tailwind's preflight has
+        already set `ul { list-style: none; padding: 0 }`. Dropping these left
+        every bulleted list in an article rendering as run-together paragraphs.
+      */
+      ul: {
+        listStyleType: 'disc',
+        paddingLeft: '1.5em',
+        marginTop: '1.25rem',
+        marginBottom: '1.25rem',
+      },
+      ol: {
+        listStyleType: 'decimal',
+        paddingLeft: '1.5em',
+        marginTop: '1.25rem',
+        marginBottom: '1.25rem',
+      },
+      li: { marginTop: '0.5rem', marginBottom: '0.5rem', paddingLeft: '0.25em' },
+      'li::marker': { color: 'var(--tw-prose-bullets)' },
+      'ol > li::marker': {
+        color: 'var(--tw-prose-counters)',
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.85em',
+      },
+      'li > p': { marginTop: '0.5rem', marginBottom: '0.5rem' },
+      'ul ul, ul ol, ol ul, ol ol': {
+        marginTop: '0.5rem',
+        marginBottom: '0.5rem',
+      },
+
+      h4: {
+        fontFamily: 'var(--font-display)',
+        fontWeight: '600',
+        fontSize: theme('fontSize.lg')[0],
+        marginTop: '1.75rem',
+        marginBottom: '0.5rem',
+      },
+      'h4 + *': { marginTop: '0' },
+
+      figure: { marginTop: '2rem', marginBottom: '2rem' },
+      'figure > *': { marginTop: '0', marginBottom: '0' },
+
       a: {
         fontWeight: '500',
         textDecoration: 'underline',

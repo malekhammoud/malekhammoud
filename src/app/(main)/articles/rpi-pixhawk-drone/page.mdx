@@ -2,6 +2,7 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import drone from './drone.jpg'
 export const article = {
+    slug: 'rpi-pixhawk-drone',
     author: 'Malek Hammoud',
     date: '2025-01-24',
     title: 'Building an Autonomous Drone with Raspberry Pi & Pixhawk',
@@ -20,10 +21,10 @@ export const dynamicParams = false
 export default (props) => <ArticleLayout article={article} {...props} />
 
 {/*
-<div style={{ padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px', marginBottom: '20px' }}>
+<Callout>
     🚁 Bridging high-level autonomy with reliable flight control through Raspberry Pi/Pixhawk integration.
-    <iframe className={"w-full"}  height="400" src="https://www.youtube.com/embed/" frameborder="0" allowfullscreen></iframe>
-</div>
+    
+</Callout>
 */}
 
 ## ⚙️ Core Technical Implementation

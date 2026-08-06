@@ -1,20 +1,33 @@
 import glob from 'fast-glob'
 
-async function importArticle(articleFilename) {
-  let { article } = await import(`../app/(main)/articles/${articleFilename}`)
+/*
+  Articles are MDX at src/app/(main)/articles/<slug>/page.mdx, each exporting an
+  `article` object. Adding one is a file.
+
+  `draft: true` keeps a post out of the index, the sitemap and the feed in
+  production while leaving it reachable in `next dev` — so a piece can be
+  written and reviewed in place without shipping half-finished.
+*/
+
+const SHOW_DRAFTS = process.env.NODE_ENV === 'development'
+
+async function importArticle(filename) {
+  const { article } = await import(`../app/(main)/articles/${filename}`)
 
   return {
-    slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
+    slug: filename.replace(/(\/page)?\.mdx$/, ''),
     ...article,
   }
 }
 
-export async function getAllArticles() {
-  let articleFilenames = await glob('*/page.mdx', {
+export async function getAllArticles({ includeDrafts = SHOW_DRAFTS } = {}) {
+  const filenames = await glob('*/page.mdx', {
     cwd: './src/app/(main)/articles',
   })
 
-  let articles = await Promise.all(articleFilenames.map(importArticle))
+  const articles = await Promise.all(filenames.map(importArticle))
 
-  return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date))
+  return articles
+    .filter((article) => includeDrafts || !article.draft)
+    .sort((a, z) => +new Date(z.date) - +new Date(a.date))
 }

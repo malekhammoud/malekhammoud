@@ -16,6 +16,7 @@ const columns = [
     label: 'Writing',
     links: [
       { href: '/articles', label: 'Articles' },
+      { href: '/tools', label: 'Tools' },
       { href: '/feed.xml', label: 'RSS' },
     ],
   },

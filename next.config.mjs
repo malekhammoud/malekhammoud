@@ -8,6 +8,7 @@ const nextConfig = {
   experimental: {
     outputFileTracingIncludes: {
       '/articles/*': ['./src/app/(main)/articles/**/*.mdx'],
+      '/work/*': ['./src/app/(main)/work/**/*.mdx'],
     },
     optimizePackageImports: ['@headlessui/react', '@heroicons/react'],
   },
@@ -44,6 +45,13 @@ const nextConfig = {
       { source: '/news', destination: '/articles', permanent: true },
       { source: '/news/:slug', destination: '/articles', permanent: true },
       { source: '/thank-you', destination: '/contact', permanent: true },
+      // Was a client-side JS redirect page; a real 301 is faster and works
+      // without JavaScript.
+      {
+        source: '/paper',
+        destination: '/Autonomous_Litter_Detection_and_Recovery_System.pdf',
+        permanent: true,
+      },
     ]
   },
 }

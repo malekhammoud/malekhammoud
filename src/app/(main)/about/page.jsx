@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 import { Button } from '@/components/Button'
 import { ContainerOuter, Eyebrow, Section } from '@/components/Container'
+import { PersonJsonLd } from '@/components/JsonLd'
 import { siteConfig } from '@/lib/site'
 import portraitImage from '@/images/portrait.webp'
 import cwsfLogo from '@/images/supports/cwsf.png'
@@ -29,6 +30,7 @@ const background = [
 export default function About() {
   return (
     <>
+      <PersonJsonLd />
       <ContainerOuter>
         <div className="lg:px-10">
           <div className="grid gap-10 py-16 sm:py-20 lg:grid-cols-12 lg:gap-12">

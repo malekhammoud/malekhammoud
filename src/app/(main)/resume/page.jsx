@@ -35,22 +35,24 @@ export default function Resume() {
               Software engineer · {siteConfig.location}
             </p>
           </div>
+          {/* py-1 keeps each link at a ≥24px touch target without changing
+              how the printed document looks. */}
           <div className="font-mono text-2xs uppercase">
             <a
               href={`mailto:${siteConfig.email}`}
-              className="block text-signal print-url"
+              className="block py-1 text-signal print-url"
             >
               {siteConfig.email}
             </a>
             <a
               href={siteConfig.socials.github}
-              className="mt-1 block text-mute print-url"
+              className="block py-1 text-mute print-url"
             >
               github.com/malekhammoud
             </a>
             <a
               href={siteConfig.socials.linkedin}
-              className="mt-1 block text-mute print-url"
+              className="block py-1 text-mute print-url"
             >
               linkedin.com/in/malekhammoud
             </a>

@@ -2,6 +2,7 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import robot from './robot.jpg'
 export const article = {
+    slug: 'Robotics',
     author: 'Malek Hammoud',
     date: '2025-03-02',
     title: 'All about the field of robotics',
@@ -20,10 +21,10 @@ export const dynamicParams = false
 
 export default (props) => <ArticleLayout article={article} {...props} />
 
-<div style={{ padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px', marginBottom: '20px' }}>
+<Callout>
     To view a visual version of this article visit
-    <a href="https://robotics.malekhammoud.com/" target="_blank" style={{ color: '#007acc', fontWeight: 'bold' }}>robotics.malekhammoud.com</a>.
-</div>
+    <a href="https://robotics.malekhammoud.com/" target="_blank" className="text-signal underline decoration-rule underline-offset-4" >robotics.malekhammoud.com</a>.
+</Callout>
 ## INTRODUCTION
 
 Robotics is the design, construction, operation, and application of robots. The field of computer science makes robots smart—from computer vision to if statements—and amazing technology comes together to do cool things.
@@ -100,7 +101,7 @@ If an autonomous robot causes harm (e.g., a self-driving car crashes), who is et
 This is a <a href="https://malekhammoud.com/Autonomous_Litter_Detection_and_Recovery_System.pdf">paper</a> I wrote about a robotics project, enjoy!
 <div>
 
-<iframe src="https://malekhammoud.com/Autonomous_Litter_Detection_and_Recovery_System.pdf#zoom=80&toolbar=1&navpanes=0" width="100%" height="600px">
+<iframe src="/Autonomous_Litter_Detection_and_Recovery_System.pdf#zoom=80&toolbar=1&navpanes=0" title="Autonomous Litter Detection and Recovery System (PDF)" loading="lazy" width="100%" height="600px">
     This browser does not support PDFs. Please download the PDF to view it:
     <a href="https://malekhammoud.com/Autonomous_Litter_Detection_and_Recovery_System.pdf">Download PDF</a>
 </iframe>

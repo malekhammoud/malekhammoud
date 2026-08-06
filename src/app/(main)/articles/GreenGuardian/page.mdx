@@ -2,6 +2,7 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import green from './greenguardian.png'
 export const article = {
+    slug: 'GreenGuardian',
     author: 'Malek Hammoud',
     date: '2023-05-20',
     title: 'November: Automated Weed Detection and Elimination',
@@ -19,11 +20,11 @@ export const dynamicParams = false
 
 export default (props) => <ArticleLayout article={article} {...props} />
 
-<div style={{ padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px', marginBottom: '20px' }}>
+<Callout>
     🎉 I'm thrilled to share that GreenGuardian earned a bronze medal at the 2024 Canada-Wide Science Fair (CWSF)! Check out the full project details on my
-    <a href="https://partner.projectboard.world/ysc/project/greenguardian-automated-weed-detection-and-elimination" target="_blank" style={{ color: '#007acc', fontWeight: 'bold' }}>ProjectBoard</a>.
-    <iframe className={"w-full"}  height="400" src="https://www.youtube.com/embed/oWvfxRrFsdk" frameborder="0" allowfullscreen></iframe>
-</div>
+    <a href="https://partner.projectboard.world/ysc/project/greenguardian-automated-weed-detection-and-elimination" target="_blank" className="text-signal underline decoration-rule underline-offset-4" >ProjectBoard</a>.
+    <iframe className="w-full" height="400" src="https://www.youtube-nocookie.com/embed/oWvfxRrFsdk" title="GreenGuardian project video" loading="lazy" allowFullScreen></iframe>
+</Callout>
 
 ## INTRODUCTION
 

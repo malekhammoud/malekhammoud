@@ -35,6 +35,14 @@ export function Analytics() {
       ui_host: 'https://us.posthog.com',
       capture_pageview: false, // handled above, so client-side nav is counted
       capture_pageleave: true,
+      // Everything below is on by default and unused here. Leaving it on costs
+      // ~100KB of JavaScript and records more about visitors than this site
+      // has any reason to.
+      autocapture: false,
+      disable_session_recording: true,
+      disable_surveys: true,
+      capture_heatmaps: false,
+      capture_dead_clicks: false,
       persistence: 'localStorage+cookie',
       defaults: '2025-05-24',
     })

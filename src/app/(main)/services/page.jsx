@@ -1,5 +1,6 @@
 import { Button } from '@/components/Button'
 import { ContainerOuter, Eyebrow, Section } from '@/components/Container'
+import { ServiceJsonLd } from '@/components/JsonLd'
 import { notAFit, offers, siteConfig } from '@/lib/site'
 
 export const metadata = {
@@ -35,6 +36,7 @@ const process = [
 export default function Services() {
   return (
     <>
+      <ServiceJsonLd offers={offers} />
       <ContainerOuter>
         <div className="lg:px-10">
           <header className="max-w-3xl py-16 sm:py-20">

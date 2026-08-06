@@ -16,10 +16,15 @@ const display = Archivo({
 })
 
 // Serif body — reads as documentation, not marketing.
+// Next has no metric overrides for Newsreader, so the automatic size-adjust
+// fallback is disabled and a close serif is named explicitly. Without this the
+// build warns and the swap is measured against a mismatched default.
 const body = Newsreader({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-body',
+  adjustFontFallback: false,
+  fallback: ['Georgia', 'Times New Roman', 'serif'],
 })
 
 // Spec labels, figure numbers, data.
@@ -27,6 +32,7 @@ const mono = Martian_Mono({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-mono',
+  fallback: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
 })
 
 export const metadata = {

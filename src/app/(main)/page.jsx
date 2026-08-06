@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { ArrowLink, Button } from '@/components/Button'
 import { ContainerOuter, Eyebrow, Section } from '@/components/Container'
 import { Trace } from '@/components/Trace'
-import { featuredWork } from '@/lib/work'
+import { getFeaturedCaseStudies } from '@/lib/caseStudies'
 import { offers, siteConfig } from '@/lib/site'
 
 export const metadata = {
@@ -103,7 +103,7 @@ function Proof() {
                   className="border-t border-deep-rule pt-5"
                 >
                   <dt>
-                    <span className="block font-mono text-2xs uppercase text-signal">
+                    <span className="block font-mono text-2xs uppercase text-signal-lift">
                       {item.id}
                     </span>
                     <span className="mt-2 block font-display text-base font-semibold">
@@ -169,7 +169,9 @@ function Offers() {
   )
 }
 
-function SelectedWork() {
+async function SelectedWork() {
+  const featured = await getFeaturedCaseStudies(3)
+
   return (
     <ContainerOuter>
       <div className="lg:px-10">
@@ -179,10 +181,10 @@ function SelectedWork() {
           </h2>
 
           <ul className="mt-12 space-y-px bg-rule">
-            {featuredWork.map((item) => (
+            {featured.map((item) => (
               <li key={item.slug} className="bg-paper">
                 <Link
-                  href={`/work#${item.slug}`}
+                  href={`/work/${item.slug}`}
                   className="group grid gap-4 py-7 transition hover:bg-panel/70 sm:grid-cols-12 sm:gap-8 sm:px-4"
                 >
                   <div className="sm:col-span-3">

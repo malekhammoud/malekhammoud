@@ -37,6 +37,9 @@ module.exports = {
       // Derivations, used only for inverted bands.
       'deep-rule': '#282C35',
       'deep-mute': '#9298A4',
+      // The accent is unreadable on --deep (~2:1). This is the same hue lifted
+      // for inverted bands only — 7.9:1 on --deep.
+      'signal-lift': '#8FA4FF',
     },
     borderRadius: {
       none: '0',
