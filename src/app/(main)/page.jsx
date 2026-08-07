@@ -23,7 +23,7 @@ const proof = [
   {
     id: 'Fig. 02',
     title: 'Shipped an operating system',
-    body: 'Flow Arch — an Arch Linux distribution built on Hyprland, designed around enforced focus. Packaged, documented and released for other people to install.',
+    body: 'Flow Arch — an Arch Linux distribution built on Hyprland, designed around enforced focus. 500+ installs and SourceForge’s Rising Star Award for community adoption.',
   },
   {
     id: 'Fig. 03',

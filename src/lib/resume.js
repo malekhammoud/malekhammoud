@@ -17,6 +17,14 @@ export const links = [
 
 export const education = [
   {
+    school: 'McMaster University',
+    location: 'Hamilton, ON',
+    programme: 'Bachelor of Applied Science — Computer Science',
+    start: 'Sep 2026',
+    end: 'Jun 2030 (expected)',
+    notes: [],
+  },
+  {
     school: 'Western University',
     location: 'London, ON',
     programme:

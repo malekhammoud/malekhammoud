@@ -37,6 +37,8 @@ function Entry({ dates, children }) {
 }
 
 function Bullets({ notes }) {
+  if (!notes?.length) return null
+
   return (
     <ul className="mt-2 space-y-1.5">
       {notes.map((note) => (
