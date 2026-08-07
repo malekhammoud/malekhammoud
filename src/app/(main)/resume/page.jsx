@@ -2,9 +2,9 @@ import { ContainerOuter } from '@/components/Container'
 import { siteConfig } from '@/lib/site'
 import {
   awards,
+  education,
   experience,
-  leadership,
-  programs,
+  links,
   projects,
   skills,
 } from '@/lib/resume'
@@ -12,15 +12,43 @@ import {
 export const metadata = {
   title: 'Résumé',
   description:
-    'Malek Hammoud — software engineer. Experience, projects, leadership, awards, and a PDF download.',
+    'Malek Hammoud — software engineer in London, Ontario. Education, experience, technical projects, skills and awards, with a PDF download.',
   alternates: { canonical: '/resume' },
 }
 
 function Head({ children }) {
   return (
-    <h2 className="mb-4 border-b border-rule pb-2 font-mono text-2xs uppercase text-mute">
+    <h2 className="mb-5 border-b border-rule pb-2 font-mono text-2xs uppercase text-mute">
       {children}
     </h2>
+  )
+}
+
+/** Shared row: a date column on the left, content on the right. */
+function Entry({ dates, children }) {
+  return (
+    <li className="sm:flex sm:gap-6">
+      <p className="shrink-0 font-mono text-2xs uppercase text-mute sm:w-44 sm:pt-1">
+        {dates}
+      </p>
+      <div className="mt-1 min-w-0 flex-1 sm:mt-0">{children}</div>
+    </li>
+  )
+}
+
+function Bullets({ notes }) {
+  return (
+    <ul className="mt-2 space-y-1.5">
+      {notes.map((note) => (
+        <li key={note} className="flex gap-2.5 text-base">
+          <span
+            aria-hidden="true"
+            className="mt-[9px] block h-1 w-1 shrink-0 bg-signal"
+          />
+          <span>{note}</span>
+        </li>
+      ))}
+    </ul>
   )
 }
 
@@ -44,18 +72,19 @@ export default function Resume() {
             >
               {siteConfig.email}
             </a>
-            <a
-              href={siteConfig.socials.github}
-              className="block py-1 text-mute print-url"
-            >
-              github.com/malekhammoud
-            </a>
-            <a
-              href={siteConfig.socials.linkedin}
-              className="block py-1 text-mute print-url"
-            >
-              linkedin.com/in/malekhammoud
-            </a>
+            {links
+              .filter((link) => !link.primary)
+              .map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block py-1 text-mute print-url"
+                >
+                  {link.label}
+                </a>
+              ))}
           </div>
         </header>
 
@@ -78,100 +107,120 @@ export default function Resume() {
         </div>
 
         <section className="mt-12">
+          <Head>Education</Head>
+          <ul className="space-y-6">
+            {education.map((item) => (
+              <Entry key={item.school} dates={`${item.start} – ${item.end}`}>
+                <h3 className="font-display text-lg font-semibold">
+                  {item.school}
+                </h3>
+                <p className="flex flex-wrap items-baseline gap-x-2 text-sm text-mute">
+                  <span>{item.programme}</span>
+                  <span aria-hidden="true" className="text-rule">·</span>
+                  <span className="font-mono text-2xs uppercase">
+                    {item.location}
+                  </span>
+                </p>
+                <Bullets notes={item.notes} />
+              </Entry>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-10">
           <Head>Experience</Head>
           <ul className="space-y-6">
             {experience.map((role) => (
-              <li key={role.company} className="sm:flex sm:gap-6">
-                <p className="shrink-0 font-mono text-2xs uppercase text-mute sm:w-40 sm:pt-1">
-                  {role.start} – {role.end}
+              <Entry
+                key={role.company}
+                dates={role.end ? `${role.start} – ${role.end}` : role.start}
+              >
+                <h3 className="font-display text-lg font-semibold">
+                  {role.title}
+                </h3>
+                <p className="flex flex-wrap items-baseline gap-x-2 text-sm text-mute">
+                  <span>{role.company}</span>
+                  <span aria-hidden="true" className="text-rule">·</span>
+                  <span className="font-mono text-2xs uppercase">
+                    {role.location}
+                  </span>
                 </p>
-                <div className="mt-1 sm:mt-0">
-                  <h3 className="font-display text-lg font-semibold">
-                    {role.title}
-                  </h3>
-                  <p className="text-sm text-mute">{role.company}</p>
-                  <ul className="mt-2 space-y-1">
-                    {role.notes.map((note) => (
-                      <li key={note} className="text-base">
-                        {note}
+                <Bullets notes={role.notes} />
+              </Entry>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-10">
+          <Head>Technical projects</Head>
+          <ul className="space-y-6">
+            {projects.map((project) => (
+              <Entry
+                key={project.name}
+                dates={`${project.start} – ${project.end}`}
+              >
+                <h3 className="font-display text-lg font-semibold">
+                  {project.name}
+                  {project.accolade && (
+                    <span className="text-mute"> — {project.accolade}</span>
+                  )}
+                </h3>
+                <p className="flex flex-wrap items-baseline gap-x-2 text-sm text-mute">
+                  <span>{project.role}</span>
+                  <span aria-hidden="true" className="text-rule">·</span>
+                  <a
+                    href={project.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-2xs uppercase text-signal underline decoration-rule underline-offset-4 transition hover:decoration-signal print-url"
+                  >
+                    {project.hrefLabel}
+                  </a>
+                </p>
+                <Bullets notes={project.notes} />
+              </Entry>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-10">
+          <Head>Technical skills</Head>
+          <dl className="space-y-3">
+            {skills.map((group) => (
+              <div key={group.label} className="sm:flex sm:gap-6">
+                <dt className="shrink-0 font-mono text-2xs uppercase text-mute sm:w-44 sm:pt-1">
+                  {group.label}
+                </dt>
+                <dd className="text-base">{group.items.join(' · ')}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        <section className="mt-10">
+          <Head>Honours & awards</Head>
+          <dl className="space-y-4">
+            {awards.map((group) => (
+              <div key={group.label} className="sm:flex sm:gap-6">
+                <dt className="shrink-0 font-mono text-2xs uppercase text-mute sm:w-44 sm:pt-1">
+                  {group.label}
+                </dt>
+                <dd className="min-w-0 flex-1">
+                  <ul className="space-y-1.5">
+                    {group.items.map((item) => (
+                      <li key={item} className="flex gap-2.5 text-base">
+                        <span
+                          aria-hidden="true"
+                          className="mt-[9px] block h-1 w-1 shrink-0 bg-signal"
+                        />
+                        <span>{item}</span>
                       </li>
                     ))}
                   </ul>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="mt-10">
-          <Head>Selected projects</Head>
-          <ul className="space-y-3">
-            {projects.map((project) => (
-              <li key={project.name}>
-                <span className="font-display font-semibold">{project.name}</span>
-                <span className="text-mute"> — {project.note}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="mt-10">
-          <Head>Leadership</Head>
-          <ul className="space-y-5">
-            {leadership.map((item) => (
-              <li key={item.org} className="sm:flex sm:gap-6">
-                <p className="shrink-0 font-mono text-2xs uppercase text-mute sm:w-40 sm:pt-1">
-                  {item.period}
-                </p>
-                <div className="mt-1 sm:mt-0">
-                  <h3 className="font-display text-base font-semibold">
-                    {item.role}, {item.org}
-                  </h3>
-                  <p className="mt-1 text-base text-mute">{item.note}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="mt-10">
-          <Head>Skills</Head>
-          <dl className="grid gap-4 sm:grid-cols-2">
-            {skills.map((group) => (
-              <div key={group.label}>
-                <dt className="font-mono text-2xs uppercase text-mute">
-                  {group.label}
-                </dt>
-                <dd className="mt-1 text-base">{group.items.join(' · ')}</dd>
+                </dd>
               </div>
             ))}
           </dl>
-        </section>
-
-        <section className="mt-10">
-          <Head>Awards & recognition</Head>
-          <dl className="space-y-3">
-            {awards.map((award) => (
-              <div key={award.label} className="sm:flex sm:gap-6">
-                <dt className="shrink-0 font-mono text-2xs uppercase text-mute sm:w-40 sm:pt-1">
-                  {award.label}
-                </dt>
-                <dd className="text-base">{award.note}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-
-        <section className="mt-10">
-          <Head>Programs & organisations</Head>
-          <ul className="grid gap-2 sm:grid-cols-2">
-            {programs.map((program) => (
-              <li key={program.name} className="text-base">
-                <span className="font-display font-semibold">{program.name}</span>
-                <span className="text-mute"> — {program.note}</span>
-              </li>
-            ))}
-          </ul>
         </section>
       </div>
     </ContainerOuter>
