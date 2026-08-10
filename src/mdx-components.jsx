@@ -8,7 +8,7 @@ export function useMDXComponents(components) {
     ...components,
     // Available in every MDX file without an import.
     Callout,
-    Image: (props) => <Image {...props} />,
-    iframe: (props) => <EnhancedIframe {...props} />,
+    Image,
+    iframe: EnhancedIframe,
   }
 }

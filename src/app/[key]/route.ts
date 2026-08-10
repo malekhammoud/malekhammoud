@@ -5,8 +5,9 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
   request: Request,
-  { params }: { params: { key: string } }
+  props: { params: Promise<{ key: string }> }
 ) {
+  const params = await props.params;
   const indexNowKey = process.env.INDEXNOW_KEY;
 
   if (!indexNowKey) {

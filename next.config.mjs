@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import rehypePrism from '@mapbox/rehype-prism'
 import nextMDX from '@next/mdx'
 import remarkGfm from 'remark-gfm'
@@ -5,13 +6,15 @@ import remarkGfm from 'remark-gfm'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
-  experimental: {
-    outputFileTracingIncludes: {
-      '/articles/*': ['./src/app/(main)/articles/**/*.mdx'],
-      '/work/*': ['./src/app/(main)/work/**/*.mdx'],
-    },
-    optimizePackageImports: ['@headlessui/react', '@heroicons/react'],
+  outputFileTracingIncludes: {
+    '/articles/*': ['./src/app/(main)/articles/**/*.mdx'],
+    '/work/*': ['./src/app/(main)/work/**/*.mdx'],
   },
+  experimental: {
+    optimizePackageImports: ['@headlessui/react', '@heroicons/react'],
+    mdxRs: true,
+  },
+  turbopack: {},
   images: {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
@@ -19,6 +22,12 @@ const nextConfig = {
     minimumCacheTTL: 60,
   },
   compress: true,
+  webpack(config) {
+    config.resolve.alias['next-mdx-import-source-file'] = fileURLToPath(
+      new URL('./src/mdx-components.js', import.meta.url)
+    )
+    return config
+  },
 
   // PostHog is proxied through our own origin so the site carries no
   // third-party host in the markup and analytics survive ad blockers.
@@ -58,10 +67,6 @@ const nextConfig = {
 
 const withMDX = nextMDX({
   extension: /\.mdx?$/,
-  options: {
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [rehypePrism],
-  },
 })
 
 export default withMDX(nextConfig)

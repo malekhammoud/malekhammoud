@@ -22,18 +22,18 @@ const proof = [
   },
   {
     id: 'Fig. 02',
+    title: '22 Autonomous Apify Data Products',
+    body: 'Engineered, published, and monetized 22 compliance and market data scrapers with zero human code intervention, operating under a 900MB systemd sandbox.',
+  },
+  {
+    id: 'Fig. 03',
     title: 'Shipped an operating system',
     body: 'Flow Arch — an Arch Linux distribution built on Hyprland, designed around enforced focus. 500+ installs and SourceForge’s Rising Star Award for community adoption.',
   },
   {
-    id: 'Fig. 03',
+    id: 'Fig. 04',
     title: 'Autonomous computer vision',
     body: 'A weed-detection robot that identifies and sprays individual plants instead of whole fields. Bronze medal, Canada-Wide Science Fair.',
-  },
-  {
-    id: 'Fig. 04',
-    title: 'Reported an AI data-exfiltration bug',
-    body: 'Found a prompt-injection path in a commercial AI support agent that leaked user data through rendered markdown. Disclosed through Bugcrowd and fixed.',
   },
 ]
 

@@ -1,11 +1,5 @@
-'use client'
-
-import { useState } from 'react'
-
 export function EnhancedIframe(props) {
-  const [isLoading, setIsLoading] = useState(true)
-
-  // Maintain original styling but add our loader logic
+  // Maintain original styling
   const wrapperStyle = {
     height: props.height ? (String(props.height).includes('%') ? props.height : `${props.height}px`) : '400px',
     width: props.width ? (String(props.width).includes('%') ? props.width : `${props.width}px`) : '100%',
@@ -26,7 +20,6 @@ export function EnhancedIframe(props) {
         title="Embedded media"
         loading="lazy"
         {...iframeProps}
-        onLoad={() => setIsLoading(false)}
         className="absolute inset-0 w-full h-full border-0 z-10"
       />
     </div>
