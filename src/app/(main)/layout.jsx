@@ -1,39 +1,9 @@
-import { Archivo, Newsreader, Martian_Mono } from 'next/font/google'
-
 import { Analytics } from '@/components/Analytics'
 import { Layout } from '@/components/Layout'
+import { bodyFont, displayFont, monoFont } from '@/lib/fonts'
 import { siteConfig } from '@/lib/site'
 
 import '@/styles/tailwind.css'
-
-// Industrial grotesque, highway-signage lineage. The width axis is what makes
-// the headlines read as engineering signage rather than another startup sans.
-const display = Archivo({
-  subsets: ['latin'],
-  axes: ['wdth'],
-  display: 'swap',
-  variable: '--font-display',
-})
-
-// Serif body — reads as documentation, not marketing.
-// Next has no metric overrides for Newsreader, so the automatic size-adjust
-// fallback is disabled and a close serif is named explicitly. Without this the
-// build warns and the swap is measured against a mismatched default.
-const body = Newsreader({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-body',
-  adjustFontFallback: false,
-  fallback: ['Georgia', 'Times New Roman', 'serif'],
-})
-
-// Spec labels, figure numbers, data.
-const mono = Martian_Mono({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-mono',
-  fallback: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
-})
 
 export const metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -44,7 +14,6 @@ export const metadata = {
   description: siteConfig.description,
   alternates: {
     canonical: '/',
-    types: { 'application/rss+xml': `${siteConfig.url}/feed.xml` },
   },
   openGraph: {
     type: 'website',
@@ -53,17 +22,26 @@ export const metadata = {
     siteName: siteConfig.name,
     title: `${siteConfig.name} — ${siteConfig.tagline}`,
     description: siteConfig.description,
+    images: [
+      {
+        url: `${siteConfig.url}/og.png`,
+        width: 1200,
+        height: 630,
+        alt: 'Malek Hammoud — software & systems builder',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: `${siteConfig.name} — ${siteConfig.tagline}`,
     description: siteConfig.description,
+    images: [`${siteConfig.url}/og.png`],
   },
   robots: { index: true, follow: true },
 }
 
 export const viewport = {
-  themeColor: '#E7E4DC',
+  themeColor: '#EAECEB',
   colorScheme: 'light',
 }
 
@@ -71,7 +49,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${display.variable} ${body.variable} ${mono.variable} h-full`}
+      className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable} h-full`}
     >
       <body className="flex min-h-full flex-col">
         <Analytics />

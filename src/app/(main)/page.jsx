@@ -1,10 +1,9 @@
 import Link from 'next/link'
 
-import { ArrowLink, Button } from '@/components/Button'
-import { ContainerOuter, Eyebrow, Section } from '@/components/Container'
-import { Trace } from '@/components/Trace'
-import { getFeaturedCaseStudies } from '@/lib/caseStudies'
-import { offers, siteConfig } from '@/lib/site'
+import { ArrowLink } from '@/components/Button'
+import { Container } from '@/components/Container'
+import { Reveal } from '@/components/Reveal'
+import { buildLog, contactLinks, siteConfig } from '@/lib/site'
 
 export const metadata = {
   title: `${siteConfig.name} — ${siteConfig.tagline}`,
@@ -12,241 +11,169 @@ export const metadata = {
   alternates: { canonical: '/' },
 }
 
-/* Every item here is something that exists and can be checked. No figures I
-   was not given, and no client names. */
-const proof = [
-  {
-    id: 'Fig. 01',
-    title: 'Self-hosted inference, in production',
-    body: 'Open-weight Qwen models running on Apple Silicon through MLX-LM, behind a Python router I wrote: authentication, model management and crash recovery.',
-  },
-  {
-    id: 'Fig. 02',
-    title: '22 Autonomous Apify Data Products',
-    body: 'Engineered, published, and monetized 22 compliance and market data scrapers with zero human code intervention, operating under a 900MB systemd sandbox.',
-  },
-  {
-    id: 'Fig. 03',
-    title: 'Shipped an operating system',
-    body: 'Flow Arch — an Arch Linux distribution built on Hyprland, designed around enforced focus. 500+ installs and SourceForge’s Rising Star Award for community adoption.',
-  },
-  {
-    id: 'Fig. 04',
-    title: 'Autonomous computer vision',
-    body: 'A weed-detection robot that identifies and sprays individual plants instead of whole fields. Bronze medal, Canada-Wide Science Fair.',
-  },
-]
-
 function Hero() {
   return (
-    <ContainerOuter>
-      <div className="lg:px-10">
-        <div className="py-14 sm:py-20 lg:py-24">
-          <p className="rise font-mono text-2xs uppercase text-signal" style={{ '--i': 0 }}>
-            {siteConfig.location} · Available for contract work
-          </p>
+    <Container>
+      <div className="py-16 sm:py-24">
+        <div
+          aria-hidden="true"
+          className="animate-draw-in mb-10 h-px w-24 bg-accent sm:mb-14"
+        />
 
-          <div className="mt-6 lg:grid lg:grid-cols-12 lg:gap-12">
-            <h1
-              className="rise max-w-[20ch] font-display text-4xl font-bold sm:text-5xl lg:col-span-8 lg:text-6xl"
-              style={{ '--i': 1 }}
-            >
-              I build AI systems for companies that can’t put their data in
-              someone else’s cloud.
-            </h1>
+        <p
+          className="animate-rise font-mono text-2xs uppercase tracking-[0.14em] text-accent"
+          style={{ animationDelay: '0ms' }}
+        >
+          {siteConfig.tagline} — computer science @ McMaster
+        </p>
 
-            <div className="lg:col-span-4 lg:self-end">
-              <p
-                className="rise mt-7 max-w-measure text-lg text-mute lg:mt-0"
-                style={{ '--i': 2 }}
-              >
-                Private models, agents and pipelines — deployed on
-                infrastructure you own, documented, and handed over working.
-                You keep the keys, the weights and the ability to run it
-                without me.
-              </p>
+        <h1
+          className="animate-rise mt-8 max-w-[24ch] font-body text-3xl italic leading-[1.15] sm:text-5xl"
+          style={{ animationDelay: '60ms' }}
+        >
+          I’m Malek Hammoud. I build software that has to work — Linux
+          distributions, weed-finding robots, and local AI that never leaves
+          the machine.
+        </h1>
 
-              <div
-                className="rise mt-8 flex flex-wrap items-center gap-4"
-                style={{ '--i': 3 }}
-              >
-                <Button href="/contact" track="hero">
-                  Book a call
-                </Button>
-                <Button href="/work" variant="secondary">
-                  See the work
-                </Button>
-              </div>
-            </div>
-          </div>
+        <p
+          className="animate-rise mt-8 max-w-[62ch] text-lg leading-relaxed text-mute"
+          style={{ animationDelay: '120ms' }}
+        >
+          I’ve been building since high school: a Minecraft physics mod that
+          passed over a thousand downloads, a Canada-Wide Science Fair bronze
+          medal, an Arch Linux distribution that took a SourceForge award, and
+          two internships before I started university. I’m looking for a
+          software engineering internship for Summer 2027.
+        </p>
 
-          <Trace className="rise mt-16" style={{ '--i': 4 }} />
-        </div>
-      </div>
-    </ContainerOuter>
-  )
-}
-
-function Proof() {
-  return (
-    <div className="bg-deep text-paper">
-      <ContainerOuter>
-        <div className="lg:px-10">
-          <div className="py-14 sm:py-20">
-            <Eyebrow className="!text-deep-mute">
-              Things that exist and can be checked
-            </Eyebrow>
-            <dl className="mt-10 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-              {proof.map((item) => (
-                <div
-                  key={item.id}
-                  className="border-t border-deep-rule pt-5"
+        <div
+          className="animate-rise mt-12 border-y border-rule py-5"
+          style={{ animationDelay: '180ms' }}
+        >
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="font-mono text-2xs uppercase tracking-[0.12em] text-mute">
+              {siteConfig.seeking}
+            </p>
+            <ul className="flex flex-wrap gap-x-5 gap-y-2">
+              <li>
+                <a
+                  href={siteConfig.resumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-ink underline decoration-rule underline-offset-4 transition hover:decoration-accent"
                 >
-                  <dt>
-                    <span className="block font-mono text-2xs uppercase text-signal-lift">
-                      {item.id}
-                    </span>
-                    <span className="mt-2 block font-display text-base font-semibold">
-                      {item.title}
-                    </span>
-                  </dt>
-                  <dd className="mt-2.5 text-sm text-deep-mute">{item.body}</dd>
-                </div>
+                  Resume (PDF)
+                </a>
+              </li>
+              {contactLinks.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    {...(link.external
+                      ? { target: '_blank', rel: 'noopener noreferrer' }
+                      : {})}
+                    className="text-sm text-ink underline decoration-rule underline-offset-4 transition hover:decoration-accent"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
               ))}
-            </dl>
+            </ul>
           </div>
         </div>
-      </ContainerOuter>
-    </div>
-  )
-}
-
-function Offers() {
-  return (
-    <ContainerOuter>
-      <div className="lg:px-10">
-        <Section index="01" label="What I build">
-          <h2 className="max-w-[20ch] font-display text-3xl font-bold sm:text-4xl">
-            Four ways this usually starts.
-          </h2>
-
-          <ul className="mt-12 grid gap-px border border-rule bg-rule sm:grid-cols-2">
-            {offers.map((offer) => (
-              <li key={offer.slug} className="bg-paper">
-                <Link
-                  href={`/services#${offer.slug}`}
-                  className="group flex h-full flex-col p-6 transition hover:bg-panel/70 sm:p-8"
-                >
-                  <span className="font-mono text-2xs uppercase text-signal">
-                    {offer.id}
-                  </span>
-                  <h3 className="mt-3 font-display text-xl font-semibold">
-                    {offer.title}
-                  </h3>
-                  <p className="mt-2.5 flex-1 text-sm text-mute">
-                    {offer.short}
-                  </p>
-                  <span className="mt-6 flex items-center justify-between gap-4 border-t border-rule pt-4 font-mono text-2xs uppercase">
-                    <span className="text-mute">{offer.shape}</span>
-                    <span
-                      aria-hidden="true"
-                      className="text-signal transition-transform group-hover:translate-x-1"
-                    >
-                      →
-                    </span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-8">
-            <ArrowLink href="/services">Full scope and process</ArrowLink>
-          </div>
-        </Section>
       </div>
-    </ContainerOuter>
+    </Container>
   )
 }
 
-async function SelectedWork() {
-  const featured = await getFeaturedCaseStudies(3)
-
+function BuildLog() {
   return (
-    <ContainerOuter>
-      <div className="lg:px-10">
-        <Section index="02" label="Selected work">
-          <h2 className="max-w-[20ch] font-display text-3xl font-bold sm:text-4xl">
-            Systems I designed, built and ran.
+    <Container>
+      <div className="border-t border-rule py-14 sm:py-20">
+        <div className="flex flex-wrap items-baseline justify-between gap-4">
+          <h2 className="font-display text-2xl font-semibold">
+            A few things I’ve shipped
           </h2>
+          <ArrowLink href="/projects">All work</ArrowLink>
+        </div>
 
-          <ul className="mt-12 space-y-px bg-rule">
-            {featured.map((item) => (
-              <li key={item.slug} className="bg-paper">
-                <Link
-                  href={`/work/${item.slug}`}
-                  className="group grid gap-4 py-7 transition hover:bg-panel/70 sm:grid-cols-12 sm:gap-8 sm:px-4"
+        <ol className="mt-4 divide-y divide-rule">
+          {buildLog.map((entry, index) => (
+            <Reveal key={entry.title} as="li" delay={Math.min(index * 60, 240)}>
+              <Link
+                href={entry.href}
+                {...(entry.href.startsWith('http')
+                  ? { target: '_blank', rel: 'noopener noreferrer' }
+                  : {})}
+                className="group grid gap-1 py-6 sm:grid-cols-[4.5rem_1fr_auto] sm:items-baseline sm:gap-6"
+              >
+                <span className="font-mono text-xs text-mute transition group-hover:text-accent">
+                  {entry.year}
+                </span>
+                <span>
+                  <span className="font-display text-xl font-semibold transition group-hover:text-accent">
+                    {entry.title}
+                    <sup className="footnote-marker text-accent">
+                      [{index + 1}]
+                    </sup>
+                  </span>
+                  <span className="mt-1 block max-w-[58ch] text-sm leading-relaxed text-mute">
+                    {entry.subtitle}
+                  </span>
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="hidden font-mono text-xs text-accent transition-transform group-hover:translate-x-1 sm:block"
                 >
-                  <div className="sm:col-span-3">
-                    <span className="font-mono text-2xs uppercase text-signal">
-                      {item.number}
-                    </span>
-                    <h3 className="mt-2 font-display text-xl font-semibold">
-                      {item.title}
-                    </h3>
-                  </div>
-                  <div className="sm:col-span-6">
-                    <p className="text-sm text-mute">{item.outcome}</p>
-                  </div>
-                  <div className="flex items-start justify-between gap-4 sm:col-span-3">
-                    <span className="font-mono text-2xs uppercase text-mute">
-                      {item.stack.slice(0, 3).join(' · ')}
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className="text-signal transition-transform group-hover:translate-x-1"
-                    >
-                      →
-                    </span>
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
+                  →
+                </span>
+              </Link>
+            </Reveal>
+          ))}
+        </ol>
 
-          <div className="mt-8">
-            <ArrowLink href="/work">All case studies</ArrowLink>
-          </div>
-        </Section>
+        <ol className="mt-10 space-y-1.5 font-mono text-xs text-mute">
+          {buildLog.map((entry, index) => (
+            <li key={entry.title}>
+              [{index + 1}] {entry.source}
+            </li>
+          ))}
+        </ol>
       </div>
-    </ContainerOuter>
+    </Container>
   )
 }
 
-function Closing() {
+function Now() {
   return (
-    <div className="bg-deep text-paper">
-      <ContainerOuter>
-        <div className="lg:px-10">
-          <div className="grid gap-8 py-16 sm:py-24 lg:grid-cols-12">
-            <div className="lg:col-span-8">
-              <h2 className="max-w-[18ch] font-display text-3xl font-bold sm:text-4xl">
-                Tell me what you’re trying to build.
-              </h2>
-              <p className="mt-5 max-w-measure text-lg text-deep-mute">
-                Fifteen minutes, no deck. If it isn’t something I should take
-                on, I’ll say so on the call and point you somewhere better.
-              </p>
-            </div>
-            <div className="flex items-end lg:col-span-4 lg:justify-end">
-              <Button href="/contact" variant="inverse" track="footer_cta">
-                Book a call
-              </Button>
-            </div>
+    <Container>
+      <div className="border-t border-rule py-14 sm:py-20">
+        <h2 className="font-display text-2xl font-semibold">Right now</h2>
+        <div className="mt-6 grid gap-10 lg:grid-cols-2">
+          <p className="max-w-[58ch] text-base leading-relaxed text-mute">
+            Most of my time goes into Flow Arch, whatever local LLM
+            infrastructure I’m tuning that week, and the occasional write-up
+            for the logs page.
+          </p>
+          <div className="flex flex-wrap content-start items-baseline gap-x-5 gap-y-2 lg:justify-end">
+            {contactLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                {...(link.external
+                  ? { target: '_blank', rel: 'noopener noreferrer' }
+                  : {})}
+                className="font-mono text-xs uppercase text-accent underline decoration-rule underline-offset-4 transition hover:decoration-accent"
+              >
+                {link.label}
+                {link.external ? ' ↗' : ''}
+              </Link>
+            ))}
           </div>
         </div>
-      </ContainerOuter>
-    </div>
+      </div>
+    </Container>
   )
 }
 
@@ -254,10 +181,8 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Proof />
-      <Offers />
-      <SelectedWork />
-      <Closing />
+      <BuildLog />
+      <Now />
     </>
   )
 }

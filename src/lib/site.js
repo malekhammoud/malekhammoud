@@ -1,97 +1,80 @@
 export const siteConfig = {
   name: 'Malek Hammoud',
-  tagline: 'Private AI systems',
+  tagline: 'Software & systems builder',
   url: (process.env.NEXT_PUBLIC_SITE_URL || 'https://malekhammoud.com').replace(
     /\/$/,
     '',
   ),
   description:
-    'I build AI systems for companies that can’t put their data in someone else’s cloud — private models, agents and pipelines deployed on infrastructure you own.',
+    'Malek Hammoud builds software that has to work: Linux distributions, computer-vision robots, and local AI infrastructure. Computer Science at McMaster.',
   email: 'malek@malekhammoud.com',
-  location: 'London, Ontario',
-  booking: '/contact',
+  location: 'London, ON · McMaster CS',
+  seeking: 'SEEKING A SOFTWARE ENGINEERING INTERNSHIP FOR SUMMER 2027',
+  resumeUrl: '/resume.pdf',
   socials: {
     github: 'https://github.com/malekhammoud',
     linkedin: 'https://www.linkedin.com/in/malekhammoud/',
+    devpost: 'https://devpost.com/malekhammoud',
+    twitter: 'https://x.com/malekhammoud',
   },
 }
 
-/** Offers. Shared by the homepage and /services so they can never drift. */
-export const offers = [
+/*
+  The build log — the site's spine. Every entry is one thing that shipped,
+  newest first, with a footnote pointing at where the claim can be checked.
+*/
+export const buildLog = [
   {
-    id: '01',
-    slug: 'private-model-deployment',
-    title: 'Private model deployment',
-    short:
-      'Open-weight models running on your hardware or inside your own cloud account.',
-    who: 'Teams under a contract, regulator or client policy that rules out sending data to a third-party API.',
-    detail:
-      'I size the hardware, pick and quantise the model, and put a real service in front of it — routing, authentication, model management, failover and monitoring. Not a demo on a laptop: something your team can run.',
-    delivers: [
-      'A running inference service on infrastructure you control',
-      'Auth, request routing and per-client model selection',
-      'Health checks, crash recovery and restart-on-boot',
-      'A runbook, and a walkthrough with whoever will operate it',
-    ],
-    shape: 'Build · 4–8 weeks',
+    year: '2025',
+    title: 'Flow Arch',
+    subtitle: 'An Arch Linux distribution built around enforced focus — compositor-level control, not another pomodoro app. 700+ downloads.',
+    href: '/projects/flow-arch',
+    source: 'SourceForge — 700+ downloads, Rising Star Award.',
   },
   {
-    id: '02',
-    slug: 'ai-agents-automation',
-    title: 'AI agents & automation',
-    short:
-      'Agents that do real work inside the tools you already use — scoped, evaluated, and bounded.',
-    who: 'Teams with a repetitive, judgement-light process that already has a clear definition of done.',
-    detail:
-      'Most agent projects fail because nobody defined what “correct” means before building. I start from the evaluation, then build the agent against it. Permissions are scoped narrowly and every tool call is logged.',
-    delivers: [
-      'An agent wired into your existing systems',
-      'An evaluation set, so changes can be measured instead of vibed',
-      'Scoped credentials and an audit trail of every action taken',
-      'Handover docs and the eval harness, both yours to keep',
-    ],
-    shape: 'Pilot 1–2 weeks, then build',
+    year: '2025',
+    title: '22 autonomous Apify scrapers',
+    subtitle: 'A fleet of 22 scrapers deployed on Apify SDK inside a 900MB sandbox — designed and wired up end-to-end with an AI agent system in a few days.',
+    href: '/projects/apify-autonomous-portfolio',
+    source: 'Live on Apify.',
   },
   {
-    id: '03',
-    slug: 'document-data-pipelines',
-    title: 'Document & data pipelines',
-    short:
-      'Ingestion, extraction and retrieval over your own corpus — the plumbing that makes the rest work.',
-    who: 'Anyone whose useful information is trapped in PDFs, scans, email or a decade of shared drives.',
-    detail:
-      'Retrieval quality is decided at ingestion, long before a model is involved. This is parsing, chunking, deduplication and metadata — unglamorous, and the reason most internal AI tools quietly return nothing useful.',
-    delivers: [
-      'A repeatable ingestion pipeline you can re-run on new documents',
-      'Structured extraction with the failure cases written down',
-      'A retrieval layer your other systems can query',
-      'Honest reporting on what the pipeline cannot read',
-    ],
-    shape: 'Build · 3–6 weeks',
+    year: '2025',
+    title: 'Basil Home AI',
+    subtitle: 'A smart-fridge engine running QNX RTOS on a Raspberry Pi with on-device grocery detection.',
+    href: 'https://basilhome.ca/',
+    source: 'Hack the 6ix 2025 — winner, Deloitte "Best Use of AI for Green".',
   },
   {
-    id: '04',
-    slug: 'contract-development',
-    title: 'Contract development',
-    short:
-      'Full-stack builds, internal tools and integrations. For when the problem isn’t AI-shaped.',
-    who: 'Teams who need a competent engineer on a defined piece of work, without a hiring round.',
-    detail:
-      'Web applications, internal tooling, API integrations, Linux and deployment work. Same approach as everything else here: scoped up front, handed over documented, no dependency on me afterwards.',
-    delivers: [
-      'The thing, working, in your repository',
-      'Deployment and the documentation to redeploy it',
-      'Code written to be read by whoever comes next',
-    ],
-    shape: 'Varies · scoped before it starts',
+    year: '2024',
+    title: 'GreenGuardian',
+    subtitle: 'An autonomous robot that finds and removes invasive weeds with onboard computer vision. Bronze medal at the Canada-Wide Science Fair.',
+    href: '/projects/greenguardian',
+    source: 'Canada-Wide Science Fair 2024 — bronze medalist.',
+  },
+  {
+    year: '2024',
+    title: 'Drone litter-mapping system',
+    subtitle: 'An aerial mapping pipeline that locates illegal dumping from drone orthomosaics — a real 50 m² survey from a 5-minute flight, each detection GPS-tagged.',
+    href: '/projects/litter-detection',
+    source: 'Research paper and write-up in the logs.',
+  },
+  {
+    year: '2023',
+    title: 'Minecraft flight physics mod',
+    subtitle: 'A real-time aerodynamics engine — lift, drag, angle of attack — computed on every tick at 60 FPS. My first serious code.',
+    href: 'https://github.com/malekhammoud',
+    source: 'CurseForge — 1,000+ downloads.',
   },
 ]
 
-/** Said plainly, because it saves everyone a call. */
-export const notAFit = [
-  'Prompt consulting with no build attached — I’m an engineer, not a workshop.',
-  'A chatbot bolted onto a marketing site as the entire project.',
-  'Anything needing 24/7 on-call. I’m one person and I won’t pretend otherwise.',
-  'Being the sole engineer on a long, safety-critical or regulated build.',
-  'Work that depends on scraping or sending data somewhere its owner hasn’t agreed to.',
+export const contactLinks = [
+  { label: 'Email', href: `mailto:${siteConfig.email}` },
+  { label: 'GitHub', href: siteConfig.socials.github, external: true },
+  { label: 'LinkedIn', href: siteConfig.socials.linkedin, external: true },
+  { label: 'Devpost', href: siteConfig.socials.devpost, external: true },
 ]
+
+export function getAllBuildLogs() {
+  return buildLog
+}

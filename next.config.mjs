@@ -1,18 +1,19 @@
-import { fileURLToPath } from 'node:url'
-import rehypePrism from '@mapbox/rehype-prism'
-import nextMDX from '@next/mdx'
-import remarkGfm from 'remark-gfm'
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
   outputFileTracingIncludes: {
-    '/articles/*': ['./src/app/(main)/articles/**/*.mdx'],
-    '/work/*': ['./src/app/(main)/work/**/*.mdx'],
+    '/logs/*': ['./src/app/(main)/logs/**/*'],
+    '/projects/*': ['./src/app/(main)/projects/**/*'],
+    // The admin reads src/content/**/*.md at runtime via fs, so the
+    // serverless functions need those files traced into the bundle.
+    '/admin': ['./src/content/logs/**/*', './src/content/projects/**/*'],
+    '/admin/*': ['./src/content/logs/**/*', './src/content/projects/**/*'],
   },
   experimental: {
     optimizePackageImports: ['@headlessui/react', '@heroicons/react'],
-    mdxRs: true,
+    serverActions: {
+      // Image uploads via the admin form exceed the 1MB default.
+      bodySizeLimit: '6mb',
+    },
   },
   turbopack: {},
   images: {
@@ -22,12 +23,6 @@ const nextConfig = {
     minimumCacheTTL: 60,
   },
   compress: true,
-  webpack(config) {
-    config.resolve.alias['next-mdx-import-source-file'] = fileURLToPath(
-      new URL('./src/mdx-components.js', import.meta.url)
-    )
-    return config
-  },
 
   // PostHog is proxied through our own origin so the site carries no
   // third-party host in the markup and analytics survive ad blockers.
@@ -47,15 +42,15 @@ const nextConfig = {
 
   async redirects() {
     return [
-      // The old portfolio's routes. Every one of these has been indexed, so
-      // none of them may 404.
-      { source: '/projects', destination: '/work', permanent: true },
-      { source: '/meet', destination: '/contact', permanent: true },
-      { source: '/news', destination: '/articles', permanent: true },
-      { source: '/news/:slug', destination: '/articles', permanent: true },
-      { source: '/thank-you', destination: '/contact', permanent: true },
-      // Was a client-side JS redirect page; a real 301 is faster and works
-      // without JavaScript.
+      { source: '/work', destination: '/projects', permanent: true },
+      { source: '/work/:slug*', destination: '/projects/:slug*', permanent: true },
+      { source: '/articles', destination: '/logs', permanent: true },
+      { source: '/articles/:slug*', destination: '/logs/:slug*', permanent: true },
+      { source: '/services', destination: '/projects', permanent: true },
+      { source: '/contact', destination: '/about#contact', permanent: true },
+      { source: '/meet', destination: '/about#contact', permanent: true },
+      { source: '/booking', destination: '/about#contact', permanent: true },
+      { source: '/thank-you', destination: '/about#contact', permanent: true },
       {
         source: '/paper',
         destination: '/Autonomous_Litter_Detection_and_Recovery_System.pdf',
@@ -65,8 +60,4 @@ const nextConfig = {
   },
 }
 
-const withMDX = nextMDX({
-  extension: /\.mdx?$/,
-})
-
-export default withMDX(nextConfig)
+export default nextConfig

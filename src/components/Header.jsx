@@ -5,29 +5,23 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import clsx from 'clsx'
 
-import { Button } from '@/components/Button'
-import { ContainerOuter } from '@/components/Container'
+import { Container } from '@/components/Container'
 
 const nav = [
-  { href: '/work', label: 'Work' },
-  { href: '/services', label: 'Services' },
-  { href: '/articles', label: 'Articles' },
-  { href: '/tools', label: 'Tools' },
+  { href: '/projects', label: 'Work' },
+  { href: '/logs', label: 'Logs' },
   { href: '/about', label: 'About' },
+  { href: '/resume', label: 'Resume' },
 ]
 
 function Mark() {
   return (
     <Link
       href="/"
-      aria-label="Malek Hammoud — home"
-      className="group flex items-center gap-2.5"
+      aria-label="Malek Hammoud — Home"
+      className="flex items-center gap-2.5"
     >
-      {/* Drawn, not an image: a filled square and the initials, like a part stamp. */}
-      <span
-        aria-hidden="true"
-        className="block h-3 w-3 shrink-0 bg-signal transition group-hover:rotate-45"
-      />
+      <span aria-hidden="true" className="block h-2.5 w-2.5 shrink-0 bg-accent" />
       <span className="font-display text-sm font-semibold tracking-tight">
         Malek Hammoud
       </span>
@@ -39,12 +33,13 @@ export function Header() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
 
-  const isActive = (href) => pathname === href || pathname?.startsWith(`${href}/`)
+  const isActive = (href) =>
+    pathname === href || (href !== '/' && pathname?.startsWith(`${href}/`))
 
   return (
-    <header className="sticky top-0 z-40 border-b border-rule bg-paper/90 backdrop-blur-sm">
-      <ContainerOuter>
-        <div className="flex h-16 items-center justify-between gap-6 lg:px-10">
+    <header className="sticky top-0 z-40 border-b border-rule bg-surface/90 backdrop-blur-sm">
+      <Container>
+        <div className="flex h-16 items-center justify-between gap-6">
           <Mark />
 
           <nav aria-label="Primary" className="hidden items-center gap-1 md:flex">
@@ -54,28 +49,15 @@ export function Header() {
                 href={item.href}
                 aria-current={isActive(item.href) ? 'page' : undefined}
                 className={clsx(
-                  'relative px-3 py-2 font-display text-sm transition',
+                  'undraw px-3 py-2 font-display text-sm transition',
                   isActive(item.href)
-                    ? 'text-ink'
+                    ? 'font-medium text-ink underline decoration-accent decoration-2 underline-offset-[6px]'
                     : 'text-mute hover:text-ink',
                 )}
               >
                 {item.label}
-                {isActive(item.href) && (
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-x-3 -bottom-px h-px bg-signal"
-                  />
-                )}
               </Link>
             ))}
-            <Button
-              href="/contact"
-              track="header"
-              className="ml-3 px-4 py-2.5"
-            >
-              Book a call
-            </Button>
           </nav>
 
           <button
@@ -105,11 +87,11 @@ export function Header() {
             </span>
           </button>
         </div>
-      </ContainerOuter>
+      </Container>
 
       {open && (
         <div id="mobile-nav" className="border-t border-rule md:hidden">
-          <ContainerOuter>
+          <Container>
             <nav aria-label="Primary" className="flex flex-col py-2">
               {nav.map((item) => (
                 <Link
@@ -117,24 +99,13 @@ export function Header() {
                   href={item.href}
                   onClick={() => setOpen(false)}
                   aria-current={isActive(item.href) ? 'page' : undefined}
-                  className="flex items-baseline gap-3 border-b border-rule/60 py-3 font-display text-base"
+                  className="border-b border-rule/60 py-3 font-display text-base"
                 >
-                  <span className="font-mono text-2xs text-signal">
-                    {String(nav.indexOf(item) + 1).padStart(2, '0')}
-                  </span>
                   {item.label}
                 </Link>
               ))}
-              <Button
-                href="/contact"
-                track="mobile_nav"
-                onClick={() => setOpen(false)}
-                className="my-4"
-              >
-                Book a call
-              </Button>
             </nav>
-          </ContainerOuter>
+          </Container>
         </div>
       )}
     </header>

@@ -1,191 +1,129 @@
 /*
-  "Datasheet" — the site's atmosphere and its one page-load sequence.
-  Everything here is CSS-only on purpose: no JS drives any animation.
+  The site's atmosphere: a flat workshop surface, one accent, quiet type.
+  No load animations, no texture, no shadows — the work is the decoration.
 */
 
 :root {
-  --paper: #e7e4dc;
-  --panel: #dedad0;
-  --ink: #14161a;
-  --mute: #5b6068;
-  --rule: #c6c1b5;
-  --signal: #1f35d6;
-  --deep: #10131a;
+  --surface: #eaeceb;
+  --panel: #e0e3e1;
+  --ink: #17191d;
+  --mute: #5a6066;
+  --rule: #cfd3d1;
+  --accent: #1e4d3b;
 }
 
 html {
   -webkit-text-size-adjust: 100%;
-  /*
-    No scroll-behavior: smooth. It animates every wheel tick, not just anchor
-    jumps, which reads as lag. Anchors land instantly instead; scroll-mt-20 on
-    the targets keeps them clear of the sticky header.
-  */
 }
 
 body {
-  background-color: var(--paper);
+  background-color: var(--surface);
+  /* The workshop: a faint step-grid and a soft green glow behind the mast.
+     Decoration only — the print block below blanks it for the resume. */
+  /* 180deg anchors the horizontal lines to the TOP edge (0deg anchors to the
+     bottom), so the lattice matches the top-anchored electron canvas on any
+     viewport height. */
+  background-image:
+    radial-gradient(52rem 28rem at 82% -8%, rgba(30, 77, 59, 0.07), transparent 62%),
+    repeating-linear-gradient(180deg, rgba(23, 25, 29, 0.022) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(90deg, rgba(23, 25, 29, 0.022) 0 1px, transparent 1px 48px);
   color: var(--ink);
   font-family: var(--font-body), Georgia, serif;
-  /*
-    Atmosphere, not a flat fill: a fine turbulence grain over the paper ground.
-    One inline SVG, ~3% opacity — no image request, no gradient, no glow.
-  */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)' opacity='0.035'/%3E%3C/svg%3E");
-  background-repeat: repeat;
 }
 
 ::selection {
-  background-color: var(--signal);
-  color: var(--paper);
+  background-color: var(--accent);
+  color: var(--surface);
 }
 
 /* Visible, deliberate focus. Never removed. */
 :focus-visible {
-  outline: 2px solid var(--signal);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 1px;
 }
 
-/* ── The drawing frame ──────────────────────────────────────────────────────
-   Vertical rules at the content edges, like the border of an engineering
-   drawing. Structural, not decorative — they mark the measure. */
-.frame-rules {
-  position: relative;
-}
-.frame-rules::before,
-.frame-rules::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background-color: var(--rule);
-  opacity: 0.7;
-  pointer-events: none;
-}
-.frame-rules::before {
-  left: 0;
-}
-.frame-rules::after {
-  right: 0;
-}
-@media (max-width: 1023px) {
-  .frame-rules::before,
-  .frame-rules::after {
-    display: none;
-  }
+/* ── Footnotes ─────────────────────────────────────────────────────────────
+   Superscript markers in mono, printed in the page's own type size. */
+.footnote-marker {
+  font-family: var(--font-mono);
+  font-size: 0.72em;
+  vertical-align: super;
+  line-height: 1;
 }
 
-/* ── The one page-load sequence ────────────────────────────────────────────
-   Staggered rise, 60ms apart, driven by --i. Fires once, on load. There is no
-   scroll-triggered reveal anywhere on the site. */
+/* ── Motion: the page loads once, then sits still ────────────────────────── */
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
-    transform: none;
+    transform: translateY(0);
   }
 }
 
-.rise {
-  opacity: 0;
-  animation: rise 620ms cubic-bezier(0.22, 0.68, 0.29, 1) forwards;
-  animation-delay: calc(var(--i, 0) * 60ms);
+.animate-rise {
+  animation: rise 420ms ease-out both;
 }
 
-/* ── Signature element: the request trace ──────────────────────────────────
-   Connectors draw themselves in sequence, then each node lights. Once. */
-@keyframes trace-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes node-live {
+@keyframes draw-in {
   from {
-    fill: var(--paper);
-    stroke: var(--rule);
+    transform: scaleX(0);
   }
   to {
-    fill: var(--paper);
-    stroke: var(--signal);
+    transform: scaleX(1);
   }
 }
 
-@keyframes pip-live {
-  0% {
-    opacity: 0;
-    transform: scale(0.4);
-  }
-  60% {
-    opacity: 1;
-    transform: scale(1.25);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+.animate-draw-in {
+  transform-origin: left;
+  animation: draw-in 640ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.trace-path {
-  stroke-dasharray: var(--len, 200);
-  stroke-dashoffset: var(--len, 200);
-  animation: trace-draw 380ms linear forwards;
-  animation-delay: calc(200ms + var(--i, 0) * 130ms);
-}
-
-.trace-node {
-  stroke: var(--rule);
-  animation: node-live 240ms ease-out forwards;
-  animation-delay: calc(260ms + var(--i, 0) * 130ms);
-}
-
-.trace-pip {
+/* Scroll entry: content fades up once, just past the fold. */
+.reveal {
   opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: pip-live 300ms cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
-  animation-delay: calc(290ms + var(--i, 0) * 130ms);
+  transform: translateY(12px);
+  transition:
+    opacity 500ms ease-out,
+    transform 500ms ease-out;
 }
 
-/* Node text is deliberately NOT animated: an opacity-0 <text> became the LCP
-   element at 1.3s. The diagram reads immediately; the sequence is carried by
-   the connectors and the pips. */
+.reveal.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-/* ── Reduced motion: everything arrives already finished ──────────────────── */
-@media (prefers-reduced-motion: reduce) {
-  .rise {
-    opacity: 1;
-    animation: none;
-    transform: none;
-  }
-  .trace-path {
-    stroke-dashoffset: 0;
-    animation: none;
-  }
-  .trace-node {
-    stroke: var(--signal);
-    animation: none;
-  }
-  .trace-pip {
-    opacity: 1;
-    animation: none;
-  }
-  *,
-  *::before,
-  *::after {
-    transition-duration: 0.01ms !important;
-  }
+/* Hover underline that draws itself in, keyed to the 120ms transition token. */
+.undraw {
+  position: relative;
+}
+
+.undraw::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  transition: transform 120ms ease-out;
+}
+
+.undraw:hover::after,
+.undraw:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: 0 50%;
 }
 
 /* ── Print: the /resume page is a real document ───────────────────────────── */
 @media print {
   body {
     background: #fff;
-    background-image: none;
     color: #000;
     font-size: 10.5pt;
   }
@@ -200,5 +138,26 @@ body {
     content: ' (' attr(href) ')';
     font-size: 8pt;
     color: #444;
+  }
+}
+
+/* ── Reduced motion: everything is already still ──────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise,
+  .animate-draw-in {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
   }
 }

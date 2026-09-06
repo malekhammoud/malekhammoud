@@ -1,67 +1,48 @@
-"use client"
-import { useEffect, useRef, useState } from 'react'
+'use client'
+
+import { useEffect, useRef } from 'react'
 import clsx from 'clsx'
 
-/*
-  Reveal component
-  Props:
-    as: element/component type (default div)
-    children: content
-    className: extra classes
-    variant: 'fade' | 'slide-up' | 'slide-left' | 'scale'
-    delay: optional delay in ms for animation start
-    threshold: IntersectionObserver threshold (default 0.15)
-*/
-export function Reveal({
-  as: Component = 'div',
-  children,
-  className,
-  variant = 'slide-up',
-  delay = 0,
-  threshold = 0.15,
-  once = true,
-}) {
+/**
+ * Scroll entry: fades the child up once, just past the fold, then forgets
+ * about it. Falls back to instant visibility when IntersectionObserver is
+ * unavailable; prefers-reduced-motion is handled in CSS.
+ */
+export function Reveal({ as: Tag = 'div', delay = 0, className, children }) {
   const ref = useRef(null)
-  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
     const node = ref.current
     if (!node) return
 
+    if (typeof IntersectionObserver === 'undefined') {
+      node.classList.add('is-in')
+      return
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
+        for (const entry of entries) {
           if (entry.isIntersecting) {
-            setVisible(true)
-            if (once) observer.disconnect()
-          } else if (!once) {
-            setVisible(false)
+            entry.target.classList.add('is-in')
+            observer.unobserve(entry.target)
           }
-        })
+        }
       },
-      { threshold }
+      { threshold: 0.15 },
     )
 
     observer.observe(node)
     return () => observer.disconnect()
-  }, [threshold, once])
+  }, [])
 
   return (
-    <Component
+    <Tag
       ref={ref}
-      style={{ '--reveal-delay': `${delay}ms` }}
-      className={clsx(
-        'reveal-base',
-        variant === 'fade' && 'reveal-fade',
-        variant === 'slide-up' && 'reveal-slide-up',
-        variant === 'slide-left' && 'reveal-slide-left',
-        variant === 'scale' && 'reveal-scale',
-        visible && 'reveal-visible',
-        className
-      )}
+      className={clsx('reveal', className)}
+      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
     >
       {children}
-    </Component>
+    </Tag>
   )
 }
-

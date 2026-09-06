@@ -5,10 +5,10 @@ const typographyStyles = require('./typography')
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx,mdx}'],
-  // Single committed light theme. No dark mode, no toggle — see the Phase 1 plan.
+  // Single committed light theme. No dark mode, no toggle.
   plugins: [typographyPlugin],
   theme: {
-    // "Datasheet" type scale. Tighter than the template's: density reads senior.
+    // One tight scale. Density reads senior; the display sizes carry the page.
     fontSize: {
       '2xs': ['0.6875rem', { lineHeight: '1rem', letterSpacing: '0.08em' }],
       xs: ['0.75rem', { lineHeight: '1.125rem', letterSpacing: '0.06em' }],
@@ -21,49 +21,42 @@ module.exports = {
       '4xl': ['2.375rem', { lineHeight: '1.1', letterSpacing: '-0.022em' }],
       '5xl': ['3.125rem', { lineHeight: '1.05', letterSpacing: '-0.026em' }],
       '6xl': ['4rem', { lineHeight: '1.02', letterSpacing: '-0.03em' }],
-      '7xl': ['5rem', { lineHeight: '1', letterSpacing: '-0.032em' }],
     },
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
-      // The whole palette. Six values plus two derivations — nothing else ships.
-      paper: '#E7E4DC',
-      panel: '#DEDAD0',
-      ink: '#14161A',
-      mute: '#5B6068',
-      rule: '#C6C1B5',
-      signal: '#1F35D6',
-      deep: '#10131A',
-      // Derivations, used only for inverted bands.
-      'deep-rule': '#282C35',
-      'deep-mute': '#9298A4',
-      // The accent is unreadable on --deep (~2:1). This is the same hue lifted
-      // for inverted bands only — 7.9:1 on --deep.
-      'signal-lift': '#8FA4FF',
+      // Workshop steel, not paper. Six tokens, nothing else ships.
+      surface: '#EAECEB',
+      panel: '#E0E3E1',
+      ink: '#17191D',
+      mute: '#5A6066',
+      rule: '#CFD3D1',
+      accent: '#1E4D3B',
+      // Dark surfaces, used only for code blocks.
+      deep: '#16181C',
+      'deep-rule': '#2B2F34',
+      fog: '#9AA2A8',
+      // The accent lifted for dark backgrounds (~8:1 on --deep).
+      'accent-lift': '#8FBBAA',
     },
     borderRadius: {
       none: '0',
-      DEFAULT: '3px',
+      DEFAULT: '2px',
       sm: '2px',
-      md: '3px',
-      lg: '5px',
       full: '9999px',
     },
     extend: {
       fontFamily: {
-        // Industrial grotesque — headlines, nav, buttons.
+        // Industrial grotesque, headlines and the wordmark only.
         display: ['var(--font-display)', 'ui-sans-serif', 'sans-serif'],
-        // Serif body. The unexpected move: reads as documentation, not marketing.
+        // Serif for prose and the signature line.
         body: ['var(--font-body)', 'ui-serif', 'Georgia', 'serif'],
-        // Spec labels, figure numbers, data, code.
+        // Years, dates, labels, footnotes.
         mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
       },
       maxWidth: {
         measure: '68ch',
-        frame: '1140px',
-      },
-      spacing: {
-        rail: '4.5rem', // the datasheet left margin
+        copy: '46rem',
       },
       transitionDuration: {
         DEFAULT: '120ms',

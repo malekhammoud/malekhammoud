@@ -1,22 +1,22 @@
 /*
-  Prose styles for MDX content (/articles). Built from the site's six tokens —
-  see tailwind.config.js. Deliberately dense: 68ch measure, serif body.
+  Prose styles for markdown content (/logs). Built from the site tokens — see
+  tailwind.config.js. Dense: 68ch measure, serif body.
 */
 module.exports = ({ theme }) => ({
   DEFAULT: {
     css: {
       '--tw-prose-body': theme('colors.ink'),
       '--tw-prose-headings': theme('colors.ink'),
-      '--tw-prose-links': theme('colors.signal'),
+      '--tw-prose-links': theme('colors.accent'),
       '--tw-prose-bold': theme('colors.ink'),
       '--tw-prose-counters': theme('colors.mute'),
       '--tw-prose-bullets': theme('colors.rule'),
       '--tw-prose-hr': theme('colors.rule'),
       '--tw-prose-quotes': theme('colors.ink'),
-      '--tw-prose-quote-borders': theme('colors.signal'),
+      '--tw-prose-quote-borders': theme('colors.accent'),
       '--tw-prose-captions': theme('colors.mute'),
       '--tw-prose-code': theme('colors.ink'),
-      '--tw-prose-pre-code': theme('colors.paper'),
+      '--tw-prose-pre-code': theme('colors.fog'),
       '--tw-prose-pre-bg': theme('colors.deep'),
       '--tw-prose-th-borders': theme('colors.rule'),
       '--tw-prose-td-borders': theme('colors.rule'),
@@ -52,13 +52,6 @@ module.exports = ({ theme }) => ({
 
       p: { marginTop: '1.25rem', marginBottom: '1.25rem' },
 
-      /*
-        Lists have to be spelled out. `theme.typography.DEFAULT` REPLACES the
-        plugin's default style object rather than merging into it, so anything
-        not named here simply never gets a rule — and Tailwind's preflight has
-        already set `ul { list-style: none; padding: 0 }`. Dropping these left
-        every bulleted list in an article rendering as run-together paragraphs.
-      */
       ul: {
         listStyleType: 'disc',
         paddingLeft: '1.5em',
@@ -103,7 +96,7 @@ module.exports = ({ theme }) => ({
         textUnderlineOffset: '3px',
         transition: 'text-decoration-color 120ms',
       },
-      'a:hover': { textDecorationColor: theme('colors.signal') },
+      'a:hover': { textDecorationColor: theme('colors.accent') },
 
       strong: { fontWeight: '650' },
 
@@ -132,7 +125,7 @@ module.exports = ({ theme }) => ({
         fontSize: theme('fontSize.sm')[0],
         lineHeight: '1.65',
         padding: '1.125rem 1.25rem',
-        borderRadius: '3px',
+        borderRadius: '2px',
         overflowX: 'auto',
       },
       'pre code': {
@@ -143,7 +136,7 @@ module.exports = ({ theme }) => ({
 
       hr: { marginTop: '3rem', marginBottom: '3rem' },
 
-      img: { borderRadius: '3px' },
+      img: { borderRadius: '2px' },
 
       figcaption: {
         fontFamily: 'var(--font-mono)',

@@ -1,4 +1,6 @@
-import { ContainerOuter } from '@/components/Container'
+import Link from 'next/link'
+
+import { Container } from '@/components/Container'
 import { siteConfig } from '@/lib/site'
 import {
   awards,
@@ -10,21 +12,20 @@ import {
 } from '@/lib/resume'
 
 export const metadata = {
-  title: 'Résumé',
+  title: 'Resume',
   description:
-    'Malek Hammoud — software engineer in London, Ontario. Education, experience, technical projects, skills and awards, with a PDF download.',
+    'Malek Hammoud — Honours CS at McMaster. Experience, technical projects, skills, honours, and a printable PDF.',
   alternates: { canonical: '/resume' },
 }
 
 function Head({ children }) {
   return (
-    <h2 className="mb-5 border-b border-rule pb-2 font-mono text-2xs uppercase text-mute">
+    <h2 className="mb-5 border-b border-rule pb-2 font-mono text-2xs uppercase tracking-[0.12em] text-mute">
       {children}
     </h2>
   )
 }
 
-/** Shared row: a date column on the left, content on the right. */
 function Entry({ dates, children }) {
   return (
     <li className="sm:flex sm:gap-6">
@@ -42,10 +43,10 @@ function Bullets({ notes }) {
   return (
     <ul className="mt-2 space-y-1.5">
       {notes.map((note) => (
-        <li key={note} className="flex gap-2.5 text-base">
+        <li key={note} className="flex gap-2.5 text-sm leading-relaxed">
           <span
             aria-hidden="true"
-            className="mt-[9px] block h-1 w-1 shrink-0 bg-signal"
+            className="mt-[7px] block h-1.5 w-1.5 shrink-0 rounded-full bg-rule"
           />
           <span>{note}</span>
         </li>
@@ -56,21 +57,33 @@ function Bullets({ notes }) {
 
 export default function Resume() {
   return (
-    <ContainerOuter>
-      <div className="mx-auto max-w-3xl px-0 py-16 sm:py-20 lg:px-10">
+    <Container>
+      <div className="mx-auto max-w-4xl py-12 sm:py-16">
+        <div className="no-print mb-8 flex justify-end">
+          <a
+            href={siteConfig.resumeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-xs uppercase text-accent underline decoration-rule underline-offset-4 transition hover:decoration-accent"
+          >
+            PDF version ↓
+          </a>
+        </div>
+
         <header className="flex flex-wrap items-end justify-between gap-6 border-b-2 border-ink pb-6">
           <div>
-            <h1 className="font-display text-4xl font-bold">{siteConfig.name}</h1>
+            <h1 className="font-display text-4xl font-semibold">
+              {siteConfig.name}
+            </h1>
             <p className="mt-2 font-mono text-2xs uppercase text-mute">
-              Software engineer · {siteConfig.location}
+              Software & systems · seeking an internship for Summer 2027
             </p>
           </div>
-          {/* py-1 keeps each link at a ≥24px touch target without changing
-              how the printed document looks. */}
-          <div className="font-mono text-2xs uppercase">
+
+          <div className="font-mono text-2xs uppercase space-y-1">
             <a
               href={`mailto:${siteConfig.email}`}
-              className="block py-1 text-signal print-url"
+              className="block text-accent underline decoration-rule underline-offset-4 hover:decoration-accent print-url"
             >
               {siteConfig.email}
             </a>
@@ -82,7 +95,7 @@ export default function Resume() {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block py-1 text-mute print-url"
+                  className="block text-mute hover:text-ink print-url"
                 >
                   {link.label}
                 </a>
@@ -90,43 +103,18 @@ export default function Resume() {
           </div>
         </header>
 
-        <div className="no-print mt-6 flex flex-wrap gap-4">
-          <a
-            href="/resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded border border-ink px-4 py-2.5 font-display text-sm transition hover:bg-ink hover:text-paper"
-          >
-            Download PDF
-            <span aria-hidden="true">↓</span>
-          </a>
-          <a
-            href="/contact"
-            className="inline-flex items-center gap-2 rounded bg-signal px-4 py-2.5 font-display text-sm text-paper transition hover:bg-ink"
-          >
-            Book a call
-          </a>
-        </div>
-
-        <section className="mt-12">
-          <Head>Education</Head>
-          <ul className="space-y-6">
-            {education.map((item) => (
-              <Entry key={item.school} dates={`${item.start} – ${item.end}`}>
-                <h3 className="font-display text-lg font-semibold">
-                  {item.school}
-                </h3>
-                <p className="flex flex-wrap items-baseline gap-x-2 text-sm text-mute">
-                  <span>{item.programme}</span>
-                  <span aria-hidden="true" className="text-rule">·</span>
-                  <span className="font-mono text-2xs uppercase">
-                    {item.location}
-                  </span>
-                </p>
-                <Bullets notes={item.notes} />
-              </Entry>
+        <section className="mt-10">
+          <Head>Technical Skills</Head>
+          <dl className="space-y-3">
+            {skills.map((group) => (
+              <div key={group.label} className="sm:flex sm:gap-6">
+                <dt className="shrink-0 font-mono text-2xs uppercase text-mute sm:w-44 sm:pt-1">
+                  {group.label}
+                </dt>
+                <dd className="text-sm font-mono">{group.items.join(' · ')}</dd>
+              </div>
             ))}
-          </ul>
+          </dl>
         </section>
 
         <section className="mt-10">
@@ -140,12 +128,10 @@ export default function Resume() {
                 <h3 className="font-display text-lg font-semibold">
                   {role.title}
                 </h3>
-                <p className="flex flex-wrap items-baseline gap-x-2 text-sm text-mute">
-                  <span>{role.company}</span>
-                  <span aria-hidden="true" className="text-rule">·</span>
-                  <span className="font-mono text-2xs uppercase">
-                    {role.location}
-                  </span>
+                <p className="flex flex-wrap items-baseline gap-x-2 text-xs text-mute font-mono">
+                  <span className="font-bold text-ink">{role.company}</span>
+                  <span aria-hidden="true">·</span>
+                  <span className="uppercase">{role.location}</span>
                 </p>
                 <Bullets notes={role.notes} />
               </Entry>
@@ -154,27 +140,30 @@ export default function Resume() {
         </section>
 
         <section className="mt-10">
-          <Head>Technical projects</Head>
+          <Head>Technical Projects</Head>
           <ul className="space-y-6">
             {projects.map((project) => (
               <Entry
                 key={project.name}
-                dates={`${project.start} – ${project.end}`}
+                dates={project.end ? `${project.start} – ${project.end}` : project.start}
               >
                 <h3 className="font-display text-lg font-semibold">
                   {project.name}
                   {project.accolade && (
-                    <span className="text-mute"> — {project.accolade}</span>
+                    <span className="text-accent font-normal font-mono text-xs">
+                      {' '}
+                      — {project.accolade}
+                    </span>
                   )}
                 </h3>
-                <p className="flex flex-wrap items-baseline gap-x-2 text-sm text-mute">
+                <p className="flex flex-wrap items-baseline gap-x-2 text-xs text-mute font-mono">
                   <span>{project.role}</span>
-                  <span aria-hidden="true" className="text-rule">·</span>
+                  <span aria-hidden="true">·</span>
                   <a
                     href={project.href}
-                    target="_blank"
+                    target={project.href.startsWith('http') ? '_blank' : '_self'}
                     rel="noopener noreferrer"
-                    className="font-mono text-2xs uppercase text-signal underline decoration-rule underline-offset-4 transition hover:decoration-signal print-url"
+                    className="text-accent underline decoration-rule underline-offset-4 transition hover:decoration-accent print-url"
                   >
                     {project.hrefLabel}
                   </a>
@@ -186,21 +175,29 @@ export default function Resume() {
         </section>
 
         <section className="mt-10">
-          <Head>Technical skills</Head>
-          <dl className="space-y-3">
-            {skills.map((group) => (
-              <div key={group.label} className="sm:flex sm:gap-6">
-                <dt className="shrink-0 font-mono text-2xs uppercase text-mute sm:w-44 sm:pt-1">
-                  {group.label}
-                </dt>
-                <dd className="text-base">{group.items.join(' · ')}</dd>
-              </div>
+          <Head>Education</Head>
+          <ul className="space-y-6">
+            {education.map((item) => (
+              <Entry
+                key={item.school}
+                dates={item.end ? `${item.start} – ${item.end}` : item.start}
+              >
+                <h3 className="font-display text-lg font-semibold">
+                  {item.school}
+                </h3>
+                <p className="flex flex-wrap items-baseline gap-x-2 text-xs text-mute font-mono">
+                  <span>{item.programme}</span>
+                  <span aria-hidden="true">·</span>
+                  <span className="uppercase">{item.location}</span>
+                </p>
+                <Bullets notes={item.notes} />
+              </Entry>
             ))}
-          </dl>
+          </ul>
         </section>
 
         <section className="mt-10">
-          <Head>Honours & awards</Head>
+          <Head>Honors, Awards &amp; Security Research</Head>
           <dl className="space-y-4">
             {awards.map((group) => (
               <div key={group.label} className="sm:flex sm:gap-6">
@@ -210,10 +207,10 @@ export default function Resume() {
                 <dd className="min-w-0 flex-1">
                   <ul className="space-y-1.5">
                     {group.items.map((item) => (
-                      <li key={item} className="flex gap-2.5 text-base">
+                      <li key={item} className="flex gap-2.5 text-sm leading-relaxed">
                         <span
                           aria-hidden="true"
-                          className="mt-[9px] block h-1 w-1 shrink-0 bg-signal"
+                          className="mt-[7px] block h-1.5 w-1.5 shrink-0 rounded-full bg-rule"
                         />
                         <span>{item}</span>
                       </li>
@@ -225,6 +222,6 @@ export default function Resume() {
           </dl>
         </section>
       </div>
-    </ContainerOuter>
+    </Container>
   )
 }

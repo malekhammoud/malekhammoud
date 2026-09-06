@@ -8,8 +8,9 @@ export default function robots() {
       {
         userAgent: '*',
         allow: '/',
-        // Analytics proxy and form endpoint — nothing to index.
-        disallow: ['/ingest/', '/api/'],
+        // Analytics proxy, form endpoint, and the password-protected admin —
+        // nothing to index.
+        disallow: ['/ingest/', '/api/', '/admin/'],
       },
     ],
     sitemap: `${siteConfig.url}/sitemap.xml`,

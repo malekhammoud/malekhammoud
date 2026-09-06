@@ -1,11 +1,11 @@
 /*
   Syntax highlighting for code blocks, which sit on --deep.
-  Restrained on purpose: three hues, all desaturated, so a code sample never
-  out-shouts the one accent colour the rest of the page is allowed.
+  One hue (the accent, lifted), grays for the rest — a code sample never
+  out-shouts the page.
 */
 
 pre[class*='language-'] {
-  color: #d8d4ca;
+  color: #d5d9d7;
 }
 
 .token.tag,
@@ -15,7 +15,7 @@ pre[class*='language-'] {
 .token.selector.class,
 .token.function,
 .token.module {
-  color: #8fa4ff; /* signal, lifted for contrast on --deep */
+  color: #8fbbaa; /* accent, lifted for contrast on --deep */
 }
 
 .token.attr-name,
@@ -31,7 +31,7 @@ pre[class*='language-'] {
 .token.class,
 .token.string,
 .token.property {
-  color: #b9c9a8; /* the one warm-neutral, for literals */
+  color: #b9c9a8;
 }
 
 .token.punctuation,
@@ -43,7 +43,7 @@ pre[class*='language-'] {
 
 .token.unit,
 .language-css .token.function {
-  color: #8fa4ff;
+  color: #8fbbaa;
 }
 
 .token.comment {
