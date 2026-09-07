@@ -6,7 +6,7 @@ summary: >-
   A collaborative Java platformer game featuring custom physics, momentum
   inheritance, stomp collision detection, and animated intro screens.
 category: Games / Physics
-year: '2022'
+year: '2024'
 status: OPEN SOURCE
 metrics:
   - label: Engine
