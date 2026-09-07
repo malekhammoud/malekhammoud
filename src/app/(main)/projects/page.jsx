@@ -17,37 +17,51 @@ function Thumb({ thumb, media, title }) {
   const item = thumb || (Array.isArray(media) ? media[0] : media)
   if (!item) return <span aria-hidden="true" />
 
-  const isVideo =
-    item.type === 'video' ||
-    Boolean(item.isVideo) ||
-    Boolean(media?.[0]?.type === 'video') ||
-    Boolean(thumb?.src?.includes('.poster.'))
+  const videoItem =
+    (item?.type === 'video' ? item : null) ||
+    (Array.isArray(media) && media.find((m) => m?.type === 'video')) ||
+    null
+
+  const isVideo = Boolean(videoItem?.sources?.length)
+
+  const poster =
+    videoItem?.poster ||
+    item?.poster ||
+    (Array.isArray(media) ? media[0]?.poster : null)
 
   const src =
-    item.src ||
-    (item.type === 'video' ? item.poster : null) ||
-    (Array.isArray(media) ? media[0]?.src || media[0]?.poster : null) ||
+    item?.src ||
+    poster ||
+    (Array.isArray(media) ? media[0]?.src : null) ||
     '/images/projects/webdev.webp'
 
   const isGif = typeof src === 'string' && src.endsWith('.gif')
 
   return (
     <div className="group/thumb relative aspect-[16/10] w-full overflow-hidden rounded border border-rule/80 bg-deep/90 shadow-sm transition-all duration-300 group-hover:border-accent/70 group-hover:shadow-md">
-      <Image
-        src={src}
-        alt={item.alt || title || 'Project preview'}
-        fill
-        sizes="(min-width: 640px) 224px, 100vw"
-        unoptimized={isGif}
-        className="h-full w-full object-cover object-center transition duration-500 group-hover/thumb:scale-105"
-      />
-      {isVideo && (
-        <span className="absolute bottom-2 right-2 flex items-center gap-1 rounded bg-deep/85 px-1.5 py-0.5 font-mono text-[10px] font-medium text-fog shadow-sm backdrop-blur-sm">
-          <svg className="h-2.5 w-2.5 fill-current text-accent" viewBox="0 0 24 24">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-          VIDEO
-        </span>
+      {isVideo ? (
+        <video
+          className="h-full w-full object-cover object-center transition duration-500 group-hover/thumb:scale-105"
+          poster={poster || undefined}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+        >
+          {videoItem.sources.map((source) => (
+            <source key={source.src} src={source.src} type={source.type} />
+          ))}
+        </video>
+      ) : (
+        <Image
+          src={src}
+          alt={item?.alt || title || 'Project preview'}
+          fill
+          sizes="(min-width: 640px) 224px, 100vw"
+          unoptimized={isGif}
+          className="h-full w-full object-cover object-center transition duration-500 group-hover/thumb:scale-105"
+        />
       )}
     </div>
   )
