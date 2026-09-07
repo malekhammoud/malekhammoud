@@ -84,9 +84,10 @@ export default function ProjectsCatalog() {
           Everything I’ve shipped, in order.
         </h1>
         <p className="mt-5 max-w-[56ch] text-lg leading-relaxed text-mute">
-          The full list — from the physics mod I wrote at fourteen to autonomous
-          weed-spraying robots and production Linux distributions. Each one has
-          a case study with the trade-offs and the code.
+          The full list — from the maze-solving robot and Java games I started
+          with in high school to autonomous weed-spraying robots, production
+          Linux distributions, and a travel-safety platform. Each one has a
+          case study with the real trade-offs and the code.
         </p>
       </header>
 

@@ -1,23 +1,24 @@
 ---
 slug: ontario-deca
 title: Ontario DECA Mobile Application
-subtitle: >-
-  A full-stack mobile companion app built with React Native and Expo for
-  provincial business competition delegates.
+subtitle: A full-stack Expo companion for provincial DECA competition delegates.
 summary: >-
-  A mobile application built with React Native and Expo for Ontario DECA
-  competitors, featuring interactive venue maps, offline schedule caching, and
-  competition resources.
+  A feature-complete React Native / Expo app for Ontario DECA: Clerk auth,
+  live schedules, venue maps, QR scanner, resources, notifications, and a
+  profile hub — built for Provincials and archived before launch. A reference
+  full-stack Expo showpiece for large events.
 category: Full-Stack / Mobile
-year: '2024'
-status: PRODUCTION
+year: '2025'
+status: ARCHIVED
 metrics:
   - label: Platform
     value: iOS / Android (Expo)
-  - label: Users
-    value: DECA Delegates
-  - label: Features
-    value: Interactive Maps & Schedules
+  - label: Auth
+    value: Clerk
+  - label: Tabs
+    value: Schedule · Map · Resources · More
+  - label: Extras
+    value: QR + Profile + Offline
 badge: Mobile App · React Native / Expo
 featured: false
 media:
@@ -29,7 +30,7 @@ media:
       - src: /videos/deca.mp4
         type: video/mp4
     ratio: 'aspect-[9/16]'
-    caption: >-
+    caption: >
       Ontario DECA mobile application walkthrough showing live schedule and
       maps.
 thumb:
@@ -38,26 +39,40 @@ thumb:
   alt: Ontario DECA App
 stack:
   - React Native
-  - Expo
+  - Expo / Expo Router
   - TypeScript
-  - Node.js
-  - Firebase Auth
+  - Clerk
+  - AsyncStorage
+  - react-native-maps
+  - NativeWind
 links:
   - label: GitHub Repository
     href: 'https://github.com/malekhammoud/ontario-deca'
 caseStudyText:
   problem: >-
-    Thousands of high school delegates at regional and provincial business
-    competitions frequently miss event schedules and struggle to navigate
-    massive multi-hall convention centers.
+    Hundreds of high school delegates at an event the size of Ontario DECA
+    miss schedule changes, can't navigate a huge convention centre, and have to
+    stack 3 apps for QR check-ins, resources, and notifications. The event had
+    no official companion.
   constraint: >-
-    Cellular connectivity in dense convention centers is notoriously unreliable;
-    the app had to cache schedules and venue maps locally so it remained fully
-    functional offline.
+    Convention-centre cellular is notoriously unreliable, so the core —
+    schedules and venue maps — had to stay usable offline. And delegate
+    friction is the killer: if an account isn't one-tap, or the map needs a
+    signal, the app gets deleted. Every feature also had to live behind Expo
+    Router's file-based tabs so the team could ship without a build config.
   whatIBuilt: >-
-    An Expo React Native mobile app with offline SQLite schedule caching,
-    interactive floor maps, and push notification triggers.
+    An Expo (React Native) app structured as (auth) + (tabs). Clerk handles
+    student/adviser signup, sign-in, and password reset. Four tabs drive it:
+    Home (upcoming events, a QR scanner for session check-ins), Schedule
+    (filterable event categories: business, marketing, finance, hospitality),
+    Maps (interactive venue maps via react-native-maps with a web fallback),
+    and More (profile summary, awards schedule, and settings for
+    notifications/appearance/language). AsyncStorage caches schedule/map data
+    so the core survives no-signal zones, and a dev Node server + a
+    PostgreSQL-backed version let the team develop against the event API.
   outcome: >-
-    Used by high school competitors across Ontario to stay on schedule during
-    provincial competitions.
+    A feature-complete companion app for Ontario DECA Provincials — and an
+    honest lesson in scope: the event cancelled before launch and it was
+    archived, but it remains the reference for a large-event Expo build, from
+    tab routing to offline-first scheduling.
 ---

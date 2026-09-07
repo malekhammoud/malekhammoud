@@ -1,27 +1,28 @@
 ---
 slug: litter-detection
-title: Autonomous Drone Aerial Litter Mapping & Recovery System
+title: Drone Litter Mapping + Recovery System
 subtitle: >-
-  A low-cost drone mapping system that spots litter from the air and plots it on
-  a map for cleanup crews.
+  An F450 drone that finds litter from the air, GPS-tags it, posts it to a
+  mapping backend — while a separate walking robot handles the recovery.
 summary: >-
-  An aerial mapping software pipeline pairing a Pixhawk flight controller with a
-  Raspberry Pi over MAVLink serial to detect waste from orthomosaics and
-  generate georeferenced GeoJSON cleanup maps. TVSEF Gold Medal and published
-  research paper.
+  A full-stack outdoor robotics project: an ArduPilot F450 with a
+  Raspberry-Pi companion flies GPS waypoint surveys, detects litter with
+  YOLOv5 (90% accuracy), syncs camera frames to telemetry, and files every
+  hit into a PostGIS-backed litter map. A ROS2 walking robot built for
+  recovery rounds out the system, documented in a published paper.
 category: Hardware / Robotics
-year: '2024'
+year: '2025'
 status: RESEARCH
 metrics:
-  - label: Award
-    value: TVSEF Gold Medal
-  - label: Detection Rate
-    value: 88%
-  - label: Survey Coverage
-    value: 50 m² / 5 min
-  - label: Waypoint Accuracy
-    value: ±2 meters
-badge: TVSEF Gold Medal · OES Excellence Award · Research Paper
+  - label: CV Accuracy
+    value: 90% (YOLOv5)
+  - label: GPS Precision
+    value: ~1 m loiter
+  - label: Payload Cap
+    value: 500 g stable
+  - label: Data Loop
+    value: Drone → Postgres API → Map
+badge: 'Published Paper · YOLOv5 · 90% Detection'
 featured: true
 media:
   - type: video
@@ -32,7 +33,7 @@ media:
       - src: /videos/drone.mp4
         type: video/mp4
     ratio: 'aspect-[16/9]'
-    caption: >-
+    caption: >
       Survey flight demonstrating waypoint navigation over the target mapping
       field.
 thumb:
@@ -40,14 +41,14 @@ thumb:
   src: /videos/drone.poster.jpg
   alt: Autonomous Drone Litter Mapping
 stack:
-  - Python
-  - PyTorch
-  - YOLOv8
-  - OpenCV
-  - QGIS
-  - MAVLink
-  - DroneKit
-  - Pixhawk
+  - ArduPilot / Pixhawk
+  - DroneKit / MAVLink
+  - Raspberry Pi 4
+  - Python + OpenCV
+  - YOLOv5
+  - Express + Postgres API
+  - React Native / Leaflet Map
+  - ROS2 Walking Robot
 links:
   - label: Research Paper (PDF)
     href: /Autonomous_Litter_Detection_and_Recovery_System.pdf
@@ -57,23 +58,34 @@ links:
     href: /logs/rpi-pixhawk-drone
 caseStudyText:
   problem: >-
-    Municipal cleanup effort gets allocated by intuition. A crew decides a park
-    needs attention and walks whatever trail is easiest. Nobody has an accurate
-    map of where illegal dump sites actually are because surveying large parks
-    on foot costs more person-hours than the cleanup itself.
+    Nobody has an accurate map of where litter actually accumulates. Cleanup
+    crews get allocated by intuition — park X must be bad — and by the time
+    anyone walks it, points a GPS at the piles, and gets back to the office to
+    make a list, the effort has cost more hours than the cleanup. And on the
+    collection side, a drone can't safely land next to litter: rotor wash
+    scatters it.
   constraint: >-
-    Aerial computer vision is difficult: targets are tiny (bottles and cans
-    occupy a few pixels from 15 meters up), ground textures (grass, gravel,
-    shadows) are noisy, and detections are useless without accurate real-world
-    GPS coordinates.
+    Two very different problems. From the air, a soda can at 10–15 m is a few
+    pixels among grass, gravel, and shadows, and a detection is useless without
+    an accurate real-world coordinate to attach to it. On the ground, the
+    recovery hardware had to walk (not roll) and stay stable — the walking
+    robot's paper-measured speed was ~3 cm/s, which is safe but slow, and a
+    bad gait resets a battery-hungry platform.
   whatIBuilt: >-
-    An F450 quadcopter pairing a Pixhawk flight controller (running ArduPilot
-    for 400Hz real-time stabilization) with a Raspberry Pi 4B companion computer
-    over hardware UART at 57600 baud. The Pi runs YOLOv8 aerial waste detection
-    and correlates camera timestamps with flight telemetry to export
-    georeferenced GeoJSON map layers for QGIS.
+    An F450 quadcopter: Pixhawk 2.4.8 with ArduPilot runs 400 Hz-class PID
+    stabilization while a Raspberry Pi 4 companion computer connects over a
+    hardware UART (57600 baud, via /dev/ttyS0). On the Pi, DroneKit/PyMAVLink
+    scripts download and fly GPS waypoint missions, arm/takeoff in GUIDED
+    mode, log coordinates, and run detection on camera frames. YOLOv5 — trained
+    4 h on DJI-captured litter photos — scored 90% field accuracy, with a
+    cheap HSV+contour fallback catching litter in stream for real-time frames.
+    Detected coordinates get posted into a Postgres-backed `/api/litter`
+    (lat/lng, status active → picked_up) which an Expo React Native app
+    renders onto a live map. Recovery is delegated to the
+    ROS2 walking robot (see the Walking Robot project).
   outcome: >-
-    Mapped a 50 m² survey in 5 minutes with 88% detection accuracy and automated
-    GeoJSON exports. Won Gold at TVSEF, the OES Excellence Award, and published
-    a formal research paper.
+    90% detection accuracy in outdoor tests, ~1 m loiter/landing accuracy,
+    500 g carried with no attitude degradation, and a documented end-to-end
+    system: survey → detect → GPS tag → map → walk and pick up. Published as
+    the Autonomous Litter Detection and Recovery System research paper.
 ---

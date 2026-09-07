@@ -2,24 +2,24 @@
 slug: self-hosted-inference
 title: Self-Hosted LLM Inference Server
 subtitle: >-
-  Open-weight models running on Apple Silicon, behind a custom FastAPI streaming
+  Open-weight models running on Apple Silicon behind a custom FastAPI streaming
   router.
 summary: >-
-  A local LLM server: quantized open-weight models (Qwen 2.5) served through
-  FastAPI on an M4 Mac Mini, with launchd auto-restart supervision and model
-  hot-swapping so internal code and data never leave the network.
+  A local LLM server: 4-bit and 8-bit quantized Qwen 2.5 models served through
+  FastAPI on a 32 GB Mac Mini, with launchd auto-restart supervision and
+  model hot-swapping so internal code and data never leave the network.
 category: Local AI / Systems
 year: '2025'
 status: PRODUCTION
 metrics:
   - label: Hardware
-    value: Mac Mini M4 (32GB)
+    value: Mac Mini M4 (32 GB)
   - label: Engine
     value: MLX-LM / Apple Metal
   - label: Router
     value: FastAPI / SSE
-  - label: Bandwidth
-    value: ~100 GB/s Unified
+  - label: Throughput
+    value: 45+ tok/s (7B/14B)
 badge: Local-first private LLM infrastructure
 featured: false
 media:
@@ -37,8 +37,8 @@ stack:
   - Python
   - FastAPI
   - MLX-LM
-  - llama.cpp
   - Qwen 2.5
+  - SSE
   - Launchd
   - Apple Metal
 links:
@@ -58,12 +58,14 @@ caseStudyText:
     model weights, and run on hardware you can buy once and put on a shelf
     rather than renting expensive cloud GPUs.
   whatIBuilt: >-
-    An M4 Mac Mini (32 GB unified memory, ~100 GB/s bandwidth) running Apple's
-    MLX-LM array framework with 4-bit and 8-bit quantized Qwen 2.5 models. Built
-    a Python FastAPI router with streaming Server-Sent Events (SSE), API key
-    auth, hard context caps to prevent SSD swap, and a macOS launchd supervisor
-    with KeepAlive for automatic crash recovery.
+    An M4 Mac Mini (32 GB unified memory) running Apple's MLX-LM framework with
+    quantized Qwen 2.5 models. A Python FastAPI router exposes streaming
+    Server-Sent Events (SSE) with API-key auth, a hard context cap to prevent
+    SSD swap, and single-resident model loading that invalidates previous Metal
+    buffers before switching weights. A macOS launchd service with KeepAlive
+    restarts the worker within seconds of any crash, and prompt lengths are
+    bounded so memory stays safely under the 28 GB budget.
   outcome: >-
     Zero per-token bills and zero data leaving the network. The server runs
-    quietly on a desk with 45+ tokens/second throughput on 7B/14B models.
+    quietly on a desk at 45+ tokens/second on quantized 7B and 14B models.
 ---

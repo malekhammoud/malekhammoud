@@ -1,22 +1,23 @@
 ---
 slug: focus-reminder-app
 title: Focus Reminder Productivity App
-subtitle: >-
-  Electron-based daily focus logger, task timer, and productivity analytics
-  dashboard.
+subtitle: Electron-based daily focus logbook with work-session statistics.
 summary: >-
-  A cross-platform desktop application built with Electron that tracks daily
-  focus streaks, logs work sessions, and visualizes productivity trends.
+  A cross-platform Electron desktop app that logs daily focus sessions with a
+  reason and logbook status, persists them to SQLite, and visualizes
+  productivity trends on a stats page.
 category: Full-Stack / Systems
-year: '2022'
+year: '2024'
 status: OPEN SOURCE
 metrics:
   - label: Platform
     value: Desktop (Electron)
+  - label: Storage
+    value: SQLite Local DB
   - label: Features
-    value: Streak Logging & Analytics
+    value: Session Logging + Stats
   - label: Frontend
-    value: JavaScript / HTML5
+    value: HTML / CSS / JS
 badge: Desktop Productivity Tool
 featured: false
 media:
@@ -35,21 +36,28 @@ thumb:
 stack:
   - Electron
   - JavaScript
-  - HTML5
-  - CSS3
-  - Node.js Local Storage
+  - HTML5 / CSS3
+  - SQLite
 links:
   - label: GitHub Repository
-    href: 'https://github.com/mhammoud-os/Project-Reminder'
+    href: 'https://github.com/malekhammoud/Project-Reminder'
 caseStudyText:
   problem: >-
-    Maintaining consistent daily deep-work streaks without bloated cloud project
-    management software.
+    Maintaining consistent deep-work habits without bloated cloud project
+    management tools. The goal was a fast, local, distraction-free logger that
+    makes yesterday's time visible at a glance.
   constraint: >-
-    JavaScript timers drift when desktop windows are minimized in the
-    background.
+    Anything cloud-synced brings accounts, latency, and privacy overhead. The
+    whole app had to run offline with its data stored on the machine — which
+    means all writes go through Electron IPC to a local database, not through a
+    remote API.
   whatIBuilt: >-
-    An Electron desktop app using high-resolution Node.js timestamps via IPC for
-    drift-free background time tracking.
-  outcome: 'A fast, distraction-free local productivity tool.'
+    An Electron app where the renderer sends each completed session over IPC
+    (ipcMain 'insert-stat') with date, hours worked, reason, and logbook status
+    into a local SQLite database, while a separate stats view queries it back
+    and renders the trends. A preload script wires renderer-safe IPC, and the
+    database layer keeps raw SQL out of the UI components.
+  outcome: >-
+    A fast, private, fully offline productivity logger — open the app, record
+    the session, review the week in the stats view.
 ---

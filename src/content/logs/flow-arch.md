@@ -1,18 +1,18 @@
 ---
 slug: flow-arch
 title: Flow Arch — Engineering a Productivity-First Operating System
-date: '2025-10-14'
-readTime: 6 min read
+date: '2026-01-10'
+readTime: 7 min read
 category: Systems / OS
 description: >-
-  Why I built an Arch Linux distribution with Hyprland compositor-level focus
-  enforcement, custom QML session daemons, and an automated Calamares installer
-  — reaching 700+ installs and a SourceForge Rising Star Award.
+  The real mechanics behind Flow Arch: a Hyprland session manager that blocks
+  distracting windows by title, an HSV screen-scrape "visual guard", hyprlock
+  Pomodoro lockouts, per-goal hosts blocklists, and optional shutdown on
+  deadline. 700+ downloads and a SourceForge Rising Star Award.
 tags:
   - Arch Linux
   - Hyprland
   - Wayland
-  - C++
   - Python
   - QML
   - Systems
@@ -27,7 +27,7 @@ media:
       - src: /videos/flowarch.mp4
         type: video/mp4
     ratio: 'aspect-[16/9]'
-    caption: >-
+    caption: >
       Flow Arch desktop session: Hyprland Wayland compositor with custom focus
       overlay daemons.
   - type: image
@@ -43,69 +43,87 @@ thumb:
 ---
 ## Why another Linux distribution?
 
-Most desktop operating systems are designed to keep you continuously engaged — notifications, background browser hooks, taskbar badges, and endless context switching. Application-level "website blockers" or Pomodoro apps fail because they are trivial to bypass: you open a terminal, run `pkill`, or open an incognito window.
+Desktop OSes are engineered to keep you engaged — notifications, taskbar badges, background hooks. And every "focus tool" that lives inside an app (site blockers, Pomodoro timers, menu-bar widgets) can be dismissed with the same privilege it uses to nag you: a hotkey, an incognito window, or `pkill`. Real enforcement has to sit one layer down: in the compositor and session manager, below the applications.
 
-I wanted an operating system that enforced deep focus at the **compositor and session layer**.
+Flow Arch is that layer, built on **Hyprland**. Its philosophy is simple and harsh: focus rules live where the window manager already controls the desktop — so bypassing them means fighting the compositor, not an app.
 
-**Flow Arch** is a customized, production-ready Arch Linux distribution driven by the **Hyprland Wayland compositor**. It was engineered with a specific philosophy:
-- **Enforced Pomodoro**: Timers aren't polite suggestions. When a break triggers, the OS locks the input surface and screens so you actually step away.
-- **Intention Declaration**: Upon login, a full-screen modal intercepts workspace access until you explicitly declare your single working intent for that session.
-- **Auto-Shutdown on Deadline**: When a dedicated sprint concludes, the system initiates a clean shutdown routine, reinforcing urgency.
-- **Ultra-low Footprint**: Idles at **~380 MB RAM**, allocating virtually all system resources to compilation and local workloads.
-
----
-
-## Technical Architecture
+## The architecture
 
 ```
-+-------------------------------------------------------------+
-|               Hyprland Wayland Compositor                   |
-|  +-------------------------------------------------------+  |
-|  |           Custom QML Session Surface Overlay          |  |
-|  +---------------------------^---------------------------+  |
-|                              | UNIX Domain Socket (IPC)     |
-|  +---------------------------+---------------------------+  |
-|  |      Focus Enforcer Daemon (Python / Systemd)         |  |
-|  |   - Pomodoro State Machine                            |  |
-|  |   - Intention Check Registry                          |  |
-|  |   - Wayland Window Event Interceptor                  |  |
-|  +-------------------------------------------------------+  |
-+-------------------------------------------------------------+
+               Hyprland (Wayland compositor)
+        ┌───────────────────────────────────────┐
+        │  session_manager.py                  │
+        │   - Pomodoro state machine            │
+        │   - hyprlock break lockouts           │
+        │   - window-title keyword blocking     │
+        │   - screenshot "visual guard" (HSV)   │
+        │   - hosts blocklist + Goal filter      │
+        │   - ~/session_logs.jsonl audit trail  │
+        └───────────────────────┬───────────────┘
+                                │ hyprctl socket / files
+        ┌───────────────────────▼───────────────┐
+        │  shutdown_script.py  (deadline→poweroff)│
+        │  hosts_manager.py  (system ad-block)   │
+        └───────────────────────────────────────┘
 ```
 
-### 1. Compositor-Level Window Interception
-Hyprland exposes a UNIX socket IPC interface. The Flow Arch daemon listens directly to window creation and focus change events:
+## 1. Intentions before the desktop
+
+A session starts in a locked-down state. The SDDM flow writes a session file (`/tmp/sddm_session.json`), then `session_manager.py` runs. It reads your goal, intention, and duration — and in "normal mode" (duration 0) applies only your goal's *theme*, then returns.
+
+Everything worth blocking is config, not code: the manager loads a settings file (`~/.config/hypr/settings.json`) whose `focus.goals`, `filters.goal_filters`, `keyword_blacklist`, and `goal_themes` dicts drive what happens during a session. Add a goal, attach a blocklist and a theme, and the whole focus suite knows about it.
+
+## 2. Enforced Pomodoro that actually locks the screen
+
+The Pomodoro loop is the heart. It runs the work phase while a background loop checks windows; when the timer ends it moves into a **lock loop** that keeps launching `hyprlock` against a dedicated break config:
+
+```
+[Work phase → every 2s: write timer, check window titles, maybe visual guard]
+        │
+        ▼  (break due)
+[Hyprlock launched with HYPRLOCK_UNIFIED.conf]
+    │  user unlocks early?
+    ▼     └── "Break Not Over" → re-lock. Repeat.
+[After break: CheckIn overlay asks for the next intention]
+```
+
+The lock is *re-locking*: if you unlock during the break, the loop sleeps 0.5 s, sees the remaining time is still positive, and re-launches the lock — "Break Not Over, Screen re-locking…". The one escape is the honest one: wait out the break. That's the entire point.
+
+## 3. Blocking by window title, at the compositor
+
+The manager doesn't just filter via `/etc/hosts`. It keeps a **window-title guard**: every 5 s it lists Hyprland's clients (`hyprctl clients -j`), strips spaces from the title, and if it matches a keyword in the session's `keyword_blacklist` (also space-stripped), it dispatches a compositor shortcut to close just that tab:
 
 ```python
-import socket
-import json
-import os
-
-HYPR_SOCKET = f"/tmp/hypr/{os.environ.get('HYPRLAND_INSTANCE_SIGNATURE')}/.socket2.sock"
-
-def monitor_compositor():
-    client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    client.connect(HYPR_SOCKET)
-    while True:
-        event = client.recv(1024).decode('utf-8')
-        if "openwindow" in event:
-            # Check if active intention allows this application
-            enforce_workspace_intent(event)
+subprocess.run(["hyprctl", "dispatch", "sendshortcut",
+                f"CTRL,W,address:{address}"])
+notify("Focus Guard", f"Closed Tab: {title} (Keyword: {kw})", "critical")
 ```
 
-### 2. Bare-Metal Calamares ISO Installer
-Distributing an operating system requires an installer that works reliably on bare metal across Intel, AMD, and diverse GPU hardware. I authored custom ArchISO configurations paired with custom Calamares modules:
-- Automated Btrfs / Ext4 subvolume partitioning.
-- Graphical driver auto-detection (NVIDIA proprietary vs Mesa open-source).
-- User dotfile and theme skeleton deployment into `/etc/skel`.
+Worse, the activewindow title is checked on every `windowtitle` event from Hyprland's socket for a "zero-latency" block — so switching to a banned window is caught the frame it happens, not on the poll. A 5-s cooldown prevents the same window from being re-hit, and importantly it kills the *tab* (`CTRL+W`), never the whole window.
 
----
+## 4. The "visual guard": blocking by image
 
-## Results & Community Adoption
+This is the piece that kept surprising reviewers. `check_visual_content()` uses `grim` to screenshot each window on the active workspace, downsamples it to 100×100, and runs an HSV-ish skin-color classifier in pure PIL:
 
-Flow Arch exceeded expectations upon release:
-- **700+ public downloads and installations** from global users.
-- Awarded the **SourceForge Rising Star Award** for rapid open-source community adoption.
-- Sub-400MB idle memory footprint, making it one of the leanest Hyprland configurations available.
+- **Global skin-pixel share** (%) — if > sensitivity → block.
+- **5×5 sector peak** (%) — a single hotspot (e.g. a face closeup) triggers even when the whole-window share is low.
 
-The project taught me the immense value of building tools you personally need every single day.
+Tuned by a `sensitivity` setting (and global vs sector thresholds set 15pt apart), it dispatches the same tab-close shortcut. It's crudely — a heuristic, not a classifier — but the design point matters: **whatever gets around the blocklist gets caught by the pixels**. The OS actively samples what you're actually looking at, a level deeper than any other distro's focus setup. (Screenshots are temp files deleted on overwrite; the guard is trivially disabled in settings.)
+
+## 5. OS-level adblock and per-goal filters
+
+Distraction filtering happens at the system boundary, not the browser: a `hosts_manager.py` writes /etc/hosts to block ad/tracker domains system-wide, and the session applies a *goal-specific* blocklist on top. For even harder cases a media-blackout mode adds known video CDNs (googlevideo.com, ytimg.com, tiktokv.com…) at the source-level. All of it configured per goal. During "code" you get the code blocklist; during "espresso break" you don't get the block, only the page hosts keep you honest.
+
+## 6. Deadlines that are actually deadlines
+
+`run_standard_timer` counts down, warns at 60 s, then hands the curtain-closer to `shutdown_script.py`. That script runs a SessionFeedback QML/GTK prompt — rate the session, leave a comment, logged into `session_logs.jsonl` as a `"type":"feedback"` entry with goal + intention — and then `systemctl poweroff`. No snooze. You asked for a hard stop; the machine honours it, and you get a log of the reflection too.
+
+## 7. Everything logged
+
+Every session writes to `~/session_logs.jsonl` — login, pomodoro segments, feedback — so Flow Arch tells you later what you actually did, which is the productivity metric the desktop has always omitted.
+
+## Shipping it
+
+The whole tree ships as an **archiso** build with a custom Calamares `shellprocess.conf`: on first boot it nudges `sddm`, NetworkManager, Bluetooth, and power profiles and copies the SDDM theme into place. `SDDM` boots; an ISO builds. 700+ downloads and a SourceForge Rising Star Award later, the same code that caught me slacking on the window guards was caught by others — and the user, for once, was the thing standing between yourself. The 380 MB idle footprint means the focus daemon is the lightest part of the desktop.
+
+The whole posture is: enforcement lives below the thing being enforced. The tabs will keep running Code, and the *OS* will keep your attention on it.

@@ -1,18 +1,19 @@
 ---
 slug: walking-robot
-title: Developing a Robotic Claw and Walking Algorithm
+title: Developing a ROS2 Quadruped — Guis, Gaits, and Forward Kinematics
 date: '2025-03-12'
-readTime: 4 min read
+readTime: 6 min read
 category: Hardware / Robotics
 description: >-
-  Inverse kinematics mathematics, ROS pub/sub integration, an interactive web
-  joint control GUI, and 12-servo gait generation with sway compensation.
+  Building a four-legged walker with ROS2: steppers + 8 servos on a Raspberry
+  Pi, a Tkinter GUI that renders the robot from real forward kinematics, and a
+  record/playback loop that turns gaits into data instead of code.
 tags:
   - Robotics
-  - Inverse Kinematics
-  - ROS
-  - C++
+  - ROS2
+  - Python
   - Hardware
+  - Kinematics
 featured: false
 relatedProject: walking-robot
 media:
@@ -24,15 +25,15 @@ media:
       - src: /videos/articles/guiwalk.mp4
         type: video/mp4
     ratio: 'aspect-[4/3]'
-    caption: Interactive joint control GUI and walking gait trajectory execution.
+    caption: The joint-control GUI computing leg positions live while a gait plays.
   - type: image
     src: /images/logs/gui.png
     width: 987
     height: 711
     alt: Robotic claw control interface
     caption: >-
-      The joint-control GUI: continuous sliders, grip/release triggers, and
-      canvas drag-to-control.
+      The joint-control GUI: per-joint sliders, drag-to-move joints, and a live
+      robot visualization.
   - type: video
     sources:
       - src: /videos/articles/sway.webm
@@ -41,58 +42,65 @@ media:
         type: video/mp4
     ratio: 'aspect-[4/3]'
     caption: >-
-      Sway compensation loop stabilizing the bipedal/quadruped body posture
-      during gait cycle.
+      The recorded gait replaying while the body posture is adjusted.
 thumb:
   type: image
   src: /images/logs/gui.png
-  alt: Robotic Claw and Walking Algorithm
+  alt: ROS2 Quadruped GUI
 ---
-## Overview
+## The problem with "just write gait constants"
 
-Building an articulated robotic manipulator and walking mechanism requires uniting three distinct disciplines:
-1. **Mathematical Inverse Kinematics (IK)** to translate 3D coordinates into joint angles.
-2. **Robot Operating System (ROS)** for decoupled node communication.
-3. **Interactive Graphical User Interfaces (GUI)** for real-time teleoperation and trajectory testing.
+A walking robot has one sneaky property: its gait lives somewhere between hard engineering and choreography. Too many leg projects hard-code arrays of servo angles in the firmware, and then every mechanical change — a longer leg, a stripped gear, a new bracket — turns a tune into a recompile. This project's goal was the opposite: make a gait a *recording* you can tweak with your mouse.
 
----
+The walker itself is split in two halves (stepper + servo), because the hardware demands it:
 
-## 1. Inverse Kinematics Mathematics
+- **Stepper motors** do the coarse locomotion — two 4-wire steppers, step sequences driven straight off GPIO.
+- **Eight servos** articulate the four legs (upper + lower per leg).
 
-Given a desired claw or foot coordinate $(X, Y, Z)$ in 3D Cartesian space, the inverse kinematics solver computes the corresponding joint servo angles $(\theta_1, \theta_2, \theta_3)$:
+And the software is split the same way, but along transport lines so each half can develop independently.
 
-$$\theta_1 = \text{atan2}(Y, X)$$
+## ROS2: one topic, two packages
 
-The distance $D$ to the target point in the sagittal plane is:
+The design that made this project work is the boundary between two ROS2 Humble packages:
 
-$$D = \sqrt{X^2 + Y^2 + Z^2}$$
+- **robot_controller** — owns the hardware. It subscribes to a single `robot_command` topic and interprets a tiny text protocol:
+  - `'L'` / `'R'` → rotate a stepper 512 steps,
+  - `'S1:90'` → move one servo to an angle,
+  - `"A 90;B 45;C 120;…"` → move several servos at once (the GUI's bread and butter).
+- **robot_interface** — the human side. A Tkinter app that publishes to that same topic and renders the robot as it responds.
 
-Using the **Law of Cosines** on the triangle formed by the upper leg link $L_1$ and lower leg link $L_2$:
+Because there is no shared memory, only a topic, the two packages never have to run on the same machine: the GUI can sit on a laptop while `controller_node` runs on the Pi. The controller also carries an explicit `simulation mode` fallback — if `RPi.GPIO` isn't present it logs and keeps parsing commands, which meant we could develop the protocol against the running GUI before a single wire was connected.
 
-$$\cos(\theta_3) = \frac{D^2 - L_1^2 - L_2^2}{2 L_1 L_2}$$
+## Rendering the robot honestly: forward kinematics
 
-$$\theta_3 = \arccos\left(\text{clamp}\left(\cos(\theta_3), -1, 1\right)\right)$$
+The GUI doesn't draw a cartoon — it solves the actual joint positions of all four legs in screen space:
 
-The shoulder angle $\theta_2$ is solved from the angle subtended by the target vector plus the internal triangle angle:
+```python
+def calculate_joint_pos(self, base_x, base_y, angle, length=80):
+    rad = math.radians(angle)
+    x = base_x + length * math.cos(rad)
+    y = base_y + length * math.sin(rad)
+    return x, y
+```
 
-$$\theta_2 = \text{atan2}(Z, \sqrt{X^2 + Y^2}) - \text{atan2}(L_2 \sin(\theta_3), L_1 + L_2 \cos(\theta_3))$$
+Each leg's hip is fixed, the knee is `hip + leg_upper` at the upper-leg angle, and the foot is `knee + leg_lower` at `upper + lower - 90` (crucially, the lower leg hangs off the *end* of the upper leg, not from the hip — the single most common bug in leg animations). A debug overlay draws the perpendicular reference lines and live angle labels, so the numbers on screen are the angles the controller will actually command — no snazzy UI hiding a wrong model.
 
-Solving these equations in closed-form takes microseconds, allowing us to compute 12 joint angles at a consistent **60 FPS** trajectory loop.
+Two interaction paths tune it:
+- **Sliders** per joint (0–180°), which mutate the model and publish instantly.
+- **Drag** — grab any joint (line 10 px pick-radius) and move it; the leg chain recomputes and republishes as you drag.
 
----
+## Gaits as data: record and playback
 
-## 2. The Interactive GUI Controller
+The GUI has a recording button. It captures a stream of joint frames into `recorded_frames` while you hand-drive a pose sequence (push a leg up, slide it forward, set it down), then replays them in a loop as a walking cycle. This is the design decision that made the whole project feel small:
 
-The testing interface was developed with an HTML5 canvas and WebSocket bridge to provide instantaneous teleoperation:
-- **Joint Sliders**: Continuous real-time rotation control for fine calibration.
-- **Drag-to-Control Canvas**: Direct inverse kinematics interaction — drag the end effector on screen and watch the kinematic chain solve in real time.
-- **Grip / Release / Reset Macros**: Pre-programmed sequences to manipulate the end gripper.
-- **Trajectory Sequence Recorder**: Allows recording joint keyframes and playing them back smoothly with cubic spline interpolation.
+- Record the pose sequence live.
+- Play it back and watch the robot walk the same motion on repeat.
+- Edit mechanics after — or a single sloppy joint — by recording again, not by editing code.
 
----
+There's also a Grip macro and Start/Stop Walking toggles, reserving two servos for a pickup gripper so the robot can eventually do more than march: it was designed as the recovery half of the litter system, the piece that walks up to an object the drone found.
 
-## 3. Power Isolation & Gait Stabilization
+## What actually had to be engineered
 
-The biggest practical hardware hurdle was **servo stall current**. When twelve metal-gear servos accelerate simultaneously during a trot gait, instantaneous current draws spike beyond 4 Amps. This caused sudden battery voltage dips that browned out the logic controller.
+The GPIO bookkeeping was the unglamorous load: four stepper pins with an 8-step coil sequence, eight servos at 50 Hz on dedicated pins, and the multi-servo command that needs to be parsed without dropping a beat in the ROS chain. The reward for doing it as real hardware-driver code instead of one-off scripts is that the *same* protocol node eventually served the record/playback GUI and the autonomous path.
 
-I designed a custom power distribution PCB separating the high-current servo 5V rail from the logic 3.3V rail with high-capacity electrolytic decoupling capacitors. This eliminated brownout resets and produced smooth, repeatable walking cycles.
+The takeaway that stuck: a walking robot is a gesture library. Build the recording loop before the perfect gait, and the perfect gait is free.

@@ -1,18 +1,20 @@
 ---
 slug: minecraft-flight-mod
-title: Engineering an Aerodynamics Flight Physics Engine in Java
-date: '2023-09-18'
-readTime: 4 min read
+title: Engineering a Flight Physics Engine Inside Minecraft
+date: '2025-06-10'
+readTime: 6 min read
 category: Games / Physics
 description: >-
-  Writing a real-time aerodynamics simulation loop in Java for Minecraft —
-  implementing lift, drag, and angle-of-attack vectors at 60 FPS.
+  Real flight physics as a Fabric mod: a server-side PlaneEntity whose
+  throttle, drag, lift, and stall model runs inside Minecraft's fixed 20-tick
+  simulation — with per-tick pedal speed, graded landings, and NBT-persisted
+  speed. 1,200+ downloads.
 tags:
   - Java
   - Physics
   - Aerodynamics
   - Minecraft
-  - OpenGL
+  - Fabric
 featured: false
 relatedProject: minecraft-flight-mod
 media:
@@ -22,7 +24,7 @@ media:
       - src: /videos/plane.mp4
         type: video/mp4
     ratio: 'aspect-[16/9]'
-    caption: >-
+    caption: >
       Flight aerodynamics mod in action: Real-time lift calculation and
       pitch/yaw control.
   - type: image
@@ -36,56 +38,59 @@ thumb:
   src: /images/projects/plane.gif
   alt: Minecraft Flight Physics
 ---
-## Physics in a Voxel World
+## Physics in a voxel world
 
-Standard voxel game engines implement simplistic gravity and linear movement vectors. Airborne craft feel like floating blocks rather than genuine aerodynamic aircraft.
+Minecraft has no aerodynamics — entities either fall or float, and nothing flies because of its speed. Flight mods usually fake it by toggling vanilla gravity. PlaneCraft was my attempt at *real* flight physics as a Fabric mod: a plane whose behavior falls out of a small set of constants rather than a canned "is flying" flag.
 
-At age fourteen, I wrote my first major software project: a custom aerodynamics simulation engine in Java using the Minecraft Forge and Fabric APIs. Over **1,000 players** downloaded and installed the mod.
+It shipped for Minecraft 1.20.2 on Fabric and picked up 1,200+ downloads across Modrinth and CurseForge.
 
----
+## The constraint nobody tells you about
 
-## Aerodynamic Physics Equations
+Minecraft simulates the world in fixed **20 ticks per second** — not 60. The physics must fit inside a single tick of ~50 ms while leaving room for the rest of world simulation around it. That budget silently forbids a full aerodynamic solver and rewards one scalar you can integrate by hand.
 
-On every server tick (60 FPS), the engine calculates the dynamic aerodynamic forces acting upon the aircraft based on current velocity $\vec{v}$, air density $\rho = 1.225\text{ kg/m}^3$, and wing surface area $S$:
+## The model: one scalar, two thresholds
 
-### 1. Dynamic Lift Force
+`PlaneEntity.tick()` runs a speed-state model. Speed is the single source of truth, updated each tick from throttle/drag:
 
-$$L = \frac{1}{2} \rho v^2 S C_L(\alpha)$$
-
-where $C_L(\alpha)$ is the lift coefficient as a function of the angle of attack $\alpha$.
-
-### 2. Induced & Parasitic Drag Force
-
-$$D = \frac{1}{2} \rho v^2 S C_D(\alpha)$$
-
-$$C_D(\alpha) = C_{D,0} + \frac{C_L^2}{\pi e AR}$$
-
----
-
-## Java Flight Vector Integration
-
-```java
-public class FlightEngine {
-    private static final double RHO = 1.225; // Air density kg/m3
-
-    public static Vec3 computeAeroForces(Vec3 velocity, double wingArea, double aoa) {
-        double speed = velocity.length();
-        if (speed < 0.1) return Vec3.ZERO;
-
-        // Lift coefficient curve
-        double cl = 2 * Math.PI * Math.toRadians(aoa);
-        double liftMagnitude = 0.5 * RHO * speed * speed * wingArea * cl;
-
-        // Drag coefficient curve
-        double cd = 0.04 + (cl * cl) / (Math.PI * 0.8 * 6.0);
-        double dragMagnitude = 0.5 * RHO * speed * speed * wingArea * cd;
-
-        Vec3 liftVector = new Vec3(0, liftMagnitude, 0);
-        Vec3 dragVector = velocity.normalize().scale(-dragMagnitude);
-
-        return liftVector.add(dragVector);
-    }
-}
+```
+MAX_SPEED         1.8 (units/tick, 20 tps)
+ACCELERATION      0.025  (W)
+BRAKE_FORCE       0.06   (S)
+AIR_DECELERATION  0.008  · GROUND 0.025
+TAKEOFF_THRESHOLD 0.75   → lift engages above this
+STALL_THRESHOLD   0.60   → extra descent below this
+LIFT_COEFFICIENT  0.035  → lift per unit of speed over threshold
+GRAVITY_PULL      0.045  → the plane's own gravity
 ```
 
-Building this mod was how I first learned what a real-time simulation loop was, how to manage vector arithmetic, and how to write high-performance Java code that runs without dropping frame rates.
+Lift isn't a full aero force — in Minecraft air density and wing area are constants, so the survivable variable is **speed relative to a threshold**: below takeoff speed, nothing; above it, `(speed − TAKEOFF) × LIFT`. Stalling is the mirror image: below stall speed a descent term grows as speed drops, so slow planes sink hard. Two constants capture behavior users feel, with nothing left over to mis-tune.
+
+The same trick powers ground handling: acceleration is validated against the *plane's actual displacement* along its yaw (a dot product) — so rolling into a wall never "builds speed" into the brick, which is what keeps it fair online, where the client predicts and the server asserts.
+
+## Input, issued in the seat
+
+- **W/S** drive throttle/brake into the speed state.
+- **A/D** yaw at 2.8°/tick — direct enough to steer, calm enough to hold a line.
+- **Mouse** sets a target pitch the plane follows by 0.1/tick (clamped ±45°) — the interpolation is what makes the nose feel heavy.
+
+`PlaneItem` is the honest hack: right-click throws a velocity boost with a 20-tick cooldown and 250 durability, while `useOnBlock` spawns the entity and consumes the item in survival — a useful F5 spring between physics.
+
+
+## Landing: graded by impact
+
+Fall damage is the mode-ruining bug in any vehicle mod. The entity resets passenger `fallDistance` continuously and mounts players with Slow Falling + Resistance V while airborne, clearing both on dismount and queuing one cancelled-fall entry per player so the transition is never punished. Actual landings are graded by impact Y-velocity:
+
+```
+|v_y| < 0.35   → nothing
+0.35–0.55      → soft, no damage
+0.55–1.0       → moderate (×4)
+> 1.0          → hard (extra ×8, cap 10)
+```
+
+## Speed that survives save-and-load
+
+`currentSpeed` is persisted to NBT per entity, so a plane you parked still has its speed when you come back — the small touch that makes it feel like a vehicle instead of a spawn property.
+
+## What's worth stealing
+
+Plane craft's lesson: **pick state that makes the physics legible.** A general aero solver would've been more impressive and less playable. One scalar plus two thresholds made the plane learnable in seconds, debuggable in minutes, and portable across every client the mod shipped to — and it earned its 1,200 downloaders the same way.

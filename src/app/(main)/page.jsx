@@ -40,11 +40,13 @@ function Hero() {
           className="animate-rise mt-8 max-w-[62ch] text-lg leading-relaxed text-mute"
           style={{ animationDelay: '120ms' }}
         >
-          I’ve been building since high school: a Minecraft physics mod that
-          passed over a thousand downloads, a Canada-Wide Science Fair bronze
-          medal, an Arch Linux distribution that took a SourceForge award, and
-          two internships before I started university. I’m looking for a
-          software engineering internship for Summer 2027.
+          I started in high school with games and robots, and kept going until
+          the projects crossed into things people actually run in the wild: a
+          weed-spraying rover that took bronze at the Canada-Wide Science Fair,
+          an Arch Linux distribution with a SourceForge award, and a
+          travel-safety platform now serving over a thousand users a month. I
+          interned twice as a full-stack developer before starting university.
+          I’m looking for a software engineering internship for Summer 2027.
         </p>
 
         <div

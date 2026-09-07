@@ -1,3 +1,4 @@
+import { DraftingMarks } from '@/components/DraftingMarks'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 
@@ -11,9 +12,10 @@ export function Layout({ children }) {
         Skip to content
       </a>
       <Header />
-      <main id="main" className="flex-auto">
-        {children}
-      </main>
+      <div className="relative flex-auto">
+        <DraftingMarks />
+        <main id="main">{children}</main>
+      </div>
       <Footer />
     </>
   )

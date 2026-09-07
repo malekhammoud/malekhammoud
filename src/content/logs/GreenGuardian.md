@@ -1,16 +1,16 @@
 ---
 slug: GreenGuardian
-title: 'GreenGuardian: Computer Vision on Embedded Edge Devices'
+title: 'GreenGuardian: Vision-on-the-Move Weed Spot Spraying'
 date: '2025-05-22'
-readTime: 5 min read
+readTime: 6 min read
 category: Hardware / Robotics
 description: >-
-  How I designed an autonomous agricultural robot using 3D printing, OpenCV, and
-  YOLOv5 to detect and spot-spray weeds — reducing herbicide use by ~90% and
-  winning Bronze at the 2024 Canada-Wide Science Fair.
+  How a Raspberry Pi 4, a TensorFlow Lite weed classifier, and an HSV
+  yellow-bloom stage became a rover that spot-sprays weeds — 90% less
+  herbicide, 94% precision, Bronze at CWSF 2024.
 tags:
   - Computer Vision
-  - YOLOv5
+  - TensorFlow Lite
   - Edge AI
   - Robotics
   - CWSF
@@ -29,7 +29,7 @@ media:
     width: 800
     height: 1067
     alt: GreenGuardian physical rover exhibition
-    caption: >-
+    caption: >
       The GreenGuardian autonomous robot on the national science fair exhibition
       floor.
   - type: image
@@ -37,8 +37,8 @@ media:
     width: 800
     height: 600
     alt: Chassis drive detail
-    caption: >-
-      Custom 3D-printed chassis with dual high-torque rear drive motors and
+    caption: >
+      Custom 3D-printed chassis with dual high-torque rear drive motors and the
       solenoid nozzle.
   - type: image
     src: /images/logs/greenguardian.webp
@@ -51,94 +51,73 @@ thumb:
   src: /images/projects/green.webp
   alt: GreenGuardian Robot
 ---
-## The Agricultural Challenge
+## The problem with broadcast spraying
 
-The agricultural industry is essential for feeding the world, yet weed management remains one of its most expensive and ecologically damaging challenges. In 2021 alone, global agriculture consumed over **1.7 million metric tons of chemical herbicides**.
+Broadcast herbicide is the default because it's simple: blanket the field and accept that well over 90% of the chemical never touches a weed. The costs show up in years — groundwater contamination, degraded soil, and herbicide-resistant weeds that need ever-harsher cocktails. Precision sprayers are the obvious fix, but commercial rigs cost hundreds of thousands of dollars. Small farms are stuck choosing between economics and ecology.
 
-Broadcast spraying blankets entire fields with toxic chemicals to kill weeds that only occupy a fraction of the soil surface. This leads to:
-- **Soil microbiome degradation** and long-term land infertility.
-- **Herbicide runoff** into local groundwater tables and municipal drinking supplies.
-- **Herbicide-resistant superweeds**, forcing farmers to use progressively harsher chemical cocktails.
+GreenGuardian was built as the budget middle path: an autonomous rover that detects a weed from a downward camera, drives directly above it, and pulses a nozzle for about 0.15 s — only when centered.
 
-Small-scale farmers are hit hardest: industrial mechanical weeding machines cost hundreds of thousands of dollars, leaving them with no viable alternative to chemical spraying.
+## Three chassis iterations
 
-**GreenGuardian** was built to solve this: an affordable, autonomous agricultural rover that uses computer vision to identify invasive weeds in real time and activate a targeted solenoid spray nozzle directly above the weed — cutting herbicide volume by **~90%**.
-
----
-
-## Hardware Prototype Iterations
-
-Building a rover capable of traversing uneven farm furrows, tall grass, and muddy soil required three major mechanical iterations:
+Field robots drown in grass and bumps, so the drive system got three tries:
 
 ```
-Iteration 1: Salvaged toy DC motors + single servo steering
-  -> Problem: Severe lack of torque; bogged down immediately in grass.
+Iteration 1: Salvaged toy DC motors + servo steering
+  → Not enough torque, bogged down in the first patch of grass.
 
 Iteration 2: 3D-printed rack-and-pinion front steering
-  -> Problem: High mechanical friction on rough terrain; steering servo stripped under load.
+  → High friction on rough soil; the steering servo stripped under load.
 
-Iteration 3 (Final): Dual independent high-torque rear motors + skid steering + 3D printed chassis
-  -> Result: 360-degree zero-radius turning, robust traversal across inclines and bumps.
+Iteration 3: Dual independent high-torque rear motors + skid steering
+  → Zero-radius 360° turns on two motors, climbs bumps, survives.
 ```
 
----
+The final chassis pairs a Raspberry Pi 4 (vision) with a Raspberry Pi Pico (motion + nozzle) over a high-speed serial line — splitting the always-real-time actuator loop from the computer-vision process.
 
-## Computer Vision & Edge AI Pipeline
+## The two-stage vision pipeline
+
+A single neural net can't both *classify* a weed and *aim* the spray. GreenGuardian splits those jobs:
 
 ```
-[Camera Stream] 
-       |
-       v
-[Adaptive Histogram Equalization (CLAHE)]  <-- Cancels harsh direct sun / shadows
-       |
-       v
-[HSV Plant Segmentation Mask]              <-- Isolates green vegetation from soil
-       |
-       v
-[TFLite 8-bit Quantized YOLOv5 Model]      <-- Classifies Crop vs. Invasive Weed (<150ms)
-       |
-       v
-[Actuator Coordinate Mapper] 
-       |
-       v
-[Targeted Solenoid Pulse (0.15s)]          <-- 90% chemical reduction
+[Wide downward strip camera 2304×700]
+        │
+        ▼
+[TensorFlow Lite weed classifier]    → "a weed" (dandelion, crabgrass,
+        │                              clover, plantain, blowballs)
+        ▼
+[HSV yellow-bloom mask]              → bounding box → normalized (x,y)
+        │
+        ▼
+[Serial → Pi Pico → solenoid pulse]  → spray ONLY when centered
 ```
 
-### 1. Eliminating Sunlight Distortion
-Outdoors, illumination varies wildly between direct harsh sunlight (which blows out green channels) and crop canopy shadows (which turn plants nearly black).
+### Stage 1: classify with TensorFlow Lite
 
-To solve this, I designed a two-stage preprocessing pipeline:
-1. **Contrast Limited Adaptive Histogram Equalization (CLAHE)** applied across the luminance channel.
-2. **HSV Color-Space Thresholding** to create a robust invariant vegetation mask before neural network inference.
+The model is an int8-quantized **TensorFlow Lite** object detector (the same architecture family as the classic Pi-object-detection tutorial line) trained on a labeled weed dataset. It runs at 0.25 confidence on the Pi 4's CPU. Quantization is the whole reason this works at all: full-precision weights tear through a single-board CPU's frame budget, while int8 keeps detection responsive with a negligible precision hit.
 
-### 2. PyTorch to 8-Bit TFLite Quantization
-Running a standard FP32 YOLOv5 model on a Raspberry Pi 4 resulted in ~1.2 seconds of latency per frame — far too slow for real-time robotic navigation.
+### Stage 2: aim with HSV
 
-By quantizing the trained PyTorch weights into **8-bit integer TFLite models**, inference dropped to **<150ms per frame** on the Pi's CPU with negligible drop in classification precision.
+Class comes from the network; position comes from colour. The yellow dandelion bloom is far more distinctive in HSV than in the classifier's confidence output, so the pipeline thresholds the frame for the yellow range and takes the mask's bounding box, normalized to image coordinates:
 
 ```python
-import RPi.GPIO as GPIO
-import time
-
-SPRAY_PIN = 18
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(SPRAY_PIN, GPIO.OUT)
-
-def trigger_targeted_spray(x, y, confidence):
-    if confidence > 0.85:
-        # Weed localized within actuator blast zone
-        GPIO.output(SPRAY_PIN, GPIO.HIGH)
-        time.sleep(0.15)
-        GPIO.output(SPRAY_PIN, GPIO.LOW)
+hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+mask = cv2.inRange(hsv, lower=(26,160,212), upper=(30,247,255))
+x, y, w, h = cv2.boundingRect(mask)
+# → [x/w, y/h, (x+w)/w, (y+h)/h] for the actuator mapper
 ```
 
----
+And a cheap sanity gate runs first: if the frame's average color isn't green-dominant, the rover has left the crop (or the camera is blocked) and the whole loop skips spraying — one line of code that stops a lot of dumb spraying.
 
-## National Recognition & Results
+## The control half
 
-GreenGuardian was evaluated on test plots with invasive dandelions, thistle, and broadleaf weeds:
-- **94% weed detection precision** under varying outdoor lighting.
-- **~90% reduction in herbicide volume** compared to standard broadcast treatment.
-- Awarded **Bronze Medal at the 2024 Canada-Wide Science Fair (CWSF)** in Ottawa.
+The Pi serializes commands to the Pico over `/dev/ttyACM0` at 2 Mb/s. The Pico firmware drives dual motors (differential for turns) and the spray solenoid, while an **HMC5883L magnetometer** on the Pi gives absolute heading — so at a row's end the rover reads its heading, turns a computed 180°, and drives the next row on the same compass line instead of dead-reckoning its way crooked.
 
-Check out the full project details on the [CWSF ProjectBoard](https://partner.projectboard.world/ysc/project/greenguardian-automated-weed-detection-and-elimination).
+## What the field trials said
+
+- **94% weed detection precision** across dandelions, thistle, and broadleafs in changing light.
+- **~90% reduction in sprayed volume** vs. broadcast — the whole premise, now measured.
+- **Bronze Medal**, Canada-Wide Science Fair 2024, Ottawa.
+
+The insight that carried the project: cheap precision agriculture is a *software* problem. When detection and aiming can run on a $35 computer and a $5 microcontroller, the hardware argument for spot spraying disappears.
+
+Full project: [CWSF ProjectBoard](https://partner.projectboard.world/ysc/project/greenguardian-automated-weed-detection-and-elimination).

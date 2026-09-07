@@ -1,6 +1,7 @@
-import Link from 'next/link'
-
+import { Button } from '@/components/Button'
 import { Container } from '@/components/Container'
+import { Counter } from '@/components/Counter'
+import { Reveal } from '@/components/Reveal'
 import { siteConfig } from '@/lib/site'
 import {
   awards,
@@ -10,6 +11,7 @@ import {
   projects,
   skills,
 } from '@/lib/resume'
+import clsx from 'clsx'
 
 export const metadata = {
   title: 'Resume',
@@ -18,22 +20,22 @@ export const metadata = {
   alternates: { canonical: '/resume' },
 }
 
-function Head({ children }) {
-  return (
-    <h2 className="mb-5 border-b border-rule pb-2 font-mono text-2xs uppercase tracking-[0.12em] text-mute">
-      {children}
-    </h2>
-  )
-}
+const stats = [
+  { value: 1000, suffix: '+', label: 'Monthly users on IsMyTripSafe' },
+  { value: 700, suffix: '+', label: 'Downloads of Flow Arch OS' },
+  { value: 2, suffix: '', label: 'Internships before university' },
+  { value: 5, suffix: '/5', label: 'AP Computer Science A' },
+]
 
-function Entry({ dates, children }) {
+function SectionTitle({ index, children }) {
   return (
-    <li className="sm:flex sm:gap-6">
-      <p className="shrink-0 font-mono text-2xs uppercase text-mute sm:w-44 sm:pt-1">
-        {dates}
-      </p>
-      <div className="mt-1 min-w-0 flex-1 sm:mt-0">{children}</div>
-    </li>
+    <div className="mb-6 flex items-baseline gap-3">
+      <span aria-hidden="true" className="font-mono text-xs text-accent">
+        {index}
+      </span>
+      <h2 className="font-display text-2xl font-semibold">{children}</h2>
+      <span aria-hidden="true" className="h-px flex-1 translate-y-[-4px] bg-rule" />
+    </div>
   )
 }
 
@@ -41,187 +43,312 @@ function Bullets({ notes }) {
   if (!notes?.length) return null
 
   return (
-    <ul className="mt-2 space-y-1.5">
+    <ul className="mt-3 space-y-1.5">
       {notes.map((note) => (
         <li key={note} className="flex gap-2.5 text-sm leading-relaxed">
           <span
             aria-hidden="true"
             className="mt-[7px] block h-1.5 w-1.5 shrink-0 rounded-full bg-rule"
           />
-          <span>{note}</span>
+          <span className="min-w-0">{note}</span>
         </li>
       ))}
     </ul>
   )
 }
 
-export default function Resume() {
+function Entry({ dates, location, children }) {
   return (
-    <Container>
-      <div className="mx-auto max-w-4xl py-12 sm:py-16">
-        <div className="no-print mb-8 flex justify-end">
-          <a
+    <li className="grid gap-2 sm:grid-cols-[10rem_1fr] sm:gap-8">
+      <div className="sm:pt-0.5">
+        <p className="font-mono text-xs text-mute">{dates}</p>
+        {location && (
+          <p className="mt-1 font-mono text-2xs uppercase text-accent">
+            {location}
+          </p>
+        )}
+      </div>
+      <div className="relative border-l border-rule pl-6 sm:pl-8">
+        <span
+          aria-hidden="true"
+          className="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full border border-accent bg-surface transition-colors duration-300 group-hover:bg-accent"
+        />
+        {children}
+      </div>
+    </li>
+  )
+}
+
+function ProjectCard({ project, featured = false }) {
+  return (
+    <article
+      className={clsx(
+        'group flex h-full flex-col rounded border border-rule bg-panel/40 p-6 transition-colors duration-300 hover:border-accent/60 sm:p-7',
+        featured && 'sm:p-8',
+      )}
+    >
+      <div>
+        {project.accolade && (
+          <p className="font-mono text-2xs uppercase tracking-[0.12em] text-accent">
+            {project.accolade}
+          </p>
+        )}
+        <h3
+          className={clsx(
+            'mt-1.5 font-display font-semibold',
+            featured ? 'text-2xl' : 'text-xl',
+          )}
+        >
+          {project.name}
+        </h3>
+      </div>
+
+      <p className="mt-2 flex flex-wrap items-baseline gap-x-2 font-mono text-xs text-mute">
+        <span>{project.role}</span>
+        <span aria-hidden="true">·</span>
+        <a
+          href={project.href}
+          target={project.href.startsWith('http') ? '_blank' : '_self'}
+          rel="noopener noreferrer"
+          className="text-accent underline decoration-rule underline-offset-4 transition hover:decoration-accent print-url"
+        >
+          {project.hrefLabel}
+        </a>
+        <span aria-hidden="true" className="text-mute">
+          ·
+        </span>
+        <span className="uppercase">
+          {project.end ? `${project.start} – ${project.end}` : project.start}
+        </span>
+      </p>
+
+      <Bullets notes={project.notes} />
+    </article>
+  )
+}
+
+export default function Resume() {
+  const contactLinks = links.filter((link) => !link.primary)
+
+  return (
+<Container>
+      <header className="py-12 sm:py-20">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <p className="animate-rise font-mono text-2xs uppercase tracking-[0.14em] text-accent">
+            Resume — the living version of the PDF
+          </p>
+          <Button
             href={siteConfig.resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-xs uppercase text-accent underline decoration-rule underline-offset-4 transition hover:decoration-accent"
+            variant="secondary"
+            className="no-print animate-rise shrink-0"
           >
-            PDF version ↓
-          </a>
+            Download PDF ↓
+          </Button>
         </div>
+        <h1
+          className="animate-rise mt-6 font-display text-5xl font-semibold sm:text-6xl"
+          style={{ animationDelay: '60ms' }}
+        >
+          {siteConfig.name}.
+        </h1>
+        <p
+          className="animate-rise mt-5 max-w-[56ch] text-lg leading-relaxed text-mute"
+          style={{ animationDelay: '120ms' }}
+        >
+          Software &amp; systems builder, first-year CS at McMaster, seeking
+          a software engineering internship for Summer 2027..
+        </p>
 
-        <header className="flex flex-wrap items-end justify-between gap-6 border-b-2 border-ink pb-6">
-          <div>
-            <h1 className="font-display text-4xl font-semibold">
-              {siteConfig.name}
-            </h1>
-            <p className="mt-2 font-mono text-2xs uppercase text-mute">
-              Software & systems · seeking an internship for Summer 2027
-            </p>
-          </div>
-
-          <div className="font-mono text-2xs uppercase space-y-1">
+        <div
+          className="animate-rise mt-8 flex flex-wrap items-center gap-x-5 gap-y-3 font-mono text-xs"
+          style={{ animationDelay: '180ms' }}
+        >
+          <a
+            href={`mailto:${siteConfig.email}`}
+            className="text-accent underline decoration-rule underline-offset-4 transition hover:decoration-accent print-url"
+          >
+            {siteConfig.email}
+          </a>
+          {contactLinks.map((link) => (
             <a
-              href={`mailto:${siteConfig.email}`}
-              className="block text-accent underline decoration-rule underline-offset-4 hover:decoration-accent print-url"
+              key={link.href}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-mute underline decoration-rule underline-offset-4 transition hover:text-ink hover:decoration-accent print-url"
             >
-              {siteConfig.email}
+              {link.label}
             </a>
-            {links
-              .filter((link) => !link.primary)
-              .map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-mute hover:text-ink print-url"
-                >
-                  {link.label}
-                </a>
-              ))}
-          </div>
-        </header>
+          ))}
+        </div>
+      </header>
 
-        <section className="mt-10">
-          <Head>Technical Skills</Head>
-          <dl className="space-y-3">
-            {skills.map((group) => (
-              <div key={group.label} className="sm:flex sm:gap-6">
-                <dt className="shrink-0 font-mono text-2xs uppercase text-mute sm:w-44 sm:pt-1">
-                  {group.label}
+        <Reveal className="border-y border-rule">
+          <dl className="grid grid-cols-2 gap-x-6 gap-y-10 py-8 sm:grid-cols-4 sm:py-10">
+            {stats.map((stat, i) => (
+              <Reveal as="div" key={stat.label} delay={i * 80}>
+                <dt className="font-mono text-2xs uppercase leading-tight tracking-[0.12em] text-mute">
+                  {stat.label}
                 </dt>
-                <dd className="text-sm font-mono">{group.items.join(' · ')}</dd>
-              </div>
+                <dd className="mt-3 font-display text-4xl font-semibold sm:text-5xl">
+                  <Counter value={stat.value} suffix={stat.suffix} />
+                </dd>
+              </Reveal>
             ))}
           </dl>
-        </section>
+        </Reveal>
 
-        <section className="mt-10">
-          <Head>Experience</Head>
-          <ul className="space-y-6">
-            {experience.map((role) => (
-              <Entry
-                key={role.company}
-                dates={role.end ? `${role.start} – ${role.end}` : role.start}
-              >
-                <h3 className="font-display text-lg font-semibold">
-                  {role.title}
-                </h3>
-                <p className="flex flex-wrap items-baseline gap-x-2 text-xs text-mute font-mono">
-                  <span className="font-bold text-ink">{role.company}</span>
-                  <span aria-hidden="true">·</span>
-                  <span className="uppercase">{role.location}</span>
-                </p>
-                <Bullets notes={role.notes} />
-              </Entry>
-            ))}
-          </ul>
-        </section>
-
-        <section className="mt-10">
-          <Head>Technical Projects</Head>
-          <ul className="space-y-6">
-            {projects.map((project) => (
-              <Entry
-                key={project.name}
-                dates={project.end ? `${project.start} – ${project.end}` : project.start}
-              >
-                <h3 className="font-display text-lg font-semibold">
-                  {project.name}
-                  {project.accolade && (
-                    <span className="text-accent font-normal font-mono text-xs">
-                      {' '}
-                      — {project.accolade}
-                    </span>
-                  )}
-                </h3>
-                <p className="flex flex-wrap items-baseline gap-x-2 text-xs text-mute font-mono">
-                  <span>{project.role}</span>
-                  <span aria-hidden="true">·</span>
-                  <a
-                    href={project.href}
-                    target={project.href.startsWith('http') ? '_blank' : '_self'}
-                    rel="noopener noreferrer"
-                    className="text-accent underline decoration-rule underline-offset-4 transition hover:decoration-accent print-url"
-                  >
-                    {project.hrefLabel}
-                  </a>
-                </p>
-                <Bullets notes={project.notes} />
-              </Entry>
-            ))}
-          </ul>
-        </section>
-
-        <section className="mt-10">
-          <Head>Education</Head>
-          <ul className="space-y-6">
-            {education.map((item) => (
-              <Entry
-                key={item.school}
-                dates={item.end ? `${item.start} – ${item.end}` : item.start}
-              >
-                <h3 className="font-display text-lg font-semibold">
-                  {item.school}
-                </h3>
-                <p className="flex flex-wrap items-baseline gap-x-2 text-xs text-mute font-mono">
-                  <span>{item.programme}</span>
-                  <span aria-hidden="true">·</span>
-                  <span className="uppercase">{item.location}</span>
-                </p>
-                <Bullets notes={item.notes} />
-              </Entry>
-            ))}
-          </ul>
-        </section>
-
-        <section className="mt-10">
-          <Head>Honors, Awards &amp; Security Research</Head>
-          <dl className="space-y-4">
-            {awards.map((group) => (
-              <div key={group.label} className="sm:flex sm:gap-6">
-                <dt className="shrink-0 font-mono text-2xs uppercase text-mute sm:w-44 sm:pt-1">
-                  {group.label}
-                </dt>
-                <dd className="min-w-0 flex-1">
-                  <ul className="space-y-1.5">
+        <section className="py-12 sm:py-16">
+          <Reveal>
+            <SectionTitle index="01">Technical skills</SectionTitle>
+          </Reveal>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {skills.map((group, i) => (
+              <Reveal key={group.label} delay={Math.min(i * 60, 180)}>
+                <div className="h-full rounded border border-rule bg-panel/40 p-5 transition-colors duration-300 hover:border-accent/60">
+                  <h3 className="font-mono text-2xs uppercase tracking-[0.12em] text-accent">
+                    {group.label}
+                  </h3>
+                  <ul className="mt-3 flex flex-wrap gap-1.5">
                     {group.items.map((item) => (
-                      <li key={item} className="flex gap-2.5 text-sm leading-relaxed">
-                        <span
-                          aria-hidden="true"
-                          className="mt-[7px] block h-1.5 w-1.5 shrink-0 rounded-full bg-rule"
-                        />
-                        <span>{item}</span>
+                      <li
+                        key={item}
+                        className="rounded border border-rule bg-surface px-2.5 py-1 font-mono text-xs text-mute transition-colors duration-300 hover:border-accent/60 hover:text-ink"
+                      >
+                        {item}
                       </li>
                     ))}
                   </ul>
-                </dd>
-              </div>
+                </div>
+              </Reveal>
             ))}
-          </dl>
+          </div>
         </section>
-      </div>
+
+        <section className="py-12 sm:py-16">
+          <Reveal>
+            <SectionTitle index="02">Experience</SectionTitle>
+          </Reveal>
+          <ul className="group grid gap-10">
+            {experience.map((role, i) => (
+              <Reveal
+                as="li"
+                key={role.company}
+                delay={Math.min(i * 80, 160)}
+              >
+                <Entry
+                  dates={`${role.start} – ${role.end}`}
+                  location={role.location}
+                >
+                  <h3 className="font-display text-xl font-semibold">
+                    {role.title}
+                  </h3>
+                  <p className="mt-0.5 font-mono text-xs uppercase tracking-[0.08em] text-mute">
+                    <span className="font-bold text-ink">{role.company}</span>
+                  </p>
+                  <Bullets notes={role.notes} />
+                </Entry>
+              </Reveal>
+            ))}
+          </ul>
+        </section>
+
+        <section className="py-12 sm:py-16">
+          <Reveal>
+            <SectionTitle index="03">Technical projects</SectionTitle>
+          </Reveal>
+          <ul className="grid gap-4 lg:grid-cols-2">
+            {projects.map((project, i) => (
+              <Reveal
+                as="li"
+                key={project.name}
+                delay={Math.min(i * 70, 140)}
+                className={i === 0 ? 'lg:col-span-2' : undefined}
+              >
+                <ProjectCard project={project} featured={i === 0} />
+              </Reveal>
+            ))}
+          </ul>
+        </section>
+
+        <section className="py-12 sm:py-16">
+          <Reveal>
+            <SectionTitle index="04">Education</SectionTitle>
+          </Reveal>
+          <ul className="group grid gap-8">
+            {education.map((item, i) => (
+              <Reveal
+                as="li"
+                key={item.school}
+                delay={Math.min(i * 80, 160)}
+              >
+                <Entry
+                  dates={`${item.start} – ${item.end}`}
+                  location={item.location}
+                >
+                  <h3 className="font-display text-xl font-semibold">
+                    {item.school}
+                  </h3>
+                  <p className="mt-0.5 font-mono text-xs uppercase tracking-[0.08em] text-mute">
+                    {item.programme}
+                  </p>
+                  <Bullets notes={item.notes} />
+                </Entry>
+              </Reveal>
+            ))}
+          </ul>
+        </section>
+
+        <section className="py-12 sm:py-16">
+          <Reveal>
+            <SectionTitle index="05">
+              Honours, awards &amp; security research
+            </SectionTitle>
+          </Reveal>
+          <div className="grid gap-8 md:grid-cols-2 md:gap-x-8">
+            {awards.map((group, i) => (
+              <Reveal key={group.label} delay={Math.min(i * 70, 140)}>
+                <h3 className="font-mono text-2xs uppercase tracking-[0.12em] text-accent">
+                  {group.label}
+                </h3>
+                <ul className="mt-3 space-y-2">
+                  {group.items.map((item) => (
+                    <li key={item} className="flex gap-2.5 text-sm leading-relaxed">
+                      <span
+                        aria-hidden="true"
+                        className="mt-[7px] block h-1.5 w-1.5 shrink-0 rounded-full bg-rule"
+                      />
+                      <span className="min-w-0">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        <div className="no-print pb-16 pt-4 sm:pb-20">
+          <Reveal>
+            <div className="flex flex-col items-start justify-between gap-6 rounded border border-rule bg-panel/40 p-7 sm:flex-row sm:items-center sm:p-8">
+              <div>
+<h2 className="font-display text-xl font-semibold">
+                  Prefer a static copy?
+                </h2>
+              </div>
+              <Button
+                href={siteConfig.resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="secondary"
+                className="shrink-0"
+              >
+                Download PDF
+              </Button>
+            </div>
+          </Reveal>
+        </div>
     </Container>
   )
 }

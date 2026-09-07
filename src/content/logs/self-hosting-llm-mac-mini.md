@@ -2,11 +2,13 @@
 slug: self-hosting-llm-mac-mini
 title: Self-Hosting Open-Weight LLMs on Apple Silicon (Mac Mini)
 date: '2025-11-15'
-readTime: 4 min read
+readTime: 6 min read
 category: Local AI / Systems
 description: >-
-  The operational walkthrough: keeping a private model server alive on M-series
-  hardware with a launchd watchdog, model hot-swapping, and a hard context cap.
+  Keeping a private model server alive on an M-series Mini: launchd KeepAlive
+  supervision, a hard context cap against swap, single-resident model
+  hot-swapping, and why unified memory bandwidth is the only number that
+  matters.
 tags:
   - Mac Mini
   - Apple Silicon
@@ -28,17 +30,15 @@ thumb:
   src: /images/projects/ai.webp
   alt: Local LLM inference on Apple Silicon
 ---
-## Why Apple Silicon for Local AI?
+## Why Apple Silicon for local AI
 
-The Mac Mini M4 features **32 GB of Unified Memory** with unified memory bandwidth of roughly **100 GB/s**. Because autoregressive token generation in Large Language Models is fundamentally memory-bandwidth bound, Apple Silicon is exceptionally well suited for local inference, idling at only a few watts.
+LLM inference is a memory-bandwidth problem wearing an inference costume. Each generated token needs the entire weight matrix re-read from memory, so the thing that decides how fast answers come is **how fast memory streams to the compute**, not how many cores sit unused. Apple Silicon stacks 32 GB of unified RAM on the same package with roughly 100 GB/s of bandwidth, and idles the genset at a few watts.
 
----
+That makes it the correct box for a private 7B–14B quantized server. It is not the box for the largest frontier models — and the fun is that the physics tells you exactly why.
 
-## Automated Crash Recovery with Launchd
+## The hard part isn't inference — it's staying alive
 
-An LLM worker process can hang on a corrupted context prompt or out-of-memory spike, bringing down the socket. Babysitting terminal processes manually is unacceptable for reliable infrastructure.
-
-We turn the inference router into a managed OS service using macOS `launchd`:
+A model worker can hang on a corrupted context or die on an OOM spike, taking the socket down with it. Terminal babysitting is not infrastructure. The router runs as a **launchd service**:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -64,12 +64,17 @@ We turn the inference router into a managed OS service using macOS `launchd`:
 </plist>
 ```
 
-With `KeepAlive`, any process death is immediately detected by the Darwin init system, restarting the FastAPI worker within seconds without human intervention.
+`KeepAlive` makes Darwin restart the worker within seconds of any death — no supervisor, no extra runtime, just the OS init system that was going to be running anyway. It also means *crashes are recoverable events*, not outages.
 
----
+## Memory bounds & hot-swapping
 
-## Memory Bounds & Hot-Swapping
+Two rules keep a 32 GB machine from turning into a disk thrash:
 
-To prevent the system from paging memory to SSD when processing massive context windows:
-1. **Hard Context Caps**: Prompts exceeding 8k tokens are rejected or truncated gracefully rather than allowing memory allocations to exceed 28 GB.
-2. **Single Resident Model**: Only one model is held in unified VRAM at a time. Switching models automatically invalidates previous Metal buffers before loading new weights.
+1. **Hard context caps.** Prompts beyond ~8k tokens are rejected or truncated rather than allocating memory that would push the resident footprint past its safe ceiling. This is a swap guard: once the box pages, time-to-first-token balloons from milliseconds to seconds of disk.
+2. **Single resident model.** Only one model lives in unified memory at once. Switching models invalidates the previous Metal buffers *before* loading the next — so a hot-swap never briefly holds two full models, which is exactly when a 32 GB budget blows.
+
+## What "production" buys you
+
+The observable outcome is boring on purpose: a server that answers continuously, restarts after any failure with zero human involvement, holds every prompt/answer on the network, and costs nothing per token. Getting there meant engineering the boring 90% — supervision, bounds, and a routing layer — hard, so the models could stay the fun 10%.
+
+Model-level facts: int4 Qwen-class 7B/14B streaming at 45+ tokens/sec, idling at watts, sitting silently on a desk. Data never leaves the room; the invoice never gets bigger.

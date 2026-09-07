@@ -6,30 +6,30 @@ import { contactLinks, siteConfig } from '@/lib/site'
 export const metadata = {
   title: 'About',
   description:
-    'How Malek Hammoud got here: Minecraft mods, a Canada-Wide Science Fair bronze medal, an Arch Linux distribution, hackathon wins, and first-year CS at McMaster.',
+    'How Malek Hammoud got here: maze robots and Java games, a Canada-Wide Science Fair bronze medal, an Arch Linux distribution, hackathon wins, and first-year CS at McMaster.',
   alternates: { canonical: '/about' },
 }
 
 const chapters = [
   {
-    year: '2019–2021',
-    heading: 'The beginning was mods.',
-    body: 'I wrote my first serious code as a Minecraft mod: a real-time aerodynamics engine — lift, drag, angle of attack — computed on every tick at 60 FPS. Over a thousand people downloaded it. I was fourteen, and I learned what a physics loop was because my aircraft kept falling out of the sky.',
+    year: '2023',
+    heading: 'The beginning was robots and games.',
+    body: 'My first serious builds were in high school. A maze-solving robot car proved a breadth-first search on a Raspberry Pi Pico and won an award at TVSEF 2023. Then came Java games — a two-player physics platformer and a tile-based arcade with enemies that genuinely pathfind. I learned more about loops and collision response from aircraft falling out of the sky in my own code than from any tutorial.',
   },
   {
     year: '2023–2024',
     heading: 'Then hardware.',
-    body: 'I wanted software that touched the ground. GreenGuardian was an autonomous robot that drove through fields, found invasive weeds with a YOLOv5 vision model, and sprayed only the weed. It hit 94% detection accuracy and brought home bronze from the Canada-Wide Science Fair. After that came drone litter-mapping — a 50 m² survey flight with GPS-tagged waste detection.',
+    body: 'GreenGuardian was an autonomous robot that drove through fields, found invasive weeds with an on-device TensorFlow Lite model, and used colour to aim a spray at only the weed. It hit 94% detection precision, cut sprayed herbicide by roughly 90%, and brought home bronze from the Canada-Wide Science Fair. Around it I built a drone that finds litter, GPS-tags it, and files it to a live map.',
   },
   {
-    year: '2024–2025',
+    year: '2025',
     heading: 'The OS detour.',
-    body: 'I got tired of fighting my own computer, so I shipped my own. Flow Arch is an Arch Linux distribution with compositor-level focus enforcement — the OS version of do not disturb. It passed 700 downloads and picked up the SourceForge Rising Star Award.',
+    body: 'I got tired of fighting my own computer, so I shipped my own. Flow Arch is an Arch Linux distribution with compositor-level focus enforcement — the OS version of do not disturb. It blocks distracting windows by title, screen-samples what you’re actually looking at, and can even switch your computer off at a deadline. It passed 700 downloads and picked up the SourceForge Rising Star Award.',
   },
   {
-    year: '2024–2026',
-    heading: 'Making software for pay, and for fun.',
-    body: 'I’ve interned as a full-stack developer twice, led technical work for the Microsoft Sustainability Challenge (top 5 of 172 teams), and built Basil Home AI — a smart fridge running QNX RTOS on a Raspberry Pi — which won Deloitte’s Best Use of AI for Green at Hack the 6ix. At Hack the North I made the top 32 of 250+ projects.',
+    year: '2025–2026',
+    heading: 'Making software people run.',
+    body: 'Two full-stack internships before university. At Hack the 6ix, Basil Home AI — a smart fridge running QNX RTOS on a Raspberry Pi — won Deloitte’s Best Use of AI for Green. Hack the North put us in the top 32 of 250+ teams. From there the work shifted to things meant to stay running: IsMyTripSafe, a travel-safety platform now serving over a thousand monthly users, and a fleet of 22 autonomous scrapers on Apify.',
   },
   {
     year: 'Now',

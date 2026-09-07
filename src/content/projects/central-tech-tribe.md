@@ -2,22 +2,25 @@
 slug: central-tech-tribe
 title: Central Tech Tribe Portal
 subtitle: >-
-  Official web platform and membership management portal for Central Secondary
-  programming club.
+  Web platform and membership hub for the London Central Secondary programming
+  club.
 summary: >-
-  A full-stack React and MySQL platform created for the London Central Secondary
-  School programming club, featuring resource libraries, project showcases, and
-  member announcements.
+  A React frontend in front of a PHP + MySQL backend for the London Central
+  Secondary programming club: sessions, image uploads to a MySQL BLOB store,
+  and a clean portal for student developers — the club's own corner of the
+  web.
 category: Full-Stack / Web
-year: '2023'
-status: PRODUCTION
+year: '2024'
+status: ARCHIVED
 metrics:
   - label: Community
     value: Central Tech Students
-  - label: Database
-    value: MySQL Backend
+  - label: Backend
+    value: PHP + MySQL
   - label: Frontend
-    value: React
+    value: React (Vite Build)
+  - label: Features
+    value: Uploads + Sessions
 badge: School Tech Platform
 featured: false
 media:
@@ -33,24 +36,32 @@ thumb:
   alt: Central Tech Tribe
 stack:
   - React
-  - Node.js
-  - Express
+  - PHP
   - MySQL
   - CSS3
+  - Session Auth
 links:
   - label: Live Portal
     href: 'https://central-server-theta.vercel.app/'
 caseStudyText:
   problem: >-
-    High school programming clubs need a centralized place to share workshop
-    notes, competition problems, and project demos.
+    A high school programming club had no home online. Workshop notes,
+    competition problems, and member projects lived scattered, and there was no
+    portal for the moments that matter to a coding club: a shared place, an
+    upload flow, a login.
   constraint: >-
-    Must be lightweight, fast, and simple enough for student leaders to
-    maintain.
+    A school-hosted budget usually means cheap shared hosting — Node/Postgres is
+    overkill and fussy. The pragmatic stack was a PHP + MySQL backend that runs
+    on a minimal LAMP box, served behind a modern React frontend compiled to
+    static assets.
   whatIBuilt: >-
-    A React frontend with an Express API backend and MySQL database for user
-    authentication and workshop resource management.
+    A React (Vite) frontend with custom animated styling, deployed as static
+    assets. Behind it, a PHP layer handles PHP sessions for login state and an
+    image-upload endpoint (upload.php) that streams uploaded files into a MySQL
+    BLOB column, plus display/query helpers (common.php) for the club's data.
+    Members log in, browse, and contribute without needing an admin role.
   outcome: >-
-    Deployed and used by London Central student developers to prepare for coding
-    competitions.
+    Deployed as the London Central club's portal — a place for members to log
+    in, share, and prepare for competitions that the student body could keep
+    running.
 ---
