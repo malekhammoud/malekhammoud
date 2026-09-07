@@ -13,13 +13,12 @@ year: '2026'
 status: PRODUCTION
 metrics:
   - label: Monthly Users
-    value: '1,000+ MAU'
+    value: '2,000+ MAU'
   - label: Data Sources
     value: Government APIs
   - label: Automation
     value: 100% Autonomous
 badge: '1,000+ Monthly Users · Autonomous Pipeline'
-featured: false
 media:
   - type: image
     src: /images/projects/ismytripsafe.webp
@@ -30,7 +29,6 @@ media:
 thumb:
   type: image
   src: /images/projects/ismytripsafe.webp
-  alt: IsMyTripSafe
 stack:
   - TypeScript
   - Next.js
