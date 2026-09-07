@@ -10,13 +10,12 @@ year: '2022'
 status: OPEN SOURCE
 metrics:
   - label: Engine
-    value: Java AWT / Swing
+    value: Java Swing
   - label: Mode
-    value: Local 2-Player Versus
+    value: 2-Player and Single player (vs AI)
   - label: Physics
     value: Custom Momentum
 badge: Java Versus Platformer
-featured: false
 media:
   - type: video
     poster: /videos/javagame.poster.jpg
@@ -30,7 +29,6 @@ media:
 thumb:
   type: image
   src: /videos/javagame.poster.jpg
-  alt: 1v1 Platformer Game
 stack:
   - Java
   - Java Swing
@@ -38,14 +36,18 @@ stack:
   - Physics Math
 links:
   - label: GitHub Repository
-    href: 'https://github.com/malekhammoud'
+    href: 'https://github.com/malekhammoud/JavaProject'
 caseStudyText:
   problem: >-
-    Building a two-player local versus game on a single keyboard without
-    key-press ghosting or missed input frames.
+    Creating a simultaneous two-player 2D platformer on a shared keyboard with
+    animated sprite rendering, dynamic stage generation, and custom player vs.
+    AI logic.
   constraint: >-
-    Java keylisteners easily drop key-release events during simultaneous
-    multi-key presses.
-  whatIBuilt: A bitmask key polling tracker and custom momentum physics loop in Java AWT.
+    Standard Java GUI event listeners lag and fail to handle simultaneous,
+    continuous key holds for two players sharing a single keyboard.
+  whatIBuilt: >-
+    A custom game loop featuring frame-by-frame direct key polling, state-driven
+    platform collision physics, sprite animation sequences, and simple tracking
+    AI using Java and the HSA2 graphics framework.
   outcome: A responsive two-player arcade platformer running at consistent framerates.
 ---
