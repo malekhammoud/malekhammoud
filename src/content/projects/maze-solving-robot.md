@@ -20,7 +20,7 @@ metrics:
   - label: Simulation
     value: Python / Pygame
 badge: TVSEF 2023 Award Winner · Graph Theory
-featured: false
+featured: true
 media:
   - type: video
     poster: /videos/maze.poster.jpg
@@ -30,13 +30,12 @@ media:
       - src: /videos/maze.mp4
         type: video/mp4
     ratio: 'aspect-[16/9]'
-    caption: >
+    caption: >-
       Autonomous maze navigation testing obstacle avoidance and wall-following
       algorithms.
 thumb:
   type: image
   src: /videos/maze.poster.jpg
-  alt: Maze-Solving Robot Car
 stack:
   - Raspberry Pi Pico
   - MicroPython
@@ -64,8 +63,8 @@ caseStudyText:
     calibration step measures how long 447 mm of travel takes to derive a
     block-timing constant, a wall-follow loop drives the maze with the four
     sensors and a dead-end recovery (buzz and reverse), and a mapping routine
-    builds the collected maze dynamically in memory, growing its grid as the
-    car enters new rows/columns.
+    builds the collected maze dynamically in memory, growing its grid as the car
+    enters new rows/columns.
   outcome: >-
     Demonstrated autonomous exploration, dead-end recovery, and solved-maze
     traversal on physical hardware, backed by a simulation that proved the
