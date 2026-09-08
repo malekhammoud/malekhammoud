@@ -18,18 +18,15 @@ html {
 
 body {
   background-color: var(--surface);
-  /* A drafting sheet: horizontal runs are listed FIRST (drawn last, on top),
-     so they overlap the verticals at each crossing — the horizontal line is
-     never broken by the grid beneath it. Graph paper major lines every 80px
-     fed by 16px minors. Decoration only — the print block below blanks it for
-     the resume. 180deg anchors the horizontal lines to the TOP edge so the
-     lattice is consistent at any viewport height; the repeating tiles can't
-     cut off. */
+  /* A drafting sheet seen edge-on: vertical rules only, echoing the column
+     guide under the text. The page's own horizontal rules (section borders,
+     list dividers) own the horizontal rhythm, so nothing competes with the
+     grid. Major lines every 80px fed by 16px minors; the repeating tiles
+     can't cut off. Decoration only — the print block below blanks it for the
+     resume. */
   background-image:
-    repeating-linear-gradient(180deg, rgba(23, 25, 29, 0.05) 0 1px, transparent 1px 80px),
-    repeating-linear-gradient(180deg, rgba(23, 25, 29, 0.022) 0 1px, transparent 1px 16px),
-    repeating-linear-gradient(90deg, rgba(23, 25, 29, 0.05) 0 1px, transparent 1px 80px),
-    repeating-linear-gradient(90deg, rgba(23, 25, 29, 0.022) 0 1px, transparent 1px 16px);
+    repeating-linear-gradient(90deg, rgba(23, 25, 29, 0.07) 0 1.5px, transparent 1.5px 80px),
+    repeating-linear-gradient(90deg, rgba(23, 25, 29, 0.022) 0 1.5px, transparent 1.5px 16px);
   color: var(--ink);
   font-family: var(--font-body), Georgia, serif;
 }
@@ -44,83 +41,6 @@ body {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 1px;
-}
-
-/* ── Drafting marks: crop brackets at the column's corners ──────────────────
-   The sheet is the readable block, so the brackets sit exactly on the
-   Container measure: the 48rem column edge at sm+ (where Container's
-   max-w-3xl holds), a full-bleed page edge below that. */
-.drafting-marks {
-  position: absolute;
-  inset: 0;
-}
-
-.drafting-mark {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-top: 1px solid var(--rule);
-  border-left: 1px solid var(--rule);
-}
-
-.drafting-corner-tr,
-.drafting-corner-br {
-  border-right: 1px solid var(--rule);
-  border-top: 1px solid var(--rule);
-  border-left: 0;
-}
-
-.drafting-corner-bl,
-.drafting-corner-br {
-  border-bottom: 1px solid var(--rule);
-}
-
-.drafting-corner-tl {
-  top: 0;
-  left: var(--draft-inset-x);
-}
-
-.drafting-corner-tr {
-  top: 0;
-  right: var(--draft-inset-x);
-}
-
-.drafting-corner-bl {
-  bottom: 0;
-  left: var(--draft-inset-x);
-}
-
-.drafting-corner-br {
-  bottom: 0;
-  right: var(--draft-inset-x);
-}
-
-:root {
-  /* Where the sheet's vertical stitches sit: the readable column edge.
-     `max-w-3xl` is 48rem; the column is centered, so the inset is half the
-     viewport bleed. Below sm Container is full-bleed, so the marks follow the
-     page edge with the same padding the content uses. */
-  --draft-inset-x: calc((100vw - 48rem) / 2);
-}
-
-@media (max-width: 767px) {
-  :root {
-    --draft-inset-x: 5px;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1127px) {
-  /* Past sm the column caps at 48rem but the viewport can't fit it, so
-     Container is still full-bleed — keep the marks on the padding gutter. */
-  :root {
-    --draft-inset-x: 6px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .drafting-marks {
-    display: none;
-  }
 }
 
 /* ── Footnotes ─────────────────────────────────────────────────────────────
@@ -196,6 +116,13 @@ body {
 
 .undraw:hover::after,
 .undraw:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: 0 50%;
+}
+
+/* The active nav item keeps its underline drawn, instead of a heavier
+   text-decoration that double-lines with the hover rule. */
+.undraw-active::after {
   transform: scaleX(1);
   transform-origin: 0 50%;
 }

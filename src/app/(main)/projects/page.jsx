@@ -5,7 +5,7 @@ import { Container } from '@/components/Container'
 import { getAllProjects } from '@/lib/projects'
 
 export const metadata = {
-  title: 'Work',
+  title: 'Projects',
   description:
     'Everything Malek Hammoud has shipped, in order: Linux distributions, robots, local AI infrastructure, and the mods that started it.',
   alternates: { canonical: '/projects' },

@@ -6,22 +6,23 @@ import { usePathname } from 'next/navigation'
 import clsx from 'clsx'
 
 import { Container } from '@/components/Container'
+import { Mark } from '@/components/Mark'
 
 const nav = [
-  { href: '/projects', label: 'Work' },
+  { href: '/projects', label: 'Projects' },
   { href: '/logs', label: 'Logs' },
   { href: '/about', label: 'About' },
   { href: '/resume', label: 'Resume' },
 ]
 
-function Mark() {
+function Brand() {
   return (
     <Link
       href="/"
       aria-label="Malek Hammoud — Home"
       className="flex items-center gap-2.5"
     >
-      <span aria-hidden="true" className="block h-2.5 w-2.5 shrink-0 bg-accent" />
+      <Mark size={22} />
       <span className="font-display text-sm font-semibold tracking-tight">
         Malek Hammoud
       </span>
@@ -40,7 +41,7 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-rule bg-surface/90 backdrop-blur-sm">
       <Container>
         <div className="flex h-16 items-center justify-between gap-6">
-          <Mark />
+          <Brand />
 
           <nav aria-label="Primary" className="hidden items-center gap-1 md:flex">
             {nav.map((item) => (
@@ -51,7 +52,7 @@ export function Header() {
                 className={clsx(
                   'undraw px-3 py-2 font-display text-sm transition',
                   isActive(item.href)
-                    ? 'font-medium text-ink underline decoration-accent decoration-2 underline-offset-[6px]'
+                    ? 'font-medium text-ink undraw-active'
                     : 'text-mute hover:text-ink',
                 )}
               >
@@ -99,7 +100,12 @@ export function Header() {
                   href={item.href}
                   onClick={() => setOpen(false)}
                   aria-current={isActive(item.href) ? 'page' : undefined}
-                  className="border-b border-rule/60 py-3 font-display text-base"
+                  className={clsx(
+                    'undraw px-3 py-3 font-display text-base transition',
+                    isActive(item.href)
+                      ? 'font-medium text-ink undraw-active'
+                      : 'text-mute hover:text-ink',
+                  )}
                 >
                   {item.label}
                 </Link>

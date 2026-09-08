@@ -73,7 +73,7 @@ export function AdminTabs({ active }) {
             : 'rounded px-3 py-1.5 font-mono text-xs text-mute transition hover:text-ink'
         }
       >
-        Work
+        Projects
       </Link>
     </nav>
   )

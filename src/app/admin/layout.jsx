@@ -34,7 +34,7 @@ function AdminHeader() {
             href="/admin/projects"
             className="font-mono text-2xs uppercase tracking-wider text-ink transition hover:text-accent"
           >
-            Work
+            Projects
           </Link>
           <Link
             href="/admin/new"

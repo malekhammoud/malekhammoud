@@ -30,7 +30,7 @@ export default async function AdminProjects({ searchParams }) {
         <div>
           <p className="font-mono text-2xs uppercase tracking-[0.16em] text-accent">Admin</p>
           <div className="mt-3 flex items-center gap-4">
-            <h1 className="font-display text-2xl font-semibold">Work</h1>
+            <h1 className="font-display text-2xl font-semibold">Projects</h1>
             <AdminTabs active="projects" />
           </div>
         </div>
