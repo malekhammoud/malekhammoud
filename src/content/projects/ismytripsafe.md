@@ -17,7 +17,7 @@ metrics:
   - label: Monthly Users
     value: '1,000+ MAU'
   - label: Cities
-    value: 1,000+ Destinations
+    value: '1,000+ Destinations'
   - label: Research
     value: Agentic + Live Web
   - label: Scoring
@@ -26,11 +26,10 @@ badge: '1,000+ Monthly Users · Autonomous Pipeline'
 featured: true
 media:
   - type: image
-    src: /images/projects/ismytripsafe.webp
-    width: 1200
-    height: 750
+    src: /images/projects/ismytripsafe/1788828297555-ismytripsafe-lebanon.png
+    width: 0
+    height: 0
     alt: IsMyTripSafe platform
-    caption: IsMyTripSafe automated travel advisory intelligence dashboard.
 thumb:
   type: image
   src: /images/projects/ismytripsafe.webp
@@ -53,11 +52,11 @@ caseStudyText:
     safe to go there?" needs one answer with the reasons underneath.
   constraint: >-
     Research had to stay almost free. Reports run on OpenRouter's free-model
-    tier, so each city must cost exactly ONE model call — every search and
-    crawl happens in plain code (no model tool-loops), and results are cached
-    with stale-while-revalidate so a returning visitor never refires the quota.
-    And scoring had to be *non-compensatory*: a clean-air figure must never
-    average away a "Do Not Travel" advisory.
+    tier, so each city must cost exactly ONE model call — every search and crawl
+    happens in plain code (no model tool-loops), and results are cached with
+    stale-while-revalidate so a returning visitor never refires the quota. And
+    scoring had to be *non-compensatory*: a clean-air figure must never average
+    away a "Do Not Travel" advisory.
   whatIBuilt: >-
     A Next.js 16 plumbing where POST /api/research streams a report in ~10 s:
     geocode → fetch structured indicators (homicide, terrorism, road deaths,
@@ -68,11 +67,11 @@ caseStudyText:
     engine is the differentiator: signals banded to 0–100, averaged *within*
     crime/conflict/advisory/institutions pillars, then combined across pillars
     with a severity-emphasizing power mean and non-compensatory hard caps (a
-    level-4 advisory caps the score at 20). Big-metro inputs (Numbeo, FBI,
-    city scale) let two cities in one country really differ.
+    level-4 advisory caps the score at 20). Big-metro inputs (Numbeo, FBI, city
+    scale) let two cities in one country really differ.
   outcome: >-
     A free, always-current score + breakdown for 1,000+ cities that grew to
     1,000+ monthly active users with zero human research after launch — the
-    traffic story of the site, and the reason the whole scoring engine had to
-    be correct enough to ship cold.
+    traffic story of the site, and the reason the whole scoring engine had to be
+    correct enough to ship cold.
 ---
