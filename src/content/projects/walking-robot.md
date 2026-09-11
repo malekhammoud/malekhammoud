@@ -32,6 +32,12 @@ media:
         type: video/mp4
     ratio: 'aspect-[4/3]'
     caption: The joint-control GUI computing leg positions live while the gait plays.
+  - type: video
+    sources:
+      - src: /videos/walking_robo.mp4
+        type: video/mp4
+    ratio: 'aspect-[16/9]'
+    caption: The ROS2 quadruped walking with stepper drive and eight servo legs.
   - type: image
     src: /images/logs/gui.png
     width: 987
