@@ -39,13 +39,6 @@ export const buildLog = [
     source: 'SourceForge — 700+ downloads, Rising Star Award.',
   },
   {
-    year: '2026',
-    title: '22 autonomous Apify scrapers',
-    subtitle: 'A fleet of 22 regulatory scrapers deployed on Apify, screened by buyer demand and guarded by freshness canaries so a broken run never bills.',
-    href: '/projects/apify-autonomous-portfolio',
-    source: 'Live on Apify — demand-screened, pay-per-event.',
-  },
-  {
     year: '2025',
     title: 'Basil Home AI',
     subtitle: 'A smart-fridge engine running QNX RTOS on a Raspberry Pi with on-device grocery detection and expiry-ranked recipes.',
