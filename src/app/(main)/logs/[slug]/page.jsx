@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
@@ -8,8 +9,10 @@ import { Container } from '@/components/Container'
 import { InlineVideo } from '@/components/InlineVideo'
 import { MediaFrame } from '@/components/MediaFrame'
 import { Prose } from '@/components/Prose'
+import { YouTubeEmbed } from '@/components/YouTubeEmbed'
 import { getAllLogs, getLogBySlug } from '@/lib/logs'
 import { getProjectBySlug } from '@/lib/projects'
+import { extractYouTubeId, isYouTubeUrl } from '@/lib/youtube'
 
 export async function generateStaticParams() {
   const logs = getAllLogs()
@@ -93,16 +96,28 @@ export default async function LogDetailPage(props) {
           {/* Visual Media Gallery */}
           {media.length > 0 && (
             <div className="my-10 space-y-8">
-              {media.map((item, idx) =>
-                item.type === 'video' ? (
-                  <InlineVideo
-                    key={item.sources?.[0]?.src || idx}
-                    sources={item.sources}
-                    ratio={item.ratio}
-                    poster={item.poster}
-                    caption={item.caption}
-                  />
-                ) : (
+              {media.map((item, idx) => {
+                if (item.type === 'youtube') {
+                  return (
+                    <YouTubeEmbed
+                      key={item.youtubeId || idx}
+                      youtubeId={item.youtubeId}
+                      caption={item.caption}
+                    />
+                  )
+                }
+                if (item.type === 'video') {
+                  return (
+                    <InlineVideo
+                      key={item.sources?.[0]?.src || idx}
+                      sources={item.sources}
+                      ratio={item.ratio}
+                      poster={item.poster}
+                      caption={item.caption}
+                    />
+                  )
+                }
+                return (
                   <MediaFrame
                     key={item.src || idx}
                     src={item.src}
@@ -111,8 +126,8 @@ export default async function LogDetailPage(props) {
                     height={item.height || 500}
                     caption={item.caption}
                   />
-                ),
-              )}
+                )
+              })}
             </div>
           )}
 
@@ -121,6 +136,39 @@ export default async function LogDetailPage(props) {
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeRaw]}
+              components={{
+                p: ({ children, ...props }) => {
+                  const flat = React.Children.toArray(children)
+                  const nonEmpty = flat.filter((c) => !(typeof c === 'string' && c.trim() === ''))
+                  if (nonEmpty.length === 1) {
+                    const only = nonEmpty[0]
+                    if (React.isValidElement(only) && only.props.href && isYouTubeUrl(only.props.href)) {
+                      const id = extractYouTubeId(only.props.href)
+                      if (id) return <YouTubeEmbed youtubeId={id} />
+                    }
+                    if (typeof only === 'string' && isYouTubeUrl(only.trim())) {
+                      const id = extractYouTubeId(only.trim())
+                      if (id) return <YouTubeEmbed youtubeId={id} />
+                    }
+                    const text = nonEmpty
+                      .map((c) => {
+                        if (typeof c === 'string') return c
+                        if (React.isValidElement(c) && typeof c.props.children === 'string')
+                          return c.props.children
+                        if (React.isValidElement(c) && Array.isArray(c.props.children))
+                          return c.props.children.join('')
+                        return ''
+                      })
+                      .join('')
+                      .trim()
+                    if (isYouTubeUrl(text)) {
+                      const id = extractYouTubeId(text)
+                      if (id) return <YouTubeEmbed youtubeId={id} />
+                    }
+                  }
+                  return <p {...props}>{children}</p>
+                },
+              }}
             >
               {log.content}
             </ReactMarkdown>

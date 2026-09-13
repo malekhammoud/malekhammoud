@@ -110,6 +110,11 @@ export function LogEditor({ initial, mode }) {
 
         <section className="space-y-4">
           <SectionTitle>Body</SectionTitle>
+          <p className="font-mono text-xs text-mute">
+            Markdown supported. Tip: paste a YouTube link on its own line to embed it — e.g.{' '}
+            <code className="rounded bg-panel/60 px-1 py-0.5">https://www.youtube.com/watch?v=...</code> or{' '}
+            <code className="rounded bg-panel/60 px-1 py-0.5">https://youtu.be/...</code>
+          </p>
 
           <div className="flex items-center gap-1 rounded border border-rule p-0.5 w-fit">
             <button

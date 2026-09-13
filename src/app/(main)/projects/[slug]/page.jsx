@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { Container } from '@/components/Container'
 import { InlineVideo } from '@/components/InlineVideo'
 import { MediaFrame } from '@/components/MediaFrame'
+import { YouTubeEmbed } from '@/components/YouTubeEmbed'
 import { getAllProjects, getProjectBySlug } from '@/lib/projects'
 
 export async function generateStaticParams() {
@@ -75,16 +76,28 @@ export default async function ProjectDetailPage(props) {
 
         {media.length > 0 && (
           <div className="mt-10 space-y-8">
-            {media.map((item, idx) =>
-              item.type === 'video' ? (
-                <InlineVideo
-                  key={item.sources?.[0]?.src || idx}
-                  sources={item.sources}
-                  ratio={item.ratio}
-                  poster={item.poster}
-                  caption={item.caption}
-                />
-              ) : (
+            {media.map((item, idx) => {
+              if (item.type === 'youtube') {
+                return (
+                  <YouTubeEmbed
+                    key={item.youtubeId || idx}
+                    youtubeId={item.youtubeId}
+                    caption={item.caption}
+                  />
+                )
+              }
+              if (item.type === 'video') {
+                return (
+                  <InlineVideo
+                    key={item.sources?.[0]?.src || idx}
+                    sources={item.sources}
+                    ratio={item.ratio}
+                    poster={item.poster}
+                    caption={item.caption}
+                  />
+                )
+              }
+              return (
                 <MediaFrame
                   key={item.src || idx}
                   src={item.src}
@@ -93,8 +106,8 @@ export default async function ProjectDetailPage(props) {
                   height={item.height || 500}
                   caption={item.caption}
                 />
-              ),
-            )}
+              )
+            })}
           </div>
         )}
 

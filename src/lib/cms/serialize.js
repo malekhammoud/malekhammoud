@@ -2,6 +2,8 @@ import 'server-only'
 
 import matter from 'gray-matter'
 
+import { extractYouTubeId } from '@/lib/youtube'
+
 export const IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.avif']
 
 export const FRONTMATTER_KEYS = [
@@ -81,6 +83,30 @@ function cleanObject(obj) {
 
 function normalizeMediaItem(item) {
   if (!item || typeof item !== 'object') return null
+  if (item.type === 'youtube') {
+    const raw = String(item.youtubeId || item.src || item.url || item.youtubeUrl || '').trim()
+    const id = extractYouTubeId(raw)
+    if (!id) return null
+    return cleanObject({
+      type: 'youtube',
+      youtubeId: id,
+      caption: item.caption ? String(item.caption) : null,
+    })
+  }
+  // Auto-detect: if an "image" item's src is actually a YouTube URL, treat as youtube
+  if (item.type !== 'video') {
+    const rawMaybe = String(item.src || item.youtubeId || item.url || '').trim()
+    if (rawMaybe && /youtu\.?be/.test(rawMaybe)) {
+      const id = extractYouTubeId(rawMaybe)
+      if (id) {
+        return cleanObject({
+          type: 'youtube',
+          youtubeId: id,
+          caption: item.caption ? String(item.caption) : null,
+        })
+      }
+    }
+  }
   const type = item.type === 'video' ? 'video' : 'image'
 
   if (type === 'video') {

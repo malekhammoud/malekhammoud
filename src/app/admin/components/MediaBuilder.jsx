@@ -5,6 +5,7 @@ import clsx from 'clsx'
 
 import { isAllowedImage, suggestedPublicPath } from './clientUtil'
 import { Field, Input, Textarea } from './ui'
+import { extractYouTubeId } from '@/lib/youtube'
 
 const VIDEO_TYPES = { mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime' }
 
@@ -33,6 +34,27 @@ function ImageThumb({ src }) {
       width={96}
       height={54}
       onError={() => setFailed(true)}
+      className="aspect-video w-24 rounded border border-rule object-cover"
+    />
+  )
+}
+
+function YouTubeThumb({ youtubeId }) {
+  const thumb = youtubeId ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg` : null
+  if (!thumb || !youtubeId) {
+    return (
+      <div className="flex aspect-video w-24 items-center justify-center rounded border border-rule bg-deep font-mono text-[10px] text-fog">
+        YOUTUBE
+      </div>
+    )
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={thumb}
+      alt=""
+      width={96}
+      height={54}
       className="aspect-video w-24 rounded border border-rule object-cover"
     />
   )
@@ -71,11 +93,16 @@ function MediaCard({ item, scope, slug, onUpdate, onRemove, isMarkedDeleted, onT
     isMarkedDeleted ? 'border-red-300 opacity-60' : 'border-rule',
   )
 
+  const isYouTube = item.type === 'youtube'
+  const label = isYouTube ? 'YouTube' : item.type === 'image' ? 'Image' : 'Video'
+
   return (
     <li className={cardClass}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          {item.type === 'image' ? (
+          {isYouTube ? (
+            <YouTubeThumb youtubeId={item.youtubeId} />
+          ) : item.type === 'image' ? (
             <ImageThumb src={item.src} />
           ) : (
             <div className="flex aspect-video w-24 items-center justify-center rounded border border-rule bg-deep font-mono text-[10px] text-fog">
@@ -83,9 +110,7 @@ function MediaCard({ item, scope, slug, onUpdate, onRemove, isMarkedDeleted, onT
             </div>
           )}
           <div className="min-w-0">
-            <p className="font-mono text-2xs font-semibold uppercase tracking-wider text-accent">
-              {item.type === 'image' ? 'Image' : 'Video'}
-            </p>
+            <p className="font-mono text-2xs font-semibold uppercase tracking-wider text-accent">{label}</p>
             {underSlugFolder && item.type === 'image' && (
               <label className="mt-1 flex cursor-pointer items-center gap-1.5 font-mono text-xs text-mute hover:text-red-600">
                 <input
@@ -108,7 +133,32 @@ function MediaCard({ item, scope, slug, onUpdate, onRemove, isMarkedDeleted, onT
         </button>
       </div>
 
-      {item.type === 'image' ? (
+      {isYouTube ? (
+        <div className="grid gap-2">
+          <Field label="YouTube URL" hint="Paste any YouTube link — youtu.be, youtube.com/watch, shorts, embed">
+            <Input
+              value={item.youtubeId ? `https://www.youtube.com/watch?v=${item.youtubeId}` : item.src || ''}
+              onChange={(e) => {
+                const id = extractYouTubeId(e.target.value)
+                if (!id && e.target.value.trim() === '') {
+                  onUpdate({ ...item, youtubeId: '' })
+                  return
+                }
+                if (id) onUpdate({ ...item, youtubeId: id })
+                else {
+                  // keep raw input as src so user sees what they typed, but don't update id until valid
+                  onUpdate({ ...item, src: e.target.value })
+                }
+              }}
+              placeholder="https://www.youtube.com/watch?v=..."
+            />
+          </Field>
+          {text(item.caption || '', 'caption', 'Caption (optional)')}
+          {item.youtubeId && (
+            <p className="font-mono text-[10px] text-mute">ID: {item.youtubeId}</p>
+          )}
+        </div>
+      ) : item.type === 'image' ? (
         <div className="grid gap-2">
           {text(item.src || '', 'src', '/images/logs/…', 'col-span-2')}
           <div className="grid grid-cols-[1fr_auto_auto] gap-2">
@@ -183,9 +233,10 @@ export function MediaBuilder({
   queuedDeletes,
   onToggleDelete,
 }) {
-  const [adding, setAdding] = useState(null) // 'upload' | 'image' | 'video'
+  const [adding, setAdding] = useState(null) // 'upload' | 'image' | 'video' | 'youtube'
   const [urlDraft, setUrlDraft] = useState('')
   const [videoDraft, setVideoDraft] = useState({ sources: '', poster: '', ratio: '', caption: '' })
+  const [youtubeDraft, setYoutubeDraft] = useState({ url: '', caption: '' })
   const pickCounter = useRef(picks.length)
   const rowRefs = useRef({})
 
@@ -259,6 +310,20 @@ export function MediaBuilder({
     if (videoDraft.caption.trim()) item.caption = videoDraft.caption.trim()
     onMediaChange([...media, item])
     setVideoDraft({ sources: '', poster: '', ratio: '', caption: '' })
+    setAdding(null)
+  }
+
+  function addYouTube() {
+    const url = youtubeDraft.url.trim()
+    const id = extractYouTubeId(url)
+    if (!id) {
+      alert('Could not parse YouTube URL. Use a youtu.be, youtube.com/watch, shorts, or embed link, or just the 11-char ID.')
+      return
+    }
+    const item = { type: 'youtube', youtubeId: id }
+    if (youtubeDraft.caption.trim()) item.caption = youtubeDraft.caption.trim()
+    onMediaChange([...media, item])
+    setYoutubeDraft({ url: '', caption: '' })
     setAdding(null)
   }
 
@@ -416,6 +481,37 @@ export function MediaBuilder({
         </div>
       )}
 
+      {adding === 'youtube' && (
+        <div className="grid gap-2 rounded border border-rule bg-panel/30 p-3">
+          <Field label="YouTube URL" hint="Paste any YouTube link — watch, youtu.be, shorts, embed — or just the 11-char ID" className="!block">
+            <Input
+              value={youtubeDraft.url}
+              onChange={(e) => setYoutubeDraft({ ...youtubeDraft, url: e.target.value })}
+              placeholder="https://www.youtube.com/watch?v=..."
+              onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addYouTube())}
+            />
+          </Field>
+          <Field label="Caption" className="!block">
+            <Input
+              value={youtubeDraft.caption}
+              onChange={(e) => setYoutubeDraft({ ...youtubeDraft, caption: e.target.value })}
+              placeholder="Caption (optional)"
+            />
+          </Field>
+          {youtubeDraft.url.trim() && !extractYouTubeId(youtubeDraft.url.trim()) && (
+            <p className="font-mono text-[11px] text-red-600">Could not parse — check the link.</p>
+          )}
+          <div className="flex gap-2">
+            <button type="button" onClick={addYouTube} className="rounded bg-ink px-3 py-1.5 font-mono text-xs text-surface hover:bg-accent">
+              Add YouTube video
+            </button>
+            <button type="button" onClick={() => setAdding(null)} className="rounded border border-rule px-3 py-1.5 font-mono text-xs text-mute hover:text-ink">
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
@@ -438,6 +534,13 @@ export function MediaBuilder({
           className="rounded border border-rule px-3 py-1.5 font-mono text-xs text-ink transition hover:border-accent hover:text-accent"
         >
           Add video
+        </button>
+        <button
+          type="button"
+          onClick={() => setAdding(adding === 'youtube' ? null : 'youtube')}
+          className="rounded border border-rule bg-red-500/10 px-3 py-1.5 font-mono text-xs text-red-600 transition hover:border-red-500 hover:text-red-700"
+        >
+          Add YouTube
         </button>
       </div>
 
