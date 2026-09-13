@@ -27,7 +27,7 @@ media:
       - src: /videos/flowarch.mp4
         type: video/mp4
     ratio: 'aspect-[16/9]'
-    caption: >
+    caption: >-
       Flow Arch desktop session: Hyprland Wayland compositor with custom focus
       overlay daemons.
   - type: image
@@ -39,7 +39,6 @@ media:
 thumb:
   type: image
   src: /videos/flowarch.poster.jpg
-  alt: Flow Arch OS
 ---
 ## Why another Linux distribution?
 
@@ -101,24 +100,15 @@ notify("Focus Guard", f"Closed Tab: {title} (Keyword: {kw})", "critical")
 
 Worse, the activewindow title is checked on every `windowtitle` event from Hyprland's socket for a "zero-latency" block — so switching to a banned window is caught the frame it happens, not on the poll. A 5-s cooldown prevents the same window from being re-hit, and importantly it kills the *tab* (`CTRL+W`), never the whole window.
 
-## 4. The "visual guard": blocking by image
-
-This is the piece that kept surprising reviewers. `check_visual_content()` uses `grim` to screenshot each window on the active workspace, downsamples it to 100×100, and runs an HSV-ish skin-color classifier in pure PIL:
-
-- **Global skin-pixel share** (%) — if > sensitivity → block.
-- **5×5 sector peak** (%) — a single hotspot (e.g. a face closeup) triggers even when the whole-window share is low.
-
-Tuned by a `sensitivity` setting (and global vs sector thresholds set 15pt apart), it dispatches the same tab-close shortcut. It's crudely — a heuristic, not a classifier — but the design point matters: **whatever gets around the blocklist gets caught by the pixels**. The OS actively samples what you're actually looking at, a level deeper than any other distro's focus setup. (Screenshots are temp files deleted on overwrite; the guard is trivially disabled in settings.)
-
-## 5. OS-level adblock and per-goal filters
+## 4. OS-level adblock and per-goal filters
 
 Distraction filtering happens at the system boundary, not the browser: a `hosts_manager.py` writes /etc/hosts to block ad/tracker domains system-wide, and the session applies a *goal-specific* blocklist on top. For even harder cases a media-blackout mode adds known video CDNs (googlevideo.com, ytimg.com, tiktokv.com…) at the source-level. All of it configured per goal. During "code" you get the code blocklist; during "espresso break" you don't get the block, only the page hosts keep you honest.
 
-## 6. Deadlines that are actually deadlines
+## 5. Deadlines that are actually deadlines
 
 `run_standard_timer` counts down, warns at 60 s, then hands the curtain-closer to `shutdown_script.py`. That script runs a SessionFeedback QML/GTK prompt — rate the session, leave a comment, logged into `session_logs.jsonl` as a `"type":"feedback"` entry with goal + intention — and then `systemctl poweroff`. No snooze. You asked for a hard stop; the machine honours it, and you get a log of the reflection too.
 
-## 7. Everything logged
+## 6. Everything logged
 
 Every session writes to `~/session_logs.jsonl` — login, pomodoro segments, feedback — so Flow Arch tells you later what you actually did, which is the productivity metric the desktop has always omitted.
 
