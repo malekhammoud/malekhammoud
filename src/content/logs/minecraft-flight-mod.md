@@ -5,28 +5,18 @@ date: '2025-06-10'
 readTime: 6 min read
 category: Games / Physics
 description: >-
-  Real flight physics as a Fabric mod: a server-side PlaneEntity whose
-  throttle, drag, lift, and stall model runs inside Minecraft's fixed 20-tick
-  simulation — with per-tick pedal speed, graded landings, and NBT-persisted
-  speed. 1,200+ downloads.
+  Real flight physics as a Fabric mod: a server-side PlaneEntity whose throttle,
+  drag, lift, and stall model runs inside Minecraft's fixed 20-tick simulation —
+  with per-tick pedal speed, graded landings, and NBT-persisted speed. 1,200+
+  downloads.
 tags:
   - Java
   - Physics
   - Aerodynamics
   - Minecraft
   - Fabric
-featured: false
 relatedProject: minecraft-flight-mod
 media:
-  - type: video
-    poster: /videos/plane.poster.jpg
-    sources:
-      - src: /videos/plane.mp4
-        type: video/mp4
-    ratio: 'aspect-[16/9]'
-    caption: >
-      Flight aerodynamics mod in action: Real-time lift calculation and
-      pitch/yaw control.
   - type: image
     src: /images/projects/plane.gif
     width: 800
@@ -36,7 +26,6 @@ media:
 thumb:
   type: image
   src: /images/projects/plane.gif
-  alt: Minecraft Flight Physics
 ---
 ## Physics in a voxel world
 
