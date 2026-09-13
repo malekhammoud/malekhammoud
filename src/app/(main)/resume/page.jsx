@@ -21,7 +21,7 @@ export const metadata = {
 }
 
 const stats = [
-  { value: 1000, suffix: '+', label: 'Monthly users on IsMyTripSafe' },
+  { value: 2000, suffix: '+', label: 'Monthly users on IsMyTripSafe' },
   { value: 700, suffix: '+', label: 'Downloads of Flow Arch OS' },
   { value: 2, suffix: '', label: 'Internships before university' },
   { value: 5, suffix: '/5', label: 'AP Computer Science A' },

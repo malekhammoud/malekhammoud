@@ -29,7 +29,7 @@ const chapters = [
   {
     year: '2025–2026',
     heading: 'Making software people run.',
-    body: 'Two full-stack internships before university. At Hack the 6ix, Basil Home AI — a smart fridge running QNX RTOS on a Raspberry Pi — won Deloitte’s Best Use of AI for Green. Hack the North put us in the top 32 of 250+ teams. From there the work shifted to things meant to stay running: IsMyTripSafe, a travel-safety platform now serving over a thousand monthly users, and a fleet of 22 autonomous scrapers on Apify.',
+    body: 'Two full-stack internships before university. At Hack the 6ix, Basil Home AI — a smart fridge running QNX RTOS on a Raspberry Pi — won Deloitte’s Best Use of AI for Green. Hack the North put us in the top 32 of 250+ teams. From there the work shifted to things meant to stay running: IsMyTripSafe, a travel-safety platform now serving over two thousand monthly users, and a fleet of 22 autonomous scrapers on Apify.',
   },
   {
     year: 'Now',

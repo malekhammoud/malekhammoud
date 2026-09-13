@@ -44,7 +44,7 @@ function Hero() {
           the projects crossed into things people actually run in the wild: a
           weed-spraying rover that took bronze at the Canada-Wide Science Fair,
           an Arch Linux distribution with a SourceForge award, and a
-          travel-safety platform now serving over a thousand users a month. I
+          travel-safety platform now serving over two thousand users a month. I
           interned twice as a full-stack developer before starting university.
           I’m looking for a software engineering internship for Summer 2027.
         </p>

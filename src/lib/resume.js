@@ -89,7 +89,7 @@ export const projects = [
     href: 'https://ismytripsafe.com',
     hrefLabel: 'ismytripsafe.com',
     notes: [
-      'Architected an autonomous destination safety intelligence platform serving 1,000+ monthly active users.',
+      'Architected an autonomous destination safety intelligence platform serving 2,000+ monthly active users.',
       'Engineered automated web scraping pipelines targeting international government datasets and travel advisory APIs.',
       'Implemented dynamic report generation algorithms and programmatic SEO infrastructure to drive autonomous traffic growth.',
     ],

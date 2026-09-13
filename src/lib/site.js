@@ -27,7 +27,7 @@ export const buildLog = [
   {
     year: '2026',
     title: 'IsMyTripSafe',
-    subtitle: 'A destination-safety platform that turns government advisories plus live web research into a single 0–100 score for 1,000+ cities. Now at 1,000+ monthly users.',
+    subtitle: 'A destination-safety platform that turns government advisories plus live web research into a single 0–100 score for 1,000+ cities. Now at 2,000+ monthly users.',
     href: '/projects/ismytripsafe',
     source: 'Live at ismytripsafe.com.',
   },

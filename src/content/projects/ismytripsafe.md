@@ -9,20 +9,20 @@ summary: >-
   advisories, crime, governance, health, and disaster feeds combine through a
   non-compensatory scoring engine into one 0–100 score and a written verdict —
   with live web research (Google News + DuckDuckGo + article crawl) grounding
-  it. Serving 1,000+ monthly active users with zero human research.
+  it. Serving 2,000+ monthly active users with zero human research.
 category: Full-Stack / Systems
 year: '2026'
 status: PRODUCTION
 metrics:
   - label: Monthly Users
-    value: '1,000+ MAU'
+    value: '2,000+ MAU'
   - label: Cities
     value: '1,000+ Destinations'
   - label: Research
     value: Agentic + Live Web
   - label: Scoring
     value: Non-Compensatory
-badge: '1,000+ Monthly Users · Autonomous Pipeline'
+badge: '2,000+ Monthly Users · Autonomous Pipeline'
 featured: true
 media:
   - type: image
@@ -71,7 +71,7 @@ caseStudyText:
     scale) let two cities in one country really differ.
   outcome: >-
     A free, always-current score + breakdown for 1,000+ cities that grew to
-    1,000+ monthly active users with zero human research after launch — the
+    2,000+ monthly active users with zero human research after launch — the
     traffic story of the site, and the reason the whole scoring engine had to be
     correct enough to ship cold.
 ---
