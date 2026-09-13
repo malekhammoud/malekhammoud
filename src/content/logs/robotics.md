@@ -17,13 +17,13 @@ tags:
 relatedProject: litter-detection
 media:
   - type: image
-    src: /images/logs/Robotics/1789266368126-robot.png
+    src: /images/logs/Robotics/1789266537686-robot.png
     width: 0
     height: 0
-    caption: A picture of a robot I built learning how to walk.
+    caption: A picture of my robot learning how to walk.
 thumb:
   type: image
-  src: /images/logs/Robotics/1789266368126-robot.png
+  src: /images/logs/Robotics/1789266537686-robot.png
 ---
 ## Introduction
 
