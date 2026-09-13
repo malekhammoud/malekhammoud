@@ -73,8 +73,14 @@ export async function collectUploads(formData, slug, scope = 'logs') {
 
     let baseName = ''
     if (Number.isFinite(Number(index))) {
+      // The hint is the client-wired public path (it may be a full path like
+      // /images/logs/slug/…/x.png, or just the filename). Only the basename is
+      // a filename; the directory is derived from this scope + slug below so
+      // a path can never be sanitized into a mangled name (e.g. the '/'-to-'-'
+      // mangle that turned "<slug>/x.png" into "images-logs-<slug>-x.png").
       const hint = String(formData.get(`uploadName_${index}`) || '').trim()
-      const hintClean = sanitizeBaseName(hint)
+      const hintFile = hint.split('/').pop() || ''
+      const hintClean = sanitizeBaseName(hintFile)
       if (hintClean && fileExtension(hint) === ext) {
         baseName = `${hintClean}${ext}`
       }

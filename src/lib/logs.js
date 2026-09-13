@@ -43,11 +43,23 @@ export function getFeaturedLogs(count = 3) {
 
 export function getLogBySlug(slug) {
   if (!slug) return null
-  const file = `${slug}.md`
-  if (!fs.existsSync(path.join(CONTENT_DIR, file))) return null
-  return readLog(file)
+  const file = resolveFileForSlug(slug)
+  return file ? readLog(file) : null
 }
 
 export function logExists(slug) {
-  return Boolean(slug) && fs.existsSync(path.join(CONTENT_DIR, `${slug}.md`))
+  return Boolean(slug) && Boolean(resolveFileForSlug(slug))
+}
+
+/** Match content files case-insensitively so URL casing and mixed-case slugs
+ *  (e.g. "Robotics.md") can never produce duplicate routes or 404s. */
+function listFiles() {
+  if (!fs.existsSync(CONTENT_DIR)) return []
+  return fs.readdirSync(CONTENT_DIR).filter((f) => f.endsWith('.md'))
+}
+
+function resolveFileForSlug(slug) {
+  const wanted = String(slug || '').toLowerCase().replace(/\.md$/i, '')
+  const exact = listFiles().find((f) => f.toLowerCase().replace(/\.md$/i, '') === wanted)
+  return exact || null
 }

@@ -40,5 +40,8 @@ const SCOPE_DIRS = { logs: '/images/logs', projects: '/images/projects' }
 export function suggestedPublicPath(file, slug, scope = 'logs') {
   const dir = SCOPE_DIRS[scope]
   if (!dir) throw new Error(`Unknown upload scope "${scope}".`)
-  return `${dir}/${slug}/${Date.now()}-${sanitizeBase(file.name)}${clientFileExt(file.name)}`
+  // The server writes uploads under the slugified (lowercase) slug dir. Match
+  // it exactly here so the path the editor wires into media refs always equals
+  // the path committed to the repo — a mismatched case creates a dead link.
+  return `${dir}/${clientSlugify(slug)}/${Date.now()}-${sanitizeBase(file.name)}${clientFileExt(file.name)}`
 }

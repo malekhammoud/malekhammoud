@@ -17,6 +17,7 @@ import {
   commitChanges,
   fileExists,
   getTreeBlobs,
+  resolveBlobPath,
   githubConfigConfigured,
 } from '@/lib/cms/github'
 import {
@@ -102,12 +103,22 @@ export async function saveLogAction(prevState, formData) {
     return { error: 'The slug is fixed after a log is created. Create a new log instead.' }
   }
 
+  // Resolve the existing content file case-insensitively. GitHub paths are
+  // case-sensitive, so a file named "Robotics.md" with slug "robotics" would
+  // otherwise be written to a brand-new "robotics.md", leaving both files to
+  // publish duplicate /logs pages.
+  let contentPath = `src/content/logs/${slug}.md`
   try {
-    if (await fileExists(`src/content/logs/${slug}.md`)) {
+    const existing = await resolveBlobPath('src/content/logs', `${slug}.md`)
+    if (existing) contentPath = existing
+  } catch (error) {
+    if (error instanceof GithubError) return { error: error.message }
+    throw error
+  }
+
+  try {
+    if (await fileExists(contentPath)) {
       if (isNew) return { error: `A log with the slug "${slug}" already exists.` }
-      if (originalSlug !== slug) {
-        return { error: `A log with the slug "${slug}" already exists.` }
-      }
     }
   } catch (error) {
     if (error instanceof GithubError) return { error: error.message }
@@ -144,7 +155,7 @@ export async function saveLogAction(prevState, formData) {
   }
 
   const filesToWrite = [
-    { path: `src/content/logs/${slug}.md`, content: serializeLog(log) },
+    { path: contentPath, content: serializeLog(log) },
   ]
   for (const upload of uploads) {
     filesToWrite.push({ path: upload.gitPath, base64: upload.base64 })
@@ -182,15 +193,18 @@ export async function deleteLogAction(formData) {
     return { error: 'Invalid slug.' }
   }
 
+  let contentPath = `src/content/logs/${slug}.md`
   let imagePaths = []
   try {
+    const existing = await resolveBlobPath('src/content/logs', `${slug}.md`)
+    if (existing) contentPath = existing
     imagePaths = await getTreeBlobs(`public/images/logs/${slug}`)
   } catch (error) {
     if (error instanceof GithubError) return { error: error.message }
     throw error
   }
 
-  const filesToDelete = [`src/content/logs/${slug}.md`, ...imagePaths]
+  const filesToDelete = [contentPath, ...imagePaths]
 
   try {
     await commitChanges({ message: `Delete log: ${slug}`, filesToDelete })
@@ -231,8 +245,19 @@ export async function saveProjectAction(prevState, formData) {
     return { error: 'The slug is fixed after a project is created. Create a new project instead.' }
   }
 
+  // Same case-insensitive resolution as logs — prevents writing a new
+  // lowercase file next to an existing mixed-case project file.
+  let contentPath = `src/content/projects/${slug}.md`
   try {
-    if (await fileExists(`src/content/projects/${slug}.md`)) {
+    const existing = await resolveBlobPath('src/content/projects', `${slug}.md`)
+    if (existing) contentPath = existing
+  } catch (error) {
+    if (error instanceof GithubError) return { error: error.message }
+    throw error
+  }
+
+  try {
+    if (await fileExists(contentPath)) {
       if (isNew) return { error: `A project with the slug "${slug}" already exists.` }
     }
   } catch (error) {
@@ -277,7 +302,7 @@ export async function saveProjectAction(prevState, formData) {
   }
 
   const filesToWrite = [
-    { path: `src/content/projects/${slug}.md`, content: serializeProject(project) },
+    { path: contentPath, content: serializeProject(project) },
   ]
   for (const upload of uploads) {
     filesToWrite.push({ path: upload.gitPath, base64: upload.base64 })
@@ -315,15 +340,18 @@ export async function deleteProjectAction(formData) {
     return { error: 'Invalid slug.' }
   }
 
+  let contentPath = `src/content/projects/${slug}.md`
   let imagePaths = []
   try {
+    const existing = await resolveBlobPath('src/content/projects', `${slug}.md`)
+    if (existing) contentPath = existing
     imagePaths = await getTreeBlobs(`public/images/projects/${slug}`)
   } catch (error) {
     if (error instanceof GithubError) return { error: error.message }
     throw error
   }
 
-  const filesToDelete = [`src/content/projects/${slug}.md`, ...imagePaths]
+  const filesToDelete = [contentPath, ...imagePaths]
 
   try {
     await commitChanges({ message: `Delete project: ${slug}`, filesToDelete })

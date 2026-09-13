@@ -1,7 +1,7 @@
 ---
 slug: rpi-pixhawk-drone
 title: Building an Autonomous Drone with Raspberry Pi & Pixhawk
-date: '2025-01-24'
+date: '2024-10-13'
 readTime: 5 min read
 category: Hardware / Robotics
 description: >-

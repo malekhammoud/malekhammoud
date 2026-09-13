@@ -1,7 +1,7 @@
 ---
 slug: GreenGuardian
 title: 'GreenGuardian: Vision-on-the-Move Weed Spot Spraying'
-date: '2025-05-22'
+date: '2024-05-23'
 readTime: 6 min read
 category: Hardware / Robotics
 description: >-

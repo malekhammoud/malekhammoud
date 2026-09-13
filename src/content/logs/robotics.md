@@ -17,13 +17,15 @@ tags:
 relatedProject: litter-detection
 media:
   - type: image
-    src: /images/logs/Robotics/1789266537686-robot.png
-    width: 0
-    height: 0
+    src: /images/logs/robotics/1789266537686-robot.png
+    width: 348
+    height: 183
+    alt: My four-legged robot learning to walk
     caption: A picture of my robot learning how to walk.
 thumb:
   type: image
-  src: /images/logs/Robotics/1789266537686-robot.png
+  src: /images/logs/robotics/1789266537686-robot.png
+  alt: My four-legged robot learning to walk
 ---
 ## Introduction
 

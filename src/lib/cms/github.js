@@ -114,6 +114,19 @@ export async function getTreeBlobs(dir) {
     .map((entry) => entry.path)
 }
 
+/**
+ * Find a blob path under `dir` whose basename matches `filename`
+ * case-insensitively. GitHub paths are case-sensitive, so editing a file whose
+ * name differs in case (e.g. "Robotics.md" vs "robotics.md") would otherwise
+ * silently create a duplicate. Prefer resolving the real path.
+ */
+export async function resolveBlobPath(dir, filename) {
+  const wanted = String(filename || '').toLowerCase()
+  const blobs = await getTreeBlobs(dir)
+  const match = blobs.find((p) => p.split('/').pop().toLowerCase() === wanted)
+  return match || null
+}
+
 /** Fetch a file's binary content as base64 (uses git blobs, safe for large files). */
 export async function getBlobBase64(path) {
   const meta = await getFileMeta(path)
