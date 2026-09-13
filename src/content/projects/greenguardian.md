@@ -59,6 +59,9 @@ links:
       https://partner.projectboard.world/ysc/project/greenguardian-automated-weed-detection-and-elimination
   - label: Engineering Article
     href: /logs/GreenGuardian
+  - label: Github
+    href: >-
+      https://github.com/malekhammoud/GreenGuardian-Automated-Weed-Detection-and-Elimination
 caseStudyText:
   problem: >-
     Broadcast herbicide is cheap to deploy and ecologically brutal: over 90% of
