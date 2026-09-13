@@ -9,7 +9,7 @@ export function Footer() {
       <Container className="py-12">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="font-display text-base font-semibold">
+            <p className="font-mono text-base font-semibold">
               {siteConfig.name}
             </p>
             <p className="mt-1.5 max-w-sm text-sm text-mute">

@@ -23,7 +23,7 @@ function Brand() {
       className="flex items-center gap-2.5"
     >
       <Mark size={22} />
-      <span className="font-display text-sm font-semibold tracking-tight">
+      <span className="font-mono text-sm font-semibold tracking-tight">
         Malek Hammoud
       </span>
     </Link>
