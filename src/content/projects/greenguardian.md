@@ -37,13 +37,14 @@ media:
     width: 800
     height: 1067
     alt: GreenGuardian project board at CWSF
-    caption: >
+    caption: >-
       Project showcase and results at the 2024 Canada-Wide Science Fair (CWSF)
       in Ottawa.
+  - type: youtube
+    youtubeId: oWvfxRrFsdk
 thumb:
   type: image
   src: /images/projects/green.webp
-  alt: GreenGuardian field robot
 stack:
   - Python
   - OpenCV
@@ -69,22 +70,22 @@ caseStudyText:
     Everything had to fit on a hobby budget and survive a real field: outdoor
     light that swings between harsh sun and shadow, rough uneven soil, and a
     compute budget of one Raspberry Pi 4 (running an int8 TensorFlow Lite model)
-    plus a Raspberry Pi Pico for the real-time actuator loop. Precise
-    spray *position* had to come from cheap hardware, not a RTK receiver.
+    plus a Raspberry Pi Pico for the real-time actuator loop. Precise spray
+    *position* had to come from cheap hardware, not a RTK receiver.
   whatIBuilt: >-
-    Three drive iterations ended on two independent high-torque rear motors
-    with skid steering (zero-radius turns) driven by a Pico over 2 Mb/s serial.
-    The sensing stack is deliberately two-stage. Stage one: a custom TFLite
-    classifier trained on weed classes (dandelion, crabgrass, blowballs,
-    clover, plantain) runs at 0.25 confidence on a wide 2304×700 strip. Stage
-    two — the part that makes spray land on the weed — an HSV threshold finds
-    the yellow flower's bounding box and normalizes it to image coordinates,
-    so the actuator knows (x,y) precisely, not just "a weed". A magnetometer
-    (HMC5883L) keeps heading so the rover turns 180° at row ends and drives the
-    next row. The Pico firmware pulses the 12 V solenoid for ~0.15 s only when
-    the spray point is centered under the weed.
+    Three drive iterations ended on two independent high-torque rear motors with
+    skid steering (zero-radius turns) driven by a Pico over 2 Mb/s serial. The
+    sensing stack is deliberately two-stage. Stage one: a custom TFLite
+    classifier trained on weed classes (dandelion, crabgrass, blowballs, clover,
+    plantain) runs at 0.25 confidence on a wide 2304×700 strip. Stage two — the
+    part that makes spray land on the weed — an HSV threshold finds the yellow
+    flower's bounding box and normalizes it to image coordinates, so the
+    actuator knows (x,y) precisely, not just "a weed". A magnetometer (HMC5883L)
+    keeps heading so the rover turns 180° at row ends and drives the next row.
+    The Pico firmware pulses the 12 V solenoid for ~0.15 s only when the spray
+    point is centered under the weed.
   outcome: >-
     94% weed classification precision, ~90% reduction in sprayed herbicide
-    volume versus broadcast, and a Bronze Medal at the 2024 Canada-Wide
-    Science Fair (CWSF) in Ottawa.
+    volume versus broadcast, and a Bronze Medal at the 2024 Canada-Wide Science
+    Fair (CWSF) in Ottawa.
 ---
