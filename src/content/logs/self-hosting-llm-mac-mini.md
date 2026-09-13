@@ -1,80 +1,65 @@
 ---
 slug: self-hosting-llm-mac-mini
-title: Self-Hosting Open-Weight LLMs on Apple Silicon (Mac Mini)
-date: '2025-11-15'
-readTime: 6 min read
+title: Running Open-Weight LLMs on a Mac Mini — What Actually Mattered
+date: '2026-01-20'
+readTime: 4 min read
 category: Local AI / Systems
 description: >-
-  Keeping a private model server alive on an M-series Mini: launchd KeepAlive
-  supervision, a hard context cap against swap, single-resident model
-  hot-swapping, and why unified memory bandwidth is the only number that
-  matters.
+  Why I moved my models onto a desk, why memory bandwidth decides everything,
+  and the unglamorous work — context caps, launchd supervision, single-resident
+  weights — that keeps a local model server alive.
 tags:
   - Mac Mini
   - Apple Silicon
   - MLX
   - Local AI
-  - Python
   - FastAPI
+  - Quantization
 featured: false
 relatedProject: self-hosted-inference
-media:
-  - type: image
-    src: /images/projects/ai.webp
-    width: 512
-    height: 512
-    alt: Local LLM inference on Apple Silicon
-    caption: Local LLM server setup running on unified Apple Silicon memory.
-thumb:
-  type: image
-  src: /images/projects/ai.webp
-  alt: Local LLM inference on Apple Silicon
 ---
-## Why Apple Silicon for local AI
+## Why I moved my models onto a desk
 
-LLM inference is a memory-bandwidth problem wearing an inference costume. Each generated token needs the entire weight matrix re-read from memory, so the thing that decides how fast answers come is **how fast memory streams to the compute**, not how many cores sit unused. Apple Silicon stacks 32 GB of unified RAM on the same package with roughly 100 GB/s of bandwidth, and idles the genset at a few watts.
+Two things pushed me off hosted APIs. Every prompt I sent to a vendor was private code, documents, and logs leaving a network I control. And the bill grew every time an integration got *more* popular — usage pricing taxes the thing you're trying to build.
 
-That makes it the correct box for a private 7B–14B quantized server. It is not the box for the largest frontier models — and the fun is that the physics tells you exactly why.
+Open-weight models on local hardware fixed both, then handed me a different problem: keeping a model server alive on a machine that sits in a room. This is what that actually took.
 
-## The hard part isn't inference — it's staying alive
+## The hardware question is a memory-bandwidth question
 
-A model worker can hang on a corrupted context or die on an OOM spike, taking the socket down with it. Terminal babysitting is not infrastructure. The router runs as a **launchd service**:
+People frame local inference as a compute problem. It isn't. Generating one token means reading the entire weight matrix out of memory, doing a matmul, then doing the same thing again for the next token. The bottleneck is how fast weights stream to the compute, not how many cores sit idle. That one fact drives nearly every decision below.
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>com.malek.llm-router</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>/usr/local/bin/uvicorn</string>
-        <string>inference_router:app</string>
-        <string>--host</string>
-        <string>0.0.0.0</string>
-        <string>--port</string>
-        <string>8000</string>
-    </array>
-    <key>RunAtLoad</key>
-    <true/>
-    <key>KeepAlive</key>
-    <true/>
-</dict>
-</plist>
-```
+An M4 Mac Mini with 32 GB of unified memory puts the whole model behind one high-bandwidth pool and draws a handful of watts. For 7B–14B models, it's the right machine. For anything much larger, it isn't — and now I can explain exactly why: the weights stop fitting, and the moment the box pages to SSD, throughput collapses.
 
-`KeepAlive` makes Darwin restart the worker within seconds of any death — no supervisor, no extra runtime, just the OS init system that was going to be running anyway. It also means *crashes are recoverable events*, not outages.
+## Quantization is where the budget gets decided
 
-## Memory bounds & hot-swapping
+| Format | 14B model footprint | Effect on a 32 GB box |
+| :--- | :--- | :--- |
+| FP16 | ~28 GB | Overshoots once the OS and apps want memory; starts paging |
+| INT8 | ~15 GB | Fits with room to spare; modest bandwidth cost |
+| INT4 | ~8.5 GB | Fastest streaming; small quality hit, fine for code and docs |
 
-Two rules keep a 32 GB machine from turning into a disk thrash:
+I default to 4-bit. A 14B model lands around 8.5 GB, which leaves room for the OS and everything else. I keep 8-bit around for answers that have to be exact — quantization breaks are real, and stepping up a level without touching hardware is worth the disk.
 
-1. **Hard context caps.** Prompts beyond ~8k tokens are rejected or truncated rather than allocating memory that would push the resident footprint past its safe ceiling. This is a swap guard: once the box pages, time-to-first-token balloons from milliseconds to seconds of disk.
-2. **Single resident model.** Only one model lives in unified memory at once. Switching models invalidates the previous Metal buffers *before* loading the next — so a hot-swap never briefly holds two full models, which is exactly when a 32 GB budget blows.
+The rule I settled on: run the largest model that fits at 4-bit without getting near the ceiling. Speed comes from bandwidth. Quality comes from size. The ceiling doesn't negotiate.
 
-## What "production" buys you
+## The hard part is keeping it running
 
-The observable outcome is boring on purpose: a server that answers continuously, restarts after any failure with zero human involvement, holds every prompt/answer on the network, and costs nothing per token. Getting there meant engineering the boring 90% — supervision, bounds, and a routing layer — hard, so the models could stay the fun 10%.
+Inference was the easy 10%. The other 90% is making a process survive. Three things bit me:
 
-Model-level facts: int4 Qwen-class 7B/14B streaming at 45+ tokens/sec, idling at watts, sitting silently on a desk. Data never leaves the room; the invoice never gets bigger.
+**Swap is the enemy.** Once a 32 GB machine pages, time-to-first-token goes from milliseconds to seconds of disk. I put a hard cap on prompt length (~8k tokens) and truncate rather than allocate. That single guard prevented more problems than any amount of tuning.
+
+**Two models resident is two models too many.** Hot-swapping looks free until you notice that loading a second model while the first is still in memory doubles the footprint at the worst possible moment. I invalidate the previous Metal buffers before loading new weights, so only one model is ever live.
+
+**Crashes are normal, not outages.** A bad context or memory spike takes the worker down. Babysitting a terminal isn't infrastructure, so the router runs as a launchd service with `KeepAlive` — Darwin restarts it within seconds, using the init system that was already running. Treat a crash as a recoverable event and most of the operational stress disappears.
+
+The router itself is small: FastAPI streaming over Server-Sent Events so the first token arrives before the answer finishes, an API key, and the context cap.
+
+## What I'd tell someone starting this
+
+- **Bandwidth decides tokens per second; cores don't.** Size the model to memory, not to CPU.
+- **The boring 90% is the product.** Loading weights and answering one prompt is a demo. Supervision, bounds, and auth are what make it a service.
+- **Never let it swap.** A context cap is cheaper than every other fix combined.
+- **Keep 8-bit within reach.** Quantization is a dial, not a religion.
+- **A desk box beats a rental for steady, private load.** No per-token invoice, no data leaving the network — and it comes back by itself after it dies at 3 a.m.
+
+The honest trade is quality and the occasional debugging session instead of a monthly bill. For internal work, I'd make it again.

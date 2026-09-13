@@ -42,10 +42,8 @@ stack:
   - Launchd
   - Apple Metal
 links:
-  - label: Architecture Deep-Dive
+  - label: Engineering Log
     href: /logs/self-hosting-llm-mac-mini
-  - label: Benchmarking Write-up
-    href: /logs/deploying-quantized-llms-edge
 caseStudyText:
   problem: >-
     Sending internal codebases, documents, and customer logs to third-party
