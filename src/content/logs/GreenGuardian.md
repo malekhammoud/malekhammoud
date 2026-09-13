@@ -1,13 +1,13 @@
 ---
-slug: GreenGuardian
+slug: greenguardian
 title: 'GreenGuardian: Vision-on-the-Move Weed Spot Spraying'
 date: '2024-05-23'
 readTime: 6 min read
 category: Hardware / Robotics
 description: >-
   How a Raspberry Pi 4, a TensorFlow Lite weed classifier, and an HSV
-  yellow-bloom stage became a rover that spot-sprays weeds — 90% less
-  herbicide, 94% precision, Bronze at CWSF 2024.
+  yellow-bloom stage became a rover that spot-sprays weeds — 90% less herbicide,
+  94% precision, Bronze at CWSF 2024.
 tags:
   - Computer Vision
   - TensorFlow Lite
@@ -25,22 +25,6 @@ media:
     alt: GreenGuardian project board at CWSF 2024
     caption: 'Canada-Wide Science Fair 2024: Bronze Medal presentation board.'
   - type: image
-    src: /images/photos/IMG_0926.webp
-    width: 800
-    height: 1067
-    alt: GreenGuardian physical rover exhibition
-    caption: >
-      The GreenGuardian autonomous robot on the national science fair exhibition
-      floor.
-  - type: image
-    src: /images/photos/IMG_0922.webp
-    width: 800
-    height: 600
-    alt: Chassis drive detail
-    caption: >
-      Custom 3D-printed chassis with dual high-torque rear drive motors and the
-      solenoid nozzle.
-  - type: image
     src: /images/logs/greenguardian.webp
     width: 625
     height: 500
@@ -49,7 +33,6 @@ media:
 thumb:
   type: image
   src: /images/projects/green.webp
-  alt: GreenGuardian Robot
 ---
 ## The problem with broadcast spraying
 
