@@ -265,17 +265,17 @@ Measured end to end: the glider found the vessel and the quad refined the fix to
 
 Ari built a causal Kalman filter for the vessel's trajectory — six states (position, velocity, acceleration in x and y), a constant-acceleration transition model, and a white-noise-jerk process model, with the Joseph-form covariance update for numerical stability. It handles sparse GPS and is causal by design: no future samples, because a live system doesn't get any. A causal cubic spline smooths the estimate without look-ahead.
 
-He also wired a small local LLM as a tactical supervisor. A local Ollama model (`llama3.2:1b`) receives a system prompt forcing a strict JSON action schema — `CLOSED_ZONE`, `INTERCEPT`, or `ABORT`, each with coordinates, a radius, and a reason — for edge-case calls like closing an exclusion zone after a reported attack. The patrol planner then reroutes around any closed zone with tangent detours.
+He and Riyan also wired a small local LLM as a tactical supervisor. A local Ollama model (`llama3.2:1b`) receives a system prompt forcing a strict JSON action schema — `CLOSED_ZONE`, `INTERCEPT`, or `ABORT`, each with coordinates, a radius, and a reason — for edge-case calls like closing an exclusion zone after a reported attack. The patrol planner then reroutes around any closed zone with tangent detours. We didn't end up wiring this in since it was'nt fully implemented. 
 
 ## Reporting to the track API
 
 Every surviving fix goes to the competition's track endpoint: POST a name and lat/lon and it creates a track; POST the same name and it updates, bumping a fix counter. We derive **heading** and **speed** from the previous fix so the track carries motion, not just position.
 
-We rate-limit ourselves hard, because the endpoint throttles: at most one request per second globally, and per track one every five seconds *and* only if the target moved more than five metres. On HTTP 429 the client honours `Retry-After` and backs off exponentially. Being polite to the scorer's API is not the place to be clever.
+We rate-limit ourselves, because the endpoint throttles: at most one request per second globally, and per track one every five seconds *and* only if the target moved more than five metres. On HTTP 429 the client honours `Retry-After` and backs off exponentially. Being polite to the scorer's API is not the place to be clever.
 
 ## Everything that broke
 
-**The cloud sim died.** The hosted simulation broke down partway through and we moved the entire stack local. That's a day of a weekend, gone — and why `RECON.md` insists on `127.0.0.1` and the host is configurable.
+**The cloud sim died.** The hosted simulation broke down partway through and we moved the entire stack local. It was a part of the glider sensor stack that was preventing arming. Local hosting gave us the control we needed(in case it happens again, we can reboot the EKF)
 
 **The quadcopter stopped translating.** It would arm, take off, climb, and hover, but `goto` wouldn't move it horizontally. Vertical control worked; horizontal didn't. We chased it as our bug before concluding it was sim-side: `SERVO_OUTPUT_RAW` showed hover throttle while the model stayed put. You can't fix someone else's physics in a weekend, so we retried and moved on.
 
@@ -285,7 +285,7 @@ We rate-limit ourselves hard, because the endpoint throttles: at most one reques
 
 ## What we ended up with
 
-- `tools/smoke_test.py` — 23 end-to-end checks against a live sim, all passing.
+- `tools/smoke_test.py` — 23 end-to-end checks against a live sim.
 - Tower calibration verified through `SERVO_OUTPUT_RAW` with zero servo-tracking failures.
 - Geolocation: 38 m median at the calibrated mount, with an honest uncertainty estimate.
 - Detection: one fused ship track of 244 hits over 190 frames, and a CNN that removed ~97% of false positives.
