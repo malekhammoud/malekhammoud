@@ -22,30 +22,26 @@ media:
   - type: youtube
     youtubeId: 6RL2bwKpjxA
     caption: >-
-      The synchronized mission: the glider's reconnaissance feed stacked over the
-      quadcopter's tracking feed, both geolocated in real time.
+      The synchronized mission: the glider's reconnaissance feed stacked over
+      the quadcopter's tracking feed, both geolocated in real time.
 thumb:
   type: image
   src: /images/logs/shadow-stalker/wing-refined-fix.jpg
-  alt: Fixed-wing camera detecting the target vessel with a geolocated fix overlay
 ---
-> **At a glance.** At Hack the North, a team of four built **Shadow Stalker** for the ArcticSim challenge: a fleet-wide search system that finds a moving vessel in the Bellot Strait, at 72°N, without ever touching the simulator's ground truth. It combines a three-stage vision engine, pixel-to-GPS trigonometry, a pan/tilt tower watch, and a fixed-wing-to-quad handoff. We won the Dominion Dynamics sponsor track.
+> **At a glance.** At Hack the North, we built **Shadow Stalker** for the ArcticSim challenge: a fleet-wide search system that finds a moving vessel in the Bellot Strait, at 72°N. It combines a three-stage vision engine, pixel-to-GPS trigonometry, a pan/tilt tower watch, and a fixed-wing-to-quad handoff. We won the Dominion Dynamics sponsor track.
 >
-> **The numbers.** 23/23 end-to-end smoke checks · 38 m median geolocation error · 244 fused hits over 190 frames · ~97% of the color detector's false positives removed by the CNN · 12.4 m median, 2.2 m best on the two-aircraft mission.
 
 ## The setup
 
-Dominion Dynamics shipped a challenge called **ArcticSim**: drop into a live Arctic simulation at Fort Ross, on the Bellot Strait in Nunavut, and take control of a heterogeneous fleet. A fixed-wing aircraft, a quadcopter, two pan/tilt antenna-tracker masts, a rover, a boat. All running ArduPilot, all speaking MAVLink, all inside a Gazebo Classic world someone else built.
+Dominion Dynamics shipped a challenge called **ArcticSim**: drop into a live Arctic simulation at Fort Ross, on the Bellot Strait in Nunavut, and take control of a heterogeneous fleet. A fixed-wing aircraft, a quadcopter, two pan/tilt antenna-tracker masts, a rover, a boat. All running ArduPilot, all speaking MAVLink, all inside a Gazebo Classic.
 
-Your job is to write the shared intelligence that coordinates them — detect, classify, and track a moving target vessel across contested terrain. You're scored live on coverage, collaboration, efficiency, and tracking accuracy.
+>"Your job is to write the shared intelligence that coordinates them — detect, classify, and track a moving target vessel across contested terrain. You're scored live on coverage, collaboration, efficiency, and tracking accuracy."
 
-The catch is the entire point. The simulator knows exactly where the boat is and publishes its true pose on a Gazebo topic every frame. Using that is cheating. Everything you report has to come out of a camera, and it has to be a real latitude and longitude you'd bet a search-and-rescue on.
-
-The team: me on infrastructure and integration, Leonardo Zhou on the vision engine, Ari Khan on trajectory estimation and tactical planning, Riyan Kassam rounding it out. This is how it works, written mostly from my side of the keyboard.
+The team: me on infrastructure and integration, Leonardo Zhou on the vision engine, Ari Khan on trajectory estimation and tactical planning, Riyan Kassam rounding it out.
 
 ## Recon wins hackathons
 
-The prompt told us to read the README, the `docker-compose.yml`, the `.env.example`, and the source tree. None of those were in our repo — we'd forked it empty except for a keyboard control script. So before writing a line of autonomy, I cloned the real upstream `arctic-sim` repository and measured everything against the running sim. The result was `RECON.md`, and it became the team's source of truth for the rest of the event.
+The prompt told us to read the README, the `docker-compose.yml`, the `.env.example`, and the source tree. But these did'nt contain all the info, so before writing a line of autonomy, I cloned the real upstream `arctic-sim` repository and measured everything against the running sim. The result was `RECON.md`, and it became the team's source of truth for the rest of the event.
 
 It's tempting to skip this and go straight to the detector. But almost every hour we didn't lose later, we bought in those first few hours.
 
@@ -58,7 +54,7 @@ It's tempting to skip this and go straight to the detector. But almost every hou
 | tower-1 | `udpout 127.0.0.1:14580` | 4 | `:8630` — 1280×720, 60° HFOV |
 | tower-2 | `udpout 127.0.0.1:14590` | 5 | `:8640` — 1280×720, 60° HFOV |
 
-Two things in that table cost teams hours if they guess instead of measure. The MAVLink endpoints are `udpin` **listeners** — they stay mute until *you* transmit, so you open `udpout` and send first. And stranger: SITL only steps the simulation while a ground control station is attached. Our connections weren't just reading telemetry, they were what made the physics run. Open a socket and the world moves; close it and it freezes.
+Two importent things to note: The MAVLink endpoints are `udpin` **listeners** — they stay mute until *you* transmit, so you open `udpout` and send first. And stranger: SITL only steps the simulation while a ground control station is attached. Our connections weren't just reading telemetry, they were what made the physics run. Open a socket and the world moves; close it and it freezes.
 
 The camera numbers matter too. The slides quoted 640-wide video; the actual sensor SDFs were 960×720 and 1280×720. Field of view is what turns a pixel into a ray, so a 114.6° camera and a 60° camera are very different instruments.
 
