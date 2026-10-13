@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { ThumbVideo } from '@/components/ThumbVideo'
 import Link from 'next/link'
 
 import { ArrowLink } from '@/components/Button'
@@ -98,6 +99,14 @@ function EntryThumb({ image }) {
 
   return (
     <span className="relative block aspect-square w-full overflow-hidden rounded-md bg-deep/90 ring-1 ring-inset ring-rule/70 transition duration-300 group-hover:ring-accent/60 sm:aspect-[4/3]">
+      {image.video ? (
+        <ThumbVideo
+          src={image.video}
+          poster={image.src}
+          label={image.alt}
+          className="absolute inset-0 h-full w-full object-cover object-center opacity-90 saturate-[.85] transition duration-500 group-hover:scale-[1.04] group-hover:opacity-100 group-hover:saturate-100"
+        />
+      ) : (
       <Image
         src={image.src}
         alt={image.alt || ''}
@@ -107,6 +116,7 @@ function EntryThumb({ image }) {
         unoptimized={image.src.endsWith('.gif')}
         className="object-cover object-center opacity-90 saturate-[.85] transition duration-500 group-hover:scale-[1.04] group-hover:opacity-100 group-hover:saturate-100"
       />
+      )}
     </span>
   )
 }
