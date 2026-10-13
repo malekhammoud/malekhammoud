@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { ArrowLink } from '@/components/Button'
@@ -31,9 +32,8 @@ function Hero() {
           className="animate-rise mt-8 max-w-[24ch] font-body text-3xl italic leading-[1.15] sm:text-5xl"
           style={{ animationDelay: '60ms' }}
         >
-          I’m Malek Hammoud. I build software that has to work — Linux
-          distributions, weed-finding robots, and local AI that never leaves
-          the machine.
+          I’m Malek Hammoud. I build software that has to work: Linux distros,
+          weed-finding robots, and local AI.
         </h1>
 
         <p
@@ -44,9 +44,11 @@ function Hero() {
           the projects crossed into things people actually run in the wild: a
           weed-spraying rover that took bronze at the Canada-Wide Science Fair,
           an Arch Linux distribution with a SourceForge award, and a
-          travel-safety platform now serving over two thousand users a month. I
-          interned twice as a full-stack developer before starting university.
-          I’m looking for a software engineering internship for Summer 2027.
+          travel-safety platform now serving over two thousand users a month
+          (as of Oct 2026). I interned twice before university — as a
+          full-stack developer at Playtoon IT (2025) and a software developer
+          at Bryck Technologies (2024–25). I’m looking for a software
+          engineering internship for Summer 2027.
         </p>
 
         <div
@@ -89,6 +91,27 @@ function Hero() {
   )
 }
 
+function EntryThumb({ image }) {
+  // Keep the grid column even when an entry has no picture.
+  if (!image?.src) {
+    return <span aria-hidden="true" className="hidden sm:block" />
+  }
+
+  return (
+    <span className="relative block aspect-[16/10] w-32 overflow-hidden rounded border border-rule/80 bg-deep/90 transition duration-300 group-hover:border-accent/70 sm:w-full">
+      <Image
+        src={image.src}
+        alt={image.alt || ''}
+        fill
+        loading="lazy"
+        sizes="(min-width: 640px) 7rem, 8rem"
+        unoptimized={image.src.endsWith('.gif')}
+        className="object-cover object-center transition duration-500 group-hover:scale-105"
+      />
+    </span>
+  )
+}
+
 function BuildLog() {
   return (
     <Container>
@@ -108,11 +131,12 @@ function BuildLog() {
                 {...(entry.href.startsWith('http')
                   ? { target: '_blank', rel: 'noopener noreferrer' }
                   : {})}
-                className="group grid gap-1 py-6 sm:grid-cols-[4.5rem_1fr_auto] sm:items-baseline sm:gap-6"
+                className="group grid gap-3 py-6 sm:grid-cols-[4.5rem_7rem_1fr_auto] sm:items-start sm:gap-6"
               >
-                <span className="font-mono text-xs text-mute transition group-hover:text-accent">
+                <span className="font-mono text-xs text-mute transition group-hover:text-accent sm:pt-1.5">
                   {entry.year}
                 </span>
+                <EntryThumb image={entry.image} />
                 <span>
                   <span className="font-display text-xl font-semibold transition group-hover:text-accent">
                     {entry.title}
@@ -126,7 +150,7 @@ function BuildLog() {
                 </span>
                 <span
                   aria-hidden="true"
-                  className="hidden font-mono text-xs text-accent transition-transform group-hover:translate-x-1 sm:block"
+                  className="hidden font-mono text-xs text-accent transition-transform group-hover:translate-x-1 sm:block sm:pt-1.5"
                 >
                   →
                 </span>
@@ -154,9 +178,9 @@ function Now() {
         <h2 className="font-display text-2xl font-semibold">Right now</h2>
         <div className="mt-6 grid gap-10 lg:grid-cols-2">
           <p className="max-w-[58ch] text-base leading-relaxed text-mute">
-            Most of my time goes into Flow Arch, whatever local LLM
-            infrastructure I’m tuning that week, and the occasional write-up
-            for the logs page.
+            Most of my time goes into IsMyTripSafe, an autonomous drone-swarm
+            search system, and whatever local LLM infrastructure I’m tuning
+            that week — plus the occasional write-up for the logs page.
           </p>
           <div className="flex flex-wrap content-start items-baseline gap-x-5 gap-y-2 lg:justify-end">
             {contactLinks.map((link) => (
