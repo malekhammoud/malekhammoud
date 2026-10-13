@@ -9,20 +9,20 @@ summary: >-
   advisories, crime, governance, health, and disaster feeds combine through a
   non-compensatory scoring engine into one 0–100 score and a written verdict —
   with live web research (Google News + DuckDuckGo + article crawl) grounding
-  it. Serving 2,000+ monthly active users with zero human research.
+  it. Serving 2,000+ monthly active users (as of Oct 2026) with zero human research.
 category: Full-Stack / Systems
 year: '2026'
 status: PRODUCTION
 metrics:
   - label: Monthly Users
-    value: '2,000+ MAU'
+    value: '2,000+ MAU (Oct 2026)'
   - label: Cities
     value: '1,000+ Destinations'
   - label: Research
     value: Agentic + Live Web
   - label: Scoring
     value: Non-Compensatory
-badge: '2,000+ Monthly Users · Autonomous Pipeline'
+badge: '2,000+ Monthly Users (as of Oct 2026) · Autonomous Pipeline'
 featured: true
 media:
   - type: image
@@ -58,7 +58,7 @@ caseStudyText:
     scoring had to be *non-compensatory*: a clean-air figure must never average
     away a "Do Not Travel" advisory.
   whatIBuilt: >-
-    A Next.js 16 plumbing where POST /api/research streams a report in ~10 s:
+    A Next.js 16 pipeline where POST /api/research streams a report in ~10 s:
     geocode → fetch structured indicators (homicide, terrorism, road deaths,
     rule of law, corruption, air quality, nearby hospitals, live disaster
     alerts) → ingest US/UK/Canada advisory feeds → run a keyless web-research
@@ -71,7 +71,7 @@ caseStudyText:
     scale) let two cities in one country really differ.
   outcome: >-
     A free, always-current score + breakdown for 1,000+ cities that grew to
-    2,000+ monthly active users with zero human research after launch — the
+    2,000+ monthly active users (as of Oct 2026) with zero human research after launch — the
     traffic story of the site, and the reason the whole scoring engine had to be
     correct enough to ship cold.
 ---
