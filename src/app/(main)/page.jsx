@@ -92,21 +92,20 @@ function Hero() {
 }
 
 function EntryThumb({ image }) {
-  // Keep the grid column even when an entry has no picture.
   if (!image?.src) {
-    return <span aria-hidden="true" className="hidden sm:block" />
+    return <span aria-hidden="true" />
   }
 
   return (
-    <span className="relative block aspect-[16/10] w-32 overflow-hidden rounded border border-rule/80 bg-deep/90 transition duration-300 group-hover:border-accent/70 sm:w-full">
+    <span className="relative block aspect-square w-full overflow-hidden rounded-md bg-deep/90 ring-1 ring-inset ring-rule/70 transition duration-300 group-hover:ring-accent/60 sm:aspect-[4/3]">
       <Image
         src={image.src}
         alt={image.alt || ''}
         fill
         loading="lazy"
-        sizes="(min-width: 640px) 7rem, 8rem"
+        sizes="(min-width: 640px) 10rem, 5.5rem"
         unoptimized={image.src.endsWith('.gif')}
-        className="object-cover object-center transition duration-500 group-hover:scale-105"
+        className="object-cover object-center opacity-90 saturate-[.85] transition duration-500 group-hover:scale-[1.04] group-hover:opacity-100 group-hover:saturate-100"
       />
     </span>
   )
@@ -131,29 +130,32 @@ function BuildLog() {
                 {...(entry.href.startsWith('http')
                   ? { target: '_blank', rel: 'noopener noreferrer' }
                   : {})}
-                className="group grid gap-3 py-6 sm:grid-cols-[4.5rem_7rem_1fr_auto] sm:items-start sm:gap-6"
+                className="group grid grid-cols-[1fr_5.5rem] items-start gap-5 py-7 sm:grid-cols-[4.5rem_1fr_10rem] sm:gap-8"
               >
-                <span className="font-mono text-xs text-mute transition group-hover:text-accent sm:pt-1.5">
+                <span className="hidden font-mono text-xs text-mute transition group-hover:text-accent sm:block sm:pt-1.5">
                   {entry.year}
                 </span>
-                <EntryThumb image={entry.image} />
-                <span>
-                  <span className="font-display text-xl font-semibold transition group-hover:text-accent">
+                <span className="min-w-0">
+                  <span className="mb-1.5 block font-mono text-[0.7rem] uppercase tracking-wider text-mute sm:hidden">
+                    {entry.year}
+                  </span>
+                  <span className="font-display text-lg font-semibold leading-snug transition group-hover:text-accent sm:text-xl">
                     {entry.title}
                     <sup className="footnote-marker text-accent">
                       [{index + 1}]
                     </sup>
                   </span>
-                  <span className="mt-1 block max-w-[58ch] text-sm leading-relaxed text-mute">
+                  <span className="mt-1.5 block max-w-[58ch] text-sm leading-relaxed text-mute">
                     {entry.subtitle}
                   </span>
+                  <span
+                    aria-hidden="true"
+                    className="mt-3 hidden font-mono text-xs text-accent opacity-0 transition duration-300 group-hover:translate-x-1 group-hover:opacity-100 sm:inline-block"
+                  >
+                    Read →
+                  </span>
                 </span>
-                <span
-                  aria-hidden="true"
-                  className="hidden font-mono text-xs text-accent transition-transform group-hover:translate-x-1 sm:block sm:pt-1.5"
-                >
-                  →
-                </span>
+                <EntryThumb image={entry.image} />
               </Link>
             </Reveal>
           ))}
