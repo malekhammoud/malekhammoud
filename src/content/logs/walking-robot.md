@@ -1,6 +1,6 @@
 ---
 slug: walking-robot
-title: Developing a ROS2 Quadruped — Guis, Gaits, and Forward Kinematics
+title: Developing a ROS2 Quadruped — GUIs, Gaits, and Forward Kinematics
 date: '2025-03-12'
 readTime: 6 min read
 category: Hardware / Robotics
