@@ -4,8 +4,11 @@ import { notFound } from 'next/navigation'
 import { Container } from '@/components/Container'
 import { InlineVideo } from '@/components/InlineVideo'
 import { MediaFrame } from '@/components/MediaFrame'
+import { PipelineDiagram } from '@/components/PipelineDiagram'
 import { YouTubeEmbed } from '@/components/YouTubeEmbed'
+import { heroImage, socialMetadata } from '@/lib/og'
 import { getAllProjects, getProjectBySlug } from '@/lib/projects'
+import { projectSources } from '@/lib/site'
 
 export async function generateStaticParams() {
   const projects = getAllProjects()
@@ -17,11 +20,34 @@ export async function generateMetadata(props) {
   const project = getProjectBySlug(params.slug)
   if (!project) return {}
 
+  const title = `${project.title} — Case Study`
+
   return {
-    title: `${project.title} — Case Study`,
+    title,
     description: project.summary,
     alternates: { canonical: `/projects/${project.slug}` },
+    ...socialMetadata({
+      title,
+      description: project.summary,
+      path: `/projects/${project.slug}`,
+      image: heroImage(project),
+    }),
   }
+}
+
+/* Case-study diagrams, keyed by project slug. */
+const PIPELINES = {
+  ismytripsafe: {
+    title: 'IsMyTripSafe research pipeline, one request end to end',
+    steps: [
+      { label: 'Geocode', detail: 'City to coordinates and country' },
+      { label: 'Structured indicators', detail: 'Crime, governance, health, disasters' },
+      { label: 'US / UK / Canada advisories', detail: 'Three government feeds' },
+      { label: 'Keyless web research', detail: 'News RSS, DuckDuckGo, article extracts' },
+      { label: 'One model call', detail: 'Verdict grounded in the dossier' },
+      { label: '0–100 score + verdict', detail: 'Non-compensatory scoring' },
+    ],
+  },
 }
 
 const STATUS = {
@@ -47,6 +73,9 @@ export default async function ProjectDetailPage(props) {
       ? [project.media]
       : []
 
+  const source = projectSources[project.slug]
+  const pipeline = PIPELINES[project.slug]
+
   return (
     <Container>
       <nav aria-label="Breadcrumb" className="pt-10">
@@ -71,6 +100,18 @@ export default async function ProjectDetailPage(props) {
           </p>
           {project.badge && (
             <p className="mt-4 font-mono text-xs text-accent">{project.badge}</p>
+          )}
+          {source && (
+            <p className="mt-4">
+              <a
+                href={source}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-xs font-medium text-accent underline decoration-rule underline-offset-4 transition hover:decoration-accent"
+              >
+                Source ↗
+              </a>
+            </p>
           )}
         </header>
 
@@ -152,6 +193,9 @@ export default async function ProjectDetailPage(props) {
                     <p key={i}>{paragraph}</p>
                   ))}
                 </div>
+                {pipeline && (
+                  <PipelineDiagram title={pipeline.title} steps={pipeline.steps} />
+                )}
               </section>
             )}
 
