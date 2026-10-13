@@ -54,6 +54,7 @@ export const buildLog = [
     source: 'SourceForge — 700+ downloads, Rising Star Award.',
     image: {
       src: '/videos/flowarch.poster.jpg',
+      video: '/videos/flowarch',
       alt: 'Flow Arch Hyprland desktop session',
     },
   },
@@ -65,6 +66,7 @@ export const buildLog = [
     source: 'Hack the 6ix 2025 — winner, Deloitte "Best Use of AI for Green".',
     image: {
       src: '/videos/basil.poster.jpg',
+      video: '/videos/basil',
       alt: 'Basil Home AI detecting groceries in a fridge',
     },
   },
@@ -87,6 +89,7 @@ export const buildLog = [
     source: 'Research paper and write-up in the logs.',
     image: {
       src: '/videos/drone.poster.jpg',
+      video: '/videos/drone',
       alt: 'F450 litter-mapping drone in flight',
     },
   },
