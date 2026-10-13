@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 import { Container } from '@/components/Container'
 import { getAllLogs } from '@/lib/logs'
+import { startHereLogs } from '@/lib/site'
 
 export const metadata = {
   title: 'Logs',
@@ -68,7 +69,12 @@ function Thumb({ thumb, media, title }) {
 }
 
 export default function LogsCatalog() {
-  const logs = getAllLogs()
+  // Pinned "Start here" logs lead the list; everything else stays newest first.
+  const all = getAllLogs()
+  const pinned = startHereLogs
+    .map((slug) => all.find((log) => log.slug.toLowerCase() === slug.toLowerCase()))
+    .filter(Boolean)
+  const logs = [...pinned, ...all.filter((log) => !pinned.includes(log))]
 
   return (
     <Container>
@@ -106,6 +112,11 @@ export default function LogsCatalog() {
                 />
               </div>
               <div className="min-w-0">
+                {pinned.includes(log) && (
+                  <p className="mb-2 inline-block rounded border border-accent/60 px-2 py-0.5 font-mono text-2xs uppercase tracking-[0.12em] text-accent">
+                    Start here
+                  </p>
+                )}
                 <h2 className="font-display text-xl font-semibold transition group-hover:text-accent">
                   {log.title}
                 </h2>
