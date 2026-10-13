@@ -11,7 +11,9 @@ import { MediaFrame } from '@/components/MediaFrame'
 import { Prose } from '@/components/Prose'
 import { YouTubeEmbed } from '@/components/YouTubeEmbed'
 import { getAllLogs, getLogBySlug } from '@/lib/logs'
+import { heroImage, socialMetadata } from '@/lib/og'
 import { getProjectBySlug } from '@/lib/projects'
+import { logSources } from '@/lib/site'
 import { extractYouTubeId, isYouTubeUrl } from '@/lib/youtube'
 
 export async function generateStaticParams() {
@@ -28,6 +30,12 @@ export async function generateMetadata(props) {
     title: `${log.title} — Malek Hammoud`,
     description: log.description,
     alternates: { canonical: `/logs/${log.slug}` },
+    ...socialMetadata({
+      title: log.title,
+      description: log.description,
+      path: `/logs/${log.slug}`,
+      image: heroImage(log),
+    }),
   }
 }
 
@@ -46,6 +54,7 @@ export default async function LogDetailPage(props) {
       : []
 
   const related = log.relatedProject ? getProjectBySlug(log.relatedProject) : null
+  const source = logSources[log.slug]
 
   return (
     <Container>
@@ -69,6 +78,19 @@ export default async function LogDetailPage(props) {
               <span>{log.readTime}</span>
               <span>·</span>
               <span className="uppercase">{log.category}</span>
+              {source && (
+                <>
+                  <span>·</span>
+                  <a
+                    href={source}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-accent underline decoration-rule underline-offset-4 transition hover:decoration-accent"
+                  >
+                    Source ↗
+                  </a>
+                </>
+              )}
             </div>
 
             <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
